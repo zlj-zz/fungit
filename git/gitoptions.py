@@ -22,7 +22,8 @@ def add(args: list):
 
 
 def fetch_remote_branch(args):
-    branch = args[0]
+    branch = args[0] if len(args) > 1 else None
+
     if branch:
         run_shell('git fetch origin {}:{} '.format(branch, branch))
     else:
@@ -47,12 +48,12 @@ def set_email_and_username(args: list):
     run_shell(GIT_OPTIONS['email']['command'] + other + name)
 
 
-def process_func(c, args):
+def process_func(c, args: list):
     fn = GIT_OPTIONS[c]['command']
     fn(args)
 
 
-def process_origin_command(c, args):
+def process_origin_command(c, args: list):
     origin_command = GIT_OPTIONS[c]['command']
 
     if args:

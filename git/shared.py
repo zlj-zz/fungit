@@ -38,6 +38,10 @@ def warn(msg: str):
     echo(msg, Color.YELLOW, Style.BOLD)
 
 
+def err(msg: str):
+    echo(msg, Color.RED, Style.BOLD)
+
+
 def run_shell(c: str):
     with subprocess.Popen(c, shell=True) as proc:
         proc.wait()
