@@ -1,5 +1,5 @@
 from .gitoptions import GIT_OPTIONS
-from .shared import echo, Color, Style
+from .shared import echo, err, Color, Style
 
 
 def echo_one_help_msg(k: str):
@@ -12,7 +12,7 @@ def echo_one_help_msg(k: str):
 
 
 def echo_help_msg(keys: list):
-    echo("usage: g <command> [<args>]\n", style=Style.BOLD)
+    echo("Usage: g <option> [<args>]\n", style=Style.BOLD)
     # echo('')
     if keys:
         invalid_keys = []
@@ -36,6 +36,7 @@ def echo_help_msg(keys: list):
 
 
 def give_tip(c: str):
+    err("Dont support option: {}".format(c))
     echo('\nMaybe what you want is:')
     c = c[0]
     for k in GIT_OPTIONS.keys():
@@ -48,6 +49,7 @@ def echo_discription():
     echo('A terminal tool, help you use git more simple. Support Linux and MacOS.\n',
          style=Style.UNDERLINE)
 
+    echo("Usage: g <option> [<args>]", style=Style.BOLD)
     echo('You can use ', nl=False)
     echo('-h', color=Color.GREEN, nl=False)
     echo(' and ', nl=False)

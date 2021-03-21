@@ -35,11 +35,11 @@ def echo(msg: str, color: Color = None, style: Style = None, nl: bool = True):
 
 
 def warn(msg: str):
-    echo(msg, Color.YELLOW, Style.BOLD)
+    echo('WARN: {}'.format(msg), Color.YELLOW, Style.BOLD)
 
 
 def err(msg: str):
-    echo(msg, Color.RED, Style.BOLD)
+    echo('ERROR: {}'.format(msg), Color.RED, Style.BOLD)
 
 
 def run_shell(c: str):

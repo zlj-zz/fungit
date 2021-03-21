@@ -209,7 +209,7 @@ GIT_OPTIONS = {
     'CT': {
         'state': 0 | GitOptionState.STRING | GitOptionState.NO,
         'command': 'git checkout --theirs -- git --no-pager diff --diff-filter=U --name-only ',
-        'help-msg': 'checks out their changes for all unmerged paths."',
+        'help-msg': 'checks out their changes for all unmerged paths.',
     },
 
     # Fetch(f)
@@ -380,12 +380,12 @@ GIT_OPTIONS = {
     "p": {
         'state': 0 | GitOptionState.STRING | GitOptionState.MULTI,
         'command': 'git push ',
-        'help-msg': 'updates remote refs along with associated objects. ',
+        'help-msg': 'updates remote refs along with associated objects.',
     },
     "pf": {
         'state': 0 | GitOptionState.STRING | GitOptionState.MULTI,
         'command': 'git push --force-with-lease ',
-        'help-msg': 'forces a push safely (with \"lease\"). ',
+        'help-msg': 'forces a push safely (with \"lease\").',
     },
     "pF": {
         'state': 0 | GitOptionState.STRING | GitOptionState.MULTI,
@@ -395,17 +395,17 @@ GIT_OPTIONS = {
     "pa": {
         'state': 0 | GitOptionState.STRING | GitOptionState.MULTI,
         'command': 'git push --all ',
-        'help-msg': 'pushes all branches. ',
+        'help-msg': 'pushes all branches.',
     },
     "pA": {
         'state': 0 | GitOptionState.STRING | GitOptionState.MULTI,
         'command': 'git push --all && git push --tags ',
-        'help-msg': 'pushes all branches and tags. ',
+        'help-msg': 'pushes all branches and tags.',
     },
     "pt": {
         'state': 0 | GitOptionState.STRING | GitOptionState.MULTI,
         'command': 'git push --tags ',
-        'help-msg': 'pushes all tags. ',
+        'help-msg': 'pushes all tags.',
     },
     "pc": {
         'state': 0 | GitOptionState.STRING | GitOptionState.MULTI,
@@ -487,12 +487,12 @@ GIT_OPTIONS = {
     },
     'sd': {
         'state': 0 | GitOptionState.STRING | GitOptionState.MULTI,
-        'command': 'git stash show ',
+        'command': 'git stash show',
         'help-msg': '',
     },
     'sD': {
         'state': 0 | GitOptionState.STRING | GitOptionState.MULTI,
-        'command': 'git stash show --patch --stat ',
+        'command': 'git stash show --patch --stat',
         'help-msg': '',
     },
     # 'sr': {
@@ -617,3 +617,21 @@ GIT_OPTIONS = {
     #     'help-msg': '',
     # },
 }
+
+
+def is_branch_option(x): return x.startswith('b')
+def is_commit_option(x): return x.startswith('c')
+def is_conflict_option(x): return x.startswith('C')
+def is_fetch_option(x): return x.startswith('f')
+def is_index_option(x): return x.startswith('i')
+def is_log_option(x): return x.startswith('l')
+def is_merge_option(x): return x.startswith('m')
+def is_push_option(x): return x.startswith('p')
+def is_remote_option(x): return x.startswith('R')
+def is_stash_option(x): return x.startswith('s')
+def is_tag_option(x): return x.startswith('t')
+def is_tree_option(x): return x.startswith('w')
+
+
+def detect_option_type(k: str) -> str:
+    pass
