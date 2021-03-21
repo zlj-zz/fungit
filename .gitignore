@@ -1,0 +1,8 @@
+build/
+dist/
+pyzgit.egg-info/
+
+log
+.vscode/
+__pycache__/
+
