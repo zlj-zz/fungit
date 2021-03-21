@@ -39,7 +39,8 @@ def warn(msg: str):
 
 
 def run_shell(c: str):
-    subprocess.Popen(c, shell=True)
+    with subprocess.Popen(c, shell=True) as proc:
+        proc.wait()
 
 
 def run_shell_with_resp(c: str):
