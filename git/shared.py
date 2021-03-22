@@ -34,6 +34,10 @@ def echo(msg: str, color: Color = None, style: Style = None, nl: bool = True):
     print('{}{}{}'.format(SEQ, str(msg), REST_SEQ), end='\n' if nl else '')
 
 
+def okey(msg: str):
+    echo(msg, Color.GREEN, Style.BOLD)
+
+
 def warn(msg: str):
     echo('WARN: {}'.format(msg), Color.YELLOW, Style.BOLD)
 

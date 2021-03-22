@@ -8,7 +8,7 @@ def echo_one_help_msg(k: str):
         msg = GIT_OPTIONS[k]['help-msg']
     else:
         msg = GIT_OPTIONS[k]['command']
-    echo((8 - len(k)) * ' ' + str(msg))
+    echo((9 - len(k)) * ' ' + str(msg))
 
 
 def echo_help_msg(keys: list):

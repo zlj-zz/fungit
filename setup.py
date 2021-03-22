@@ -1,6 +1,7 @@
+from git.shell_complete import add_completion
 from setuptools import setup, find_packages
 
-VERSION = '1.1'
+VERSION = '1.2'
 LONG_DESCRIPTION = open('README.md').read()
 
 setup(
@@ -20,6 +21,7 @@ setup(
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
+        "Intended Audience :: Developers",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
@@ -29,4 +31,8 @@ setup(
         [console_scripts]
         g=git.main:g
     ''',
+    python_requires='>=3.5',
 )
+
+
+add_completion()
