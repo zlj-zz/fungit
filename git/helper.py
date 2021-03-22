@@ -27,8 +27,11 @@ def echo_help_msg(keys: list):
     else:
         echo('''
 -h / --help [<args>]  :get help mesage, default is all.
-                        You can also follow the parameters to 
-                        get help information for specific commands.
+                       You can also follow the parameters to 
+                       get help information for specific commands.
+
+--complete            :You can use this option to get shell auto completion.
+                       Just support `bash`, `zsh`.
         ''')
         echo("These are short commands that can replace git operations:")
         for k in GIT_OPTIONS.keys():

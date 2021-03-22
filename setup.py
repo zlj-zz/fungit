@@ -1,8 +1,17 @@
-from git.shell_complete import add_completion
 from setuptools import setup, find_packages
+import sys
 
-VERSION = '1.2'
-LONG_DESCRIPTION = open('README.md').read()
+PYTHON_VERSION = sys.version_info[:2]
+if PYTHON_VERSION < (3, 5):
+    print('Python version must be greater than or equal to 3.5')
+    sys.exit()
+
+try:
+    LONG_DESCRIPTION = open('README.md').read()
+except:
+    LONG_DESCRIPTION = ""
+
+VERSION = '1.3'
 
 setup(
     name='pyzgit',
@@ -33,6 +42,3 @@ setup(
     ''',
     python_requires='>=3.5',
 )
-
-
-add_completion()

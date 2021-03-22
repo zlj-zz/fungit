@@ -47,10 +47,18 @@ def err(msg: str):
 
 
 def run_shell(c: str):
-    with subprocess.Popen(c, shell=True) as proc:
-        proc.wait()
+    try:
+        with subprocess.Popen(c, shell=True) as proc:
+            proc.wait()
+    except Exception as e:
+        err('An error occurred in the trigger operation(run_shell).')
+        exit(1)
 
 
 def run_shell_with_resp(c: str):
-    response = subprocess.check_output([c], shell=True).decode()
-    return response
+    try:
+        response = subprocess.check_output([c], shell=True).decode()
+        return response
+    except Exception as e:
+        err('An error occurred in the trigger operation(run_shell_with_resp).')
+        exit(1)
