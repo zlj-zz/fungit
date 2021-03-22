@@ -48,7 +48,8 @@ def give_tip(c: str):
 
 
 def echo_discription():
-    echo('[pyzgit]\n', style=Style.BOLD)
+    from .version import VERSION
+    echo('[pyzgit] version: %s\n' % VERSION, style=Style.BOLD)
     echo('A terminal tool, help you use git more simple. Support Linux and MacOS.\n',
          style=Style.UNDERLINE)
 
