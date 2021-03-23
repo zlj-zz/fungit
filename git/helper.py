@@ -1,5 +1,5 @@
 from .gitoptions import GIT_OPTIONS
-from .shared import echo, err, Color, Style
+from .shared import echo, run_shell_with_resp, warn, err, Color, Style
 
 
 def echo_one_help_msg(k: str):
@@ -49,7 +49,16 @@ def give_tip(c: str):
 
 def echo_discription():
     from .version import VERSION
-    echo('[pyzgit] version: %s\n' % VERSION, style=Style.BOLD)
+
+    has_git = False
+    try:
+        git_veriosn = run_shell_with_resp('git --version')
+        has_git = True
+    except Exception as e:
+        git_veriosn = ''
+
+    echo('[pyzgit] version: %s' % VERSION, style=Style.BOLD)
+    echo(' ' + git_veriosn + '\n')
     echo('A terminal tool, help you use git more simple. Support Linux and MacOS.\n',
          style=Style.UNDERLINE)
 
@@ -59,3 +68,6 @@ def echo_discription():
     echo(' and ', nl=False)
     echo('--help', color=Color.GREEN, nl=False)
     echo(' to get how to use pyzgit.\n')
+
+    if not has_git:
+        warn('Dont found Git, maybe need install.')

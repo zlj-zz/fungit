@@ -24,7 +24,7 @@ _alternative\\
 return ret
 }
 
-compdef _g g
+compdef complete_g g
 '''
 
 _TEMPLATE_BASH = '''\
@@ -93,7 +93,7 @@ def using_completion(file_name: str, path: str, config_path: str):
         run_shell('echo "source %s" >> %s ' % (path, config_path))
         okey('\nPlease run: source {}'.format(config_path))
     else:
-        warn('\nThis configuration already exists.')
+        warn('This configuration already exists.')
 
 
 def add_zsh_completion():
@@ -135,6 +135,7 @@ def add_completion():
     echo('\nTry to add completion ...')
 
     _shell = get_current_shell()
+    echo('Detect shell: %s' % _shell)
     if _shell == 'zsh':
         add_zsh_completion()
     elif _shell == 'bash':
