@@ -36,8 +36,8 @@ class Renderer:
             cls._w, cls._h = w, h
 
         if not tree:
-            create_git_tree(tree)  # create tree
             initial_selection()
+            create_git_tree(tree)  # create tree
 
         if not cls.old_tree:
             # ... create box

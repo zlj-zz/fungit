@@ -6,9 +6,9 @@ from shared import SelectedType, GIT_TREE, SELECTED
 def create_git_tree(tree: dict):
     tree['state'] = git.state()
     tree['status'] = git.status()
-    tree['branchs'], tree['current_branch'] = git.branchs()
-    tree['commits'] = git.commits()
-    tree['stashs'] = git.stashs()
+    tree['branch'], tree['current_branch'] = git.branchs()
+    tree['commit'] = git.commits()
+    tree['stash'] = git.stashs()
     tree['content'] = ''
 
 

@@ -2,9 +2,11 @@ import math
 import enum
 from typing import List, Tuple, Any
 
-from style import Symbol, Fx, Color, Cursor
+from style import Symbol, Fx, Color, Cursor, ConfigColor
 from shared import GIT_TREE, BOXS, SELECTED, SelectedType
 from gitree import fetch_content
+
+BOX_SELECTED_COLOR = Color.fg('#32cd32')
 
 
 class BoxMode:
@@ -32,8 +34,9 @@ class Box:
 
     @classmethod
     def create_profile(cls):
+        _line_color = BOX_SELECTED_COLOR if cls.genre & SELECTED['selected'] else ''
         cls.box = create_profile(
-            cls.x, cls.y, cls.w, cls.h, cls.name)
+            cls.x, cls.y, cls.w, cls.h, cls.name, line_color=_line_color)
 
 
 class GitTypeBox(Box):
@@ -51,8 +54,10 @@ class GitTypeBox(Box):
 
     @classmethod
     def create_profile(cls):
+        # print(cls.genre& SELECTED['selected'])
+        _line_color = BOX_SELECTED_COLOR if cls.genre & SELECTED['selected'] else ''
         cls.box = create_profile(
-            cls.x, cls.y, cls.w, cls.h, cls.name)
+            cls.x, cls.y, cls.w, cls.h, cls.name, line_color=_line_color)
 
     @classmethod
     def update(cls):
@@ -63,12 +68,15 @@ class GitTypeBox(Box):
         cls.box_content = ''
         for idx, line in enumerate(cls.content):
             if idx < cls.h - 2:
-                cls.box_content += f'{Cursor.to(start_y, start_x)}{line if len(line) < line_w else line[:line_w]}'
+                _line = f'{Cursor.to(start_y, start_x)}{line if len(line) < line_w else line[:line_w]}'
+                if cls.genre & SELECTED['selected'] and idx == SELECTED[cls.name]:
+                    _line = f'{Fx.b}{_line}{Fx.ub}'
+                cls.box_content += _line
                 start_y += 1
 
 
 class StateBox(GitTypeBox):
-    name: str = 'State'
+    name: str = 'state'
     genre = SelectedType.STATE
     x: int = 0
     y: int = 0
@@ -81,12 +89,12 @@ class StateBox(GitTypeBox):
 
     @classmethod
     def generate(cls):
-        cls.content_orignal = GIT_TREE['state']
+        cls.content_orignal = GIT_TREE[cls.name]
         cls.content = [cls.content_orignal]
 
 
 class StatusBox(GitTypeBox):
-    name: str = 'Status'
+    name: str = 'status'
     genre = SelectedType.STATUS
     x: int = 0
     y: int = 0
@@ -99,16 +107,56 @@ class StatusBox(GitTypeBox):
 
     @classmethod
     def generate(cls):
-        cls.content_orignal = GIT_TREE['status']  # if no data, empty list
+        cls.content_orignal = GIT_TREE[cls.name]  # if no data, empty list
 
         _content = []
         for item in cls.content_orignal:
             _content.append(' '.join(item))
         cls.content = _content
 
+    @classmethod
+    def update(cls):
+        start_x = cls.x + 1
+        start_y = cls.y + 1
+        line_w = cls.w - 2
+
+        cls.box_content = ''
+        for idx, line in enumerate(cls.content):
+            if idx < cls.h - 2:
+                _c = cls.line_color(line[:2])
+
+                _line = f'{Cursor.to(start_y, start_x)}{_c}{line if len(line) < line_w else line[:line_w]}{ConfigColor.default}'
+                if cls.genre & SELECTED['selected'] and idx == SELECTED[cls.name]:
+                    _line = f'{Fx.b}{_line}{Fx.ub}'
+                cls.box_content += _line
+                start_y += 1
+
+    @classmethod
+    def line_color(cls, flag):
+        if flag == '??':
+            color = ConfigColor.status_untrack
+        elif flag == 'M ':
+            color = ConfigColor.status_cached
+        elif flag == ' M':
+            color = ConfigColor.status_change
+        elif flag == 'A ':
+            color = ConfigColor.status_new
+        elif flag == 'D ':
+            color = ConfigColor.status_del
+        elif flag == 'R ':
+            color = ConfigColor.status_rename
+        elif flag == '':
+            pass
+        elif flag == '':
+            pass
+        else:
+            color = ConfigColor.status_del
+
+        return color
+
 
 class BranchBox(GitTypeBox):
-    name: str = 'Branch'
+    name: str = 'branch'
     genre = SelectedType.BRANCH
     x: int = 0
     y: int = 0
@@ -121,12 +169,27 @@ class BranchBox(GitTypeBox):
 
     @classmethod
     def generate(cls):
-        cls.content_orignal = GIT_TREE['branchs']  # if no data, empty list
+        cls.content_orignal = GIT_TREE[cls.name]  # if no data, empty list
         cls.content = cls.content_orignal
+
+    @classmethod
+    def update(cls):
+        start_x = cls.x + 1
+        start_y = cls.y + 1
+        line_w = cls.w - 2
+
+        cls.box_content = ''
+        for idx, line in enumerate(cls.content):
+            if idx < cls.h - 2:
+                _line = f'{Cursor.to(start_y, start_x)}{line if len(line) < line_w else line[:line_w]}'
+                if cls.genre & SELECTED['selected'] and idx == SELECTED[cls.name]:
+                    _line = f'{Fx.b}{_line}{Fx.ub}'
+                cls.box_content += _line
+                start_y += 1
 
 
 class CommitBox(GitTypeBox):
-    name: str = 'Commit'
+    name: str = 'commit'
     genre = SelectedType.COMMIT
     x: int = 0
     y: int = 0
@@ -139,16 +202,35 @@ class CommitBox(GitTypeBox):
 
     @classmethod
     def generate(cls):
-        cls.content_orignal = GIT_TREE['commits']  # if no data, empty list
+        cls.content_orignal = GIT_TREE[cls.name]  # if no data, empty list
 
         _content = []
         for item in cls.content_orignal:
             _content.append(' '.join(item))
         cls.content = _content
 
+    @classmethod
+    def update(cls):
+        start_x = cls.x + 1
+        start_y = cls.y + 1
+        line_w = cls.w - 2 - 9
+
+        cls.box_content = ''
+        for idx, line in enumerate(cls.content_orignal):
+            _id, _msg = line
+            _id = f'{ConfigColor.commit_id}{_id}'
+            _msg = f'{ConfigColor.default}{_msg if len(_msg) < line_w else _msg[:line_w]}'
+
+            if idx < cls.h - 2:
+                _line = f'{Cursor.to(start_y, start_x)}{_id} {_msg}'
+                if cls.genre & SELECTED['selected'] and idx == SELECTED[cls.name]:
+                    _line = f'{Fx.b}{_line}{Fx.ub}'
+                cls.box_content += _line
+                start_y += 1
+
 
 class StashBox(GitTypeBox):
-    name: str = 'Stash'
+    name: str = 'stash'
     genre = SelectedType.STASH
     x: int = 0
     y: int = 0
@@ -161,7 +243,7 @@ class StashBox(GitTypeBox):
 
     @classmethod
     def generate(cls):
-        cls.content_orignal = GIT_TREE['stashs']
+        cls.content_orignal = GIT_TREE[cls.name]
 
         if cls.content_orignal:
             cls.content = cls.content_orignal.split('\n')
@@ -170,7 +252,7 @@ class StashBox(GitTypeBox):
 
 
 class ContentBox(Box):
-    name: str = 'Content'
+    name: str = 'content'
     genre = SelectedType.CONTENT
     x: int = 0
     y: int = 0
@@ -360,7 +442,7 @@ def create_profile(x: int = 0, y: int = 0, width: int = 0, height: int = 0, titl
         out += f'{Cursor.to(hlines[1], x + 2)}{Symbol.title_left}{title_color}{Fx.b}{title2}{Fx.ub}{line_color}{Symbol.title_right}'
 
     # return f'{out}{Term.fg}{Cursor.to(y + 1, x + 1)}'
-    return out
+    return f'{out}{Fx.reset}'
 
 
 if __name__ == '__main__':
@@ -397,8 +479,8 @@ if __name__ == '__main__':
 
 
 '''
-{'branchs': ['* main', 'test'],
- 'commits': [['7a26c2a', 'fix: zsh complete template'],
+{'branch': ['* main', 'test'],
+ 'commit': [['7a26c2a', 'fix: zsh complete template'],
              ['14cb2e5', 'init']],
  'content': 'diff --git a/git/shared.py b/git/shared.py\n'
             'index 541c111..82ebe09 100644\n'
@@ -416,9 +498,7 @@ if __name__ == '__main__':
             "operation(run_shell).')\n"
             "+        return ''",
  'current_branch': 'main',
- 'selected_item': 0,
- 'selected_type': 2,
- 'stashs': '',
+ 'stash': '',
  'state': 'main',
  'status': [['M', 'git/shared.py'],
             ['D', 'urwid_test.py'],
