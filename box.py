@@ -1,10 +1,10 @@
 import math
 import enum
 from typing import List, Tuple, Any
-from style import Symbol, Fx, Color, Cursor
 
-import commands as git
+from style import Symbol, Fx, Color, Cursor
 from shared import GIT_TREE, BOXS, SELECTED, SelectedType
+from gitree import fetch_content
 
 
 class BoxMode:
@@ -31,11 +31,9 @@ class Box:
     box: str
 
     @classmethod
-    def create_profile(self):
-        self.box = create_profile(
-            self.x, self.y, self.w, self.h, self.name)
-
-    def update(self): pass
+    def create_profile(cls):
+        cls.box = create_profile(
+            cls.x, cls.y, cls.w, cls.h, cls.name)
 
 
 class GitTypeBox(Box):
@@ -290,17 +288,21 @@ def update_box_w_h(w: int, h: int):
             StashBox.h = 3
 
 
-def create_content_box(content, w, h):
+def create_content_box(w, h):
     limit_w = math.floor(w / 3)
 
     ContentBox.x = limit_w + 1
     ContentBox.y = 1
     ContentBox.w = w - limit_w
-    ContentBox.h = h
+    ContentBox.h = h - 1
 
-    ContentBox.content_orignal = content
+    ContentBox.content_orignal = fetch_content()
+
+    ContentBox.create_profile()
     ContentBox.generate()
     ContentBox.update()
+
+    BOXS[ContentBox.name] = ContentBox
 
 
 def create_boxs(w: int, h: int):
@@ -311,6 +313,7 @@ def create_boxs(w: int, h: int):
         sub.update()  # generate box content
         BOXS[sub.name] = sub
         # print(sub)
+    create_content_box(w, h)
 
 
 def create_profile(x: int = 0, y: int = 0, width: int = 0, height: int = 0, title: str = "", title2: str = "", line_color: Color = None, title_color: Color = None, fill: bool = True, box=None) -> str:

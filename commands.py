@@ -56,7 +56,9 @@ def branchs() -> List[str]:
 
 
 def branch_log(branch: str) -> str:
-    # 'command': 'git log --graph --all --decorate ',
+    if branch.startswith('* '):
+        branch = branch[2:]
+
     arg = 'log %s --graph --all --decorate' % branch
     resp = __git(arg).rstrip()
     return resp
