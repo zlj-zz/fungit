@@ -48,6 +48,14 @@ class Renderer:
                 cls.now(box.box)
                 cls.now(box.box_content)
         else:
+            if SELECTED['old_selected'] != SELECTED['selected']:
+                for key in BOXS.keys():
+                    box = BOXS[key]
+                    if box.genre & SELECTED['old_selected'] or box.genre & SELECTED['selected']:
+                        box.create_profile()
+                    cls.now(box.box)
+                SELECTED['old_selected'] = SELECTED['selected']
+
             # do diff
             pass
 

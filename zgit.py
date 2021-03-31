@@ -1,12 +1,20 @@
 from term import Term
+from key import Key, Timer, process_key
 
 
 def main():
     # Term.init()
+    Key.start()
 
     def run():
         while not False:
             Term.refresh()
+            # Timer.stamp()
+
+            # while Timer.not_zero():
+            #     if Key.input_wait(Timer.left()):
+            #         process_key()
+            process_key()
 
     run()
     # try:

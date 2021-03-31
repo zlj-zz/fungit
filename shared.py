@@ -15,6 +15,12 @@ class SelectedType:
     CONTENT = 1 << 5
 
 
+SELECTES = [SelectedType.STATE, SelectedType.STATUS,
+            SelectedType.BRANCH, SelectedType.COMMIT, SelectedType.STASH]
+
+SELECTES_LEN = 5
+
+
 def initial_selection():
     SELECTED['old_selected'] = 0
     SELECTED['selected'] = SelectedType.STATUS

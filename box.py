@@ -181,7 +181,10 @@ class BranchBox(GitTypeBox):
         cls.box_content = ''
         for idx, line in enumerate(cls.content):
             if idx < cls.h - 2:
-                _line = f'{Cursor.to(start_y, start_x)}{line if len(line) < line_w else line[:line_w]}'
+                _line = line if len(line) < line_w else line[:line_w]
+                if _line.startswith('* '):
+                    _line = f'{ConfigColor.status_new}{_line}{ConfigColor.default}'
+                _line = f'{Cursor.to(start_y, start_x)}{_line}'
                 if cls.genre & SELECTED['selected'] and idx == SELECTED[cls.name]:
                     _line = f'{Fx.b}{_line}{Fx.ub}'
                 cls.box_content += _line
