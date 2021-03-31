@@ -3,7 +3,7 @@ import enum
 from typing import List, Tuple, Any
 
 from style import Symbol, Fx, Color, Cursor, ConfigColor
-from shared import GIT_TREE, BOXS, SELECTED, SelectedType
+from shared import GIT_TREE, BOXS, Selected
 from gitree import fetch_content
 
 BOX_SELECTED_COLOR = Color.fg('#32cd32')
@@ -22,7 +22,7 @@ BOX_MODE = BoxMode.NORMAL
 
 class Box:
     name: str
-    genre: SelectedType
+    genre: int
     t_w: int
     t_h: int
     x: int
@@ -34,7 +34,7 @@ class Box:
 
     @classmethod
     def create_profile(cls):
-        _line_color = BOX_SELECTED_COLOR if cls.genre & SELECTED['selected'] else ''
+        _line_color = BOX_SELECTED_COLOR if cls.genre & Selected.current else ''
         cls.box = create_profile(
             cls.x, cls.y, cls.w, cls.h, cls.name, line_color=_line_color)
 
@@ -55,7 +55,7 @@ class GitTypeBox(Box):
     @classmethod
     def create_profile(cls):
         # print(cls.genre& SELECTED['selected'])
-        _line_color = BOX_SELECTED_COLOR if cls.genre & SELECTED['selected'] else ''
+        _line_color = BOX_SELECTED_COLOR if cls.genre & Selected.current else ''
         cls.box = create_profile(
             cls.x, cls.y, cls.w, cls.h, cls.name, line_color=_line_color)
 
@@ -69,7 +69,7 @@ class GitTypeBox(Box):
         for idx, line in enumerate(cls.content):
             if idx < cls.h - 2:
                 _line = f'{Cursor.to(start_y, start_x)}{line if len(line) < line_w else line[:line_w]}'
-                if cls.genre & SELECTED['selected'] and idx == SELECTED[cls.name]:
+                if cls.genre & Selected.current:
                     _line = f'{Fx.b}{_line}{Fx.ub}'
                 cls.box_content += _line
                 start_y += 1
@@ -77,7 +77,7 @@ class GitTypeBox(Box):
 
 class StateBox(GitTypeBox):
     name: str = 'state'
-    genre = SelectedType.STATE
+    genre = Selected.STATE
     x: int = 0
     y: int = 0
     w: int = 0
@@ -95,7 +95,7 @@ class StateBox(GitTypeBox):
 
 class StatusBox(GitTypeBox):
     name: str = 'status'
-    genre = SelectedType.STATUS
+    genre = Selected.STATUS
     x: int = 0
     y: int = 0
     w: int = 0
@@ -126,7 +126,7 @@ class StatusBox(GitTypeBox):
                 _c = cls.line_color(line[:2])
 
                 _line = f'{Cursor.to(start_y, start_x)}{_c}{line if len(line) < line_w else line[:line_w]}{ConfigColor.default}'
-                if cls.genre & SELECTED['selected'] and idx == SELECTED[cls.name]:
+                if cls.genre & Selected.current and idx == Selected.status:
                     _line = f'{Fx.b}{_line}{Fx.ub}'
                 cls.box_content += _line
                 start_y += 1
@@ -157,7 +157,7 @@ class StatusBox(GitTypeBox):
 
 class BranchBox(GitTypeBox):
     name: str = 'branch'
-    genre = SelectedType.BRANCH
+    genre = Selected.BRANCH
     x: int = 0
     y: int = 0
     w: int = 0
@@ -185,7 +185,7 @@ class BranchBox(GitTypeBox):
                 if _line.startswith('* '):
                     _line = f'{ConfigColor.status_new}{_line}{ConfigColor.default}'
                 _line = f'{Cursor.to(start_y, start_x)}{_line}'
-                if cls.genre & SELECTED['selected'] and idx == SELECTED[cls.name]:
+                if cls.genre & Selected.current and idx == Selected.branch:
                     _line = f'{Fx.b}{_line}{Fx.ub}'
                 cls.box_content += _line
                 start_y += 1
@@ -193,7 +193,7 @@ class BranchBox(GitTypeBox):
 
 class CommitBox(GitTypeBox):
     name: str = 'commit'
-    genre = SelectedType.COMMIT
+    genre = Selected.COMMIT
     x: int = 0
     y: int = 0
     w: int = 0
@@ -226,7 +226,7 @@ class CommitBox(GitTypeBox):
 
             if idx < cls.h - 2:
                 _line = f'{Cursor.to(start_y, start_x)}{_id} {_msg}'
-                if cls.genre & SELECTED['selected'] and idx == SELECTED[cls.name]:
+                if cls.genre & Selected.current and idx == Selected.commit:
                     _line = f'{Fx.b}{_line}{Fx.ub}'
                 cls.box_content += _line
                 start_y += 1
@@ -234,7 +234,7 @@ class CommitBox(GitTypeBox):
 
 class StashBox(GitTypeBox):
     name: str = 'stash'
-    genre = SelectedType.STASH
+    genre = Selected.STASH
     x: int = 0
     y: int = 0
     w: int = 0
@@ -256,7 +256,7 @@ class StashBox(GitTypeBox):
 
 class ContentBox(Box):
     name: str = 'content'
-    genre = SelectedType.CONTENT
+    genre = Selected.CONTENT
     x: int = 0
     y: int = 0
     w: int = 0
@@ -295,7 +295,7 @@ class ContentBox(Box):
 def update_box_w_h(w: int, h: int):
     # set box mode
     global BOX_MODE
-    _selected_type = SELECTED['selected']
+    _selected_type = Selected.current
     limit_w = math.floor(w / 3)
 
     if w < 90 or h < 8:
@@ -344,7 +344,7 @@ def update_box_w_h(w: int, h: int):
         StateBox.w = limit_w
         StateBox.h = 3
 
-        if _selected_type & SelectedType.STASH:
+        if _selected_type & Selected.STASH:
             _split_h, _less = divmod(h - 4, 4)
         else:
             _split_h, _less = divmod(h - 7, 3)
@@ -367,7 +367,7 @@ def update_box_w_h(w: int, h: int):
         StashBox.x = 1
         StashBox.y = CommitBox.y + CommitBox.h
         StashBox.w = limit_w
-        if _selected_type & SelectedType.STASH:
+        if _selected_type & Selected.STASH:
             StashBox.h = _split_h
         else:
             StashBox.h = 3

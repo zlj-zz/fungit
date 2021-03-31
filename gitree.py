@@ -1,6 +1,6 @@
 from select import select
 import commands as git
-from shared import SelectedType, GIT_TREE, SELECTED
+from shared import GIT_TREE, Selected
 
 
 def create_git_tree(tree: dict):
@@ -13,14 +13,14 @@ def create_git_tree(tree: dict):
 
 
 def fetch_content():
-    selected = SELECTED['selected']
+    selected = Selected.current
 
-    if selected & SelectedType.STATUS:
+    if selected & Selected.STATUS:
         args = GIT_TREE['status']
         if not args:
             return ''
         else:
-            _state, _path = args[SELECTED['status']]
+            _state, _path = args[Selected.status]
 
             if _state == '??':  # is mean untrack
                 return git.diff(_path, tracked=False)
@@ -28,24 +28,24 @@ def fetch_content():
                 return git.diff(_path, cached=True)
             else:
                 return git.diff(_path)
-    elif selected & SelectedType.COMMIT:
+    elif selected & Selected.COMMIT:
         args = GIT_TREE['commits']
         if not args:
             return ''
         else:
-            _commit_id = args[SELECTED['commit']][0]
+            _commit_id = args[Selected.commit][0]
             return git.commit_info(_commit_id)
-    elif selected & SelectedType.BRANCH:
+    elif selected & Selected.BRANCH:
         args = GIT_TREE['branchs']
         if not args:
             return ''
         else:
-            _branch = args[SELECTED['branch']]
+            _branch = args[Selected.branch]
             return git.branch_log(_branch)
-    elif selected & SelectedType.STASH:
+    elif selected & Selected.STASH:
         # TODO:
         return 'Dont support display.'
-    elif selected & SelectedType.STATE:
+    elif selected & Selected.STATE:
         return git.INTRODUCE
 
 

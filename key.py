@@ -8,7 +8,7 @@ import sys
 from time import sleep, time
 from select import select
 
-from shared import SELECTED, SELECTES, SELECTES_LEN
+from shared import Selected
 
 
 class Timer:
@@ -275,18 +275,13 @@ def process_key():
         if key == 'q':
             exit(0)  # TODO: need finish complete exit program
         elif key == 'h':
-            SELECTED['old_selected'] = SELECTED['selected']
+            Selected.old = Selected.current
+            Selected.switch_to_prev()
 
-            old_index = SELECTES.index(SELECTED['selected'])
-            new_index = SELECTES_LEN - 1 - \
-                (SELECTES_LEN - old_index) % SELECTES_LEN
-            SELECTED['selected'] = SELECTES[new_index]
         elif key == 'l':
-            SELECTED['old_selected'] = SELECTED['selected']
+            Selected.old = Selected.current
+            Selected.switch_to_next()
 
-            old_index = SELECTES.index(SELECTED['selected'])
-            new_index = (old_index + 1) % SELECTES_LEN
-            SELECTED['selected'] = SELECTES[new_index]
         else:
             continue
 

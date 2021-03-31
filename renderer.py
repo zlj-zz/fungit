@@ -3,7 +3,7 @@ import copy
 from typing import Dict
 
 from gitree import create_git_tree
-from shared import initial_selection, BOXS, SELECTED
+from shared import BOXS, Selected
 from box import create_boxs
 
 
@@ -36,7 +36,7 @@ class Renderer:
             cls._w, cls._h = w, h
 
         if not tree:
-            initial_selection()
+            Selected.initial()
             create_git_tree(tree)  # create tree
 
         if not cls.old_tree:
@@ -48,18 +48,15 @@ class Renderer:
                 cls.now(box.box)
                 cls.now(box.box_content)
         else:
-            if SELECTED['old_selected'] != SELECTED['selected']:
+            if Selected.old != Selected.current:
                 for key in BOXS.keys():
                     box = BOXS[key]
-                    if box.genre & SELECTED['old_selected'] or box.genre & SELECTED['selected']:
+                    if box.genre & Selected.old or box.genre & Selected.current:
                         box.create_profile()
                     cls.now(box.box)
-                SELECTED['old_selected'] = SELECTED['selected']
+                Selected.old = Selected.current
 
             # do diff
-            pass
-
-        if SELECTED['old_selected'] != SELECTED['selected']:
             pass
 
         cls.old_tree = copy.deepcopy(tree)  # cache tree
