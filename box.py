@@ -3,8 +3,8 @@ import enum
 from typing import List, Tuple, Any
 
 from style import Symbol, Fx, Color, Cursor, ConfigColor
-from shared import GIT_TREE, BOXS, Selected
-from gitree import fetch_content
+from shared import GIT_TREE, BOXS
+from coordinate import fetch_content, Selected
 
 BOX_SELECTED_COLOR = Color.fg('#32cd32')
 
@@ -452,7 +452,7 @@ if __name__ == '__main__':
     import os
     import time
     from pprint import pprint
-    from gitree import create_git_tree
+    from coordinate import create_git_tree
 
     t = {}
     create_git_tree(t)
