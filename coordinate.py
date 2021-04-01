@@ -83,19 +83,19 @@ class Selected(GitType):
 
 
 def create_git_tree(tree: dict):
-    tree['state'] = git.state()
-    tree['status'] = git.status()
-    tree['branch'], tree['current_branch'] = git.branchs()
-    tree['commit'] = git.commits()
-    tree['stash'] = git.stashs()
-    tree['content'] = ''
+    tree[GitType.STATE] = git.state()
+    tree[GitType.STATUS] = git.status()
+    tree[GitType.BRANCH], tree['current_branch'] = git.branchs()
+    tree[GitType.COMMIT] = git.commits()
+    tree[GitType.STASH] = git.stashs()
+    tree[GitType.CONTENT] = ''
 
 
 def fetch_content():
     selected = Selected.current
 
     if selected & Selected.STATUS:
-        args = GIT_TREE['status']
+        args = GIT_TREE[GitType.STATUS]
         if not args:
             return ''
         else:
@@ -108,14 +108,14 @@ def fetch_content():
             else:
                 return git.diff(_path)
     elif selected & Selected.COMMIT:
-        args = GIT_TREE['commits']
+        args = GIT_TREE[GitType.COMMIT]
         if not args:
             return ''
         else:
             _commit_id = args[Selected.commit][0]
             return git.commit_info(_commit_id)
     elif selected & Selected.BRANCH:
-        args = GIT_TREE['branchs']
+        args = GIT_TREE[GitType.BRANCH]
         if not args:
             return ''
         else:

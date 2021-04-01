@@ -89,7 +89,7 @@ class StateBox(GitTypeBox):
 
     @classmethod
     def generate(cls):
-        cls.content_orignal = GIT_TREE[cls.name]
+        cls.content_orignal = GIT_TREE[cls.genre]
         cls.content = [cls.content_orignal]
 
 
@@ -107,7 +107,7 @@ class StatusBox(GitTypeBox):
 
     @classmethod
     def generate(cls):
-        cls.content_orignal = GIT_TREE[cls.name]  # if no data, empty list
+        cls.content_orignal = GIT_TREE[cls.genre]  # if no data, empty list
 
         _content = []
         for item in cls.content_orignal:
@@ -169,7 +169,7 @@ class BranchBox(GitTypeBox):
 
     @classmethod
     def generate(cls):
-        cls.content_orignal = GIT_TREE[cls.name]  # if no data, empty list
+        cls.content_orignal = GIT_TREE[cls.genre]  # if no data, empty list
         cls.content = cls.content_orignal
 
     @classmethod
@@ -205,7 +205,7 @@ class CommitBox(GitTypeBox):
 
     @classmethod
     def generate(cls):
-        cls.content_orignal = GIT_TREE[cls.name]  # if no data, empty list
+        cls.content_orignal = GIT_TREE[cls.genre]  # if no data, empty list
 
         _content = []
         for item in cls.content_orignal:
@@ -246,7 +246,7 @@ class StashBox(GitTypeBox):
 
     @classmethod
     def generate(cls):
-        cls.content_orignal = GIT_TREE[cls.name]
+        cls.content_orignal = GIT_TREE[cls.genre]
 
         if cls.content_orignal:
             cls.content = cls.content_orignal.split('\n')
