@@ -25,6 +25,12 @@ class Selected(GitType):
 
         cls.selects_len = 5
 
+        cls.change = {}
+        for i in cls.selects:  # Mark whether a category has changed
+            cls.change[i] = False
+
+        cls.change[cls.CONTENT] = False
+
     @classmethod
     @property
     def old(cls):
@@ -75,11 +81,18 @@ class Selected(GitType):
 
     @classmethod
     def next_item(cls):
-        pass
+        _max_idx = len(GIT_TREE[cls.current]) - 1
+        if cls.selected[cls.current] < _max_idx:
+            cls.selected[cls.current] += 1
+
+        cls.change[cls.current] = True
 
     @classmethod
     def prev_item(cls):
-        pass
+        if cls.selected[cls.current] > 0:
+            cls.selected[cls.current] -= 1
+
+        cls.change[cls.current] = True
 
 
 def create_git_tree(tree: dict):

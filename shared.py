@@ -1,8 +1,6 @@
 
 GIT_TREE = dict()
 
-SELECTED = dict()
-
 BOXS = {}
 
 

@@ -53,8 +53,22 @@ class Renderer:
                     box = BOXS[key]
                     if box.genre & Selected.old or box.genre & Selected.current:
                         box.create_profile()
+                        box.update()
                     cls.now(box.box)
                 Selected.old = Selected.current
+
+            for key in BOXS.keys():
+                box = BOXS[key]
+                if Selected.change[box.genre]:
+                    print(Selected.selected[box.genre])
+                    box.update()
+                    cls.now(box.box_content)
+                    Selected.change[box.genre] = False
+
+            _c = BOXS['content']
+            _c.generate()
+            _c.update()
+            cls.now(_c.box_content)
 
             # do diff
             pass

@@ -268,6 +268,7 @@ class ContentBox(Box):
 
     @classmethod
     def generate(cls):
+        cls.content_orignal = fetch_content()
         _content = []
 
         for line in cls.content_orignal.split('\n'):
@@ -380,8 +381,6 @@ def create_content_box(w, h):
     ContentBox.y = 1
     ContentBox.w = w - limit_w
     ContentBox.h = h - 1
-
-    ContentBox.content_orignal = fetch_content()
 
     ContentBox.create_profile()
     ContentBox.generate()
