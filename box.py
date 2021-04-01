@@ -218,13 +218,19 @@ class CommitBox(GitTypeBox):
         start_y = cls.y + 1
         line_w = cls.w - 2 - 9
 
+        _current = Selected.selected[cls.genre]
+        _limit = 0
+        if _current + 1 >= cls.h - 2:  # current selected index big than heigth
+            _limit = _current + 1 - (cls.h - 2)
+            pass
+
         cls.box_content = ''
         for idx, line in enumerate(cls.content_orignal):
             _id, _msg = line
             _id = f'{ConfigColor.commit_id}{_id}'
             _msg = f'{ConfigColor.default}{_msg if len(_msg) < line_w else _msg[:line_w]}'
 
-            if idx < cls.h - 2:
+            if idx >= _limit and idx - _limit < cls.h - 2:
                 _line = f'{Cursor.to(start_y, start_x)}{_id} {_msg}'
                 if cls.genre & Selected.current and idx == Selected.commit:
                     _line = f'{Fx.b}{_line}{Fx.ub}'
@@ -428,7 +434,7 @@ def create_profile(x: int = 0, y: int = 0, width: int = 0, height: int = 0, titl
 
     # * Renderer all vertical lines and fill if enabled
     for hpos in range(hlines[0]+1, hlines[1]):
-        out += f'{Cursor.to(hpos, x)}{Symbol.v_line}{Cursor.r(width-2)}{Symbol.v_line}'
+        out += f'{Cursor.to(hpos, x)}{Symbol.v_line}{" " * (width-2) if fill else Cursor.r(width-2)}{Symbol.v_line}'
 
     # * Renderer corners
     out += f'{Cursor.to(y, x)}{Symbol.left_up}\
@@ -478,31 +484,3 @@ if __name__ == '__main__':
             print(Key.get())
 
         time.sleep(.2)
-
-
-'''
-{'branch': ['* main', 'test'],
- 'commit': [['7a26c2a', 'fix: zsh complete template'],
-             ['14cb2e5', 'init']],
- 'content': 'diff --git a/git/shared.py b/git/shared.py\n'
-            'index 541c111..82ebe09 100644\n'
-            '--- a/git/shared.py\n'
-            '+++ b/git/shared.py\n'
-            '@@ -60,5 +60,5 @@ def run_shell_with_resp(c: str):\n'
-            '         response = subprocess.check_output([c], '
-            'shell=True).decode()\n'
-            '         return response\n'
-            '     except Exception as e:\n'
-            "-        err('An error occurred in the trigger "
-            "operation(run_shell_with_resp).')\n"
-            '-        exit(1)\n'
-            "+        err('An error occurred in the trigger "
-            "operation(run_shell).')\n"
-            "+        return ''",
- 'current_branch': 'main',
- 'stash': '',
- 'state': 'main',
- 'status': [['M', 'git/shared.py'],
-            ['D', 'urwid_test.py'],
-            ['??', 'zgit.py']]}
-'''

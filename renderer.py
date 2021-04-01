@@ -28,6 +28,7 @@ class Renderer:
     old_tree: Dict = dict()  # for diff
     _w: int = 0
     _h: int = 0
+    _is_changed: bool = False
 
     @classmethod
     def render(cls, tree: dict, *args):
@@ -49,26 +50,32 @@ class Renderer:
                 cls.now(box.box_content)
         else:
             if Selected.old != Selected.current:
+                cls._is_changed = True
+
                 for key in BOXS.keys():
                     box = BOXS[key]
                     if box.genre & Selected.old or box.genre & Selected.current:
                         box.create_profile()
                         box.update()
-                    cls.now(box.box)
+                        cls.now(box.box, box.box_content)
                 Selected.old = Selected.current
 
             for key in BOXS.keys():
                 box = BOXS[key]
                 if Selected.change[box.genre]:
-                    print(Selected.selected[box.genre])
+                    cls._is_changed = True
+
                     box.update()
-                    cls.now(box.box_content)
+                    cls.now(box.box, box.box_content)
                     Selected.change[box.genre] = False
 
-            _c = BOXS['content']
-            _c.generate()
-            _c.update()
-            cls.now(_c.box_content)
+            if cls._is_changed:
+                _c = BOXS['content']
+                _c.generate()
+                _c.update()
+                cls.now(_c.box, _c.box_content)
+
+                cls._is_changed = False
 
             # do diff
             pass
