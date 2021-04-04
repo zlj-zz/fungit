@@ -5,7 +5,6 @@ import threading
 from typing import List, Tuple
 
 from renderer import Renderer
-from shared import GIT_TREE
 from style import Symbol, Fx, Color, Cursor
 
 SELETED = ''
@@ -51,7 +50,7 @@ class Term:
         if cls._w != cls.width or cls._h != cls.height:
             cls.width, cls.height = cls._w, cls._h
 
-        Renderer.render(GIT_TREE, cls.width, cls.height)
+        Renderer.render(cls.width, cls.height)
 
     @staticmethod
     def title(text: str = "") -> str:

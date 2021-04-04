@@ -1,6 +1,3 @@
-
-GIT_TREE = dict()
-
 BOXS = {}
 
 

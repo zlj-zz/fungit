@@ -1,7 +1,40 @@
 from typing import Dict, List
 
 import commands as git
-from shared import GIT_TREE, GitType
+from shared import GitType
+
+
+class Git():
+    tree: dict = {}
+
+    @classmethod
+    def initial(cls):
+        cls.update_state()
+        cls.update_status()
+        cls.update_branch()
+        cls.update_commit()
+        cls.update_stash()
+        cls.tree[GitType.CONTENT] = ''
+
+    @classmethod
+    def update_state(cls):
+        cls.tree[GitType.STATE] = git.state()
+
+    @classmethod
+    def update_status(cls):
+        cls.tree[GitType.STATUS] = git.status()
+
+    @classmethod
+    def update_branch(cls):
+        cls.tree[GitType.BRANCH], cls.tree['current_branch'] = git.branchs()
+
+    @classmethod
+    def update_commit(cls):
+        cls.tree[GitType.COMMIT] = git.commits()
+
+    @classmethod
+    def update_stash(cls):
+        cls.tree[GitType.STASH] = git.stashs()
 
 
 class Selected(GitType):
@@ -81,7 +114,7 @@ class Selected(GitType):
 
     @classmethod
     def next_item(cls):
-        _max_idx = len(GIT_TREE[cls.current]) - 1
+        _max_idx = len(Git.tree[cls.current]) - 1
         if cls.selected[cls.current] < _max_idx:
             cls.selected[cls.current] += 1
 
@@ -95,20 +128,11 @@ class Selected(GitType):
         cls.change[cls.current] = True
 
 
-def create_git_tree(tree: dict):
-    tree[GitType.STATE] = git.state()
-    tree[GitType.STATUS] = git.status()
-    tree[GitType.BRANCH], tree['current_branch'] = git.branchs()
-    tree[GitType.COMMIT] = git.commits()
-    tree[GitType.STASH] = git.stashs()
-    tree[GitType.CONTENT] = ''
-
-
 def fetch_content():
     selected = Selected.current
 
     if selected & Selected.STATUS:
-        args = GIT_TREE[GitType.STATUS]
+        args = Git.tree[GitType.STATUS]
         if not args:
             return ''
         else:
@@ -121,14 +145,14 @@ def fetch_content():
             else:
                 return git.diff(_path)
     elif selected & Selected.COMMIT:
-        args = GIT_TREE[GitType.COMMIT]
+        args = Git.tree[GitType.COMMIT]
         if not args:
             return ''
         else:
             _commit_id = args[Selected.commit][0]
             return git.commit_info(_commit_id)
     elif selected & Selected.BRANCH:
-        args = GIT_TREE[GitType.BRANCH]
+        args = Git.tree[GitType.BRANCH]
         if not args:
             return ''
         else:
@@ -143,7 +167,6 @@ def fetch_content():
 
 if __name__ == '__main__':
     from pprint import pprint
-    t = {}
-    create_git_tree(t)
-    pprint(t)
+    Git.initial()
+    pprint(Git.tree)
     pass

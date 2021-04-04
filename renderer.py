@@ -2,7 +2,7 @@ import threading
 import copy
 from typing import Dict
 
-from coordinate import create_git_tree, Selected
+from coordinate import Git, Selected
 from shared import BOXS
 from box import create_boxs
 
@@ -31,14 +31,14 @@ class Renderer:
     _is_changed: bool = False
 
     @classmethod
-    def render(cls, tree: dict, *args):
+    def render(cls, *args):
         w, h = args
         if w != cls._w or h != cls._h:
             cls._w, cls._h = w, h
 
-        if not tree:
+        if not Git.tree:
             Selected.initial()
-            create_git_tree(tree)  # create tree
+            Git.initial()  # create tree
 
         if not cls.old_tree:
             # ... create box
@@ -80,7 +80,7 @@ class Renderer:
             # do diff
             pass
 
-        cls.old_tree = copy.deepcopy(tree)  # cache tree
+        cls.old_tree = copy.deepcopy(Git.tree)  # cache tree
 
     @classmethod
     def now(cls, *args):

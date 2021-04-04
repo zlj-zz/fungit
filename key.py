@@ -281,10 +281,11 @@ def process_key():
             Selected.switch_to_next()
         elif key == 'j':
             Selected.next_item()
-            pass
         elif key == 'k':
             Selected.prev_item()
-            pass
+        elif key == ' ':
+            if Selected.current == Selected.STATUS:
+                pass
         else:
             continue
 
