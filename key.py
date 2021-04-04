@@ -285,6 +285,7 @@ def process_key():
             Selected.prev_item()
         elif key == ' ':
             if Selected.current == Selected.STATUS:
+                Selected.switch_status()
                 pass
         else:
             continue

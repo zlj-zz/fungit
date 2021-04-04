@@ -141,8 +141,10 @@ class StatusBox(GitTypeBox):
             color = ConfigColor.status_change
         elif flag == 'A ':
             color = ConfigColor.status_new
-        elif flag == 'D ':
+        elif flag == ' D':
             color = ConfigColor.status_del
+        elif flag == 'D ':
+            color = ConfigColor.status_deled
         elif flag == 'R ':
             color = ConfigColor.status_rename
         elif flag == '':

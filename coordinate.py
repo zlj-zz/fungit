@@ -1,3 +1,4 @@
+import re
 from typing import Dict, List
 
 import commands as git
@@ -127,6 +128,20 @@ class Selected(GitType):
 
         cls.change[cls.current] = True
 
+    @classmethod
+    def switch_status(cls):
+        _status, _file = Git.tree[cls.STATUS][cls.selected[cls.STATUS]]
+        if _CACHED.match(_status):
+            git.unstage(_file)
+        else:
+            git.stage(_file)
+        Git.update_status()
+
+        cls.change[cls.current] = True
+
+
+_CACHED = re.compile(r'^[A-Z]\s$')
+
 
 def fetch_content():
     selected = Selected.current
@@ -140,7 +155,7 @@ def fetch_content():
 
             if _state == '??':  # is mean untrack
                 return git.diff(_path, tracked=False)
-            elif _state.startswith('M'):
+            elif _CACHED.match(_state):
                 return git.diff(_path, cached=True)
             else:
                 return git.diff(_path)

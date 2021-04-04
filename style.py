@@ -257,7 +257,8 @@ class Symbol:
 class ConfigColor:
     default = Color.fg('#ffffff')
     box_selected_color = Color.fg('7CFC00`')
-    status_new = status_cached = status_rename = Color.fg('#32cd32')
+    status_new = status_cached = status_rename = status_deled = Color.fg(
+        '#32cd32')
     status_untrack = status_del = status_change = Color.fg('#FF4500')
     commit_id = Color.fg('#F0E68C')
 

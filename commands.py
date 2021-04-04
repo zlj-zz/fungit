@@ -6,6 +6,15 @@ _GIT = 'git'
 
 
 def __git(*args) -> str:
+    '''Execute a git command and return the result.
+
+    Args:
+        args: Command parameter tuple
+
+    Returns:
+        Execution result, string text
+    '''
+
     c = ' '.join([_GIT, *args])
     # print(c)
     try:
@@ -18,11 +27,19 @@ def __git(*args) -> str:
 
 
 def state() -> str:
+    '''Get current status.'''
+
     res = __git('symbolic-ref', '-q', '--short', 'HEAD').strip()
     return res
 
 
 def status(*args) -> List[List]:
+    '''Get all file status.
+
+    Args:
+        args: File tuple
+    '''
+
     command = 'status -s'
     s = __git(' '.join([command, *args])).rstrip()
 
@@ -40,7 +57,45 @@ def status(*args) -> List[List]:
     return _status
 
 
-def branchs() -> List[str]:
+def stage(*args) -> None:
+    '''Stage files.'''
+
+    command = 'add --'
+    s = __git(' '.join([command, *args])).rstrip()
+
+
+def stage_all() -> None:
+    '''Stage all files.'''
+
+    __git('add -A')
+
+
+def unstage(*args, tracked: bool = True) -> None:
+    '''Unstage files.'''
+
+    if tracked:
+        command = 'reset HEAD --'
+    else:
+        command = 'rm --cached --force --'
+
+    __git(' '.join([command, *args]))
+
+
+def unstage_all() -> None:
+    '''Unstage all files.'''
+
+    __git('reset')
+
+
+def branchs() -> List:
+    '''Get all branchs and current branch, return a list.
+
+    Returns:
+        branch list
+        example:
+            [ ['* main', 'dev', 'test'], 'main']
+    '''
+
     command = 'branch'
     b = __git(command).rstrip()
 
@@ -56,6 +111,12 @@ def branchs() -> List[str]:
 
 
 def branch_log(branch: str) -> str:
+    '''Gets all logs of a given branch.
+
+    Args:
+        branch: branch name
+    '''
+
     if branch.startswith('* '):
         branch = branch[2:]
 
@@ -64,28 +125,53 @@ def branch_log(branch: str) -> str:
     return resp
 
 
-def commits() -> List[List]:  # return current branch all commits.
+def commits() -> List[List]:
+    '''Return current branch all commits.'''
+
     res = __git('log', '--oneline').strip()
     return [[line[:7], line[8:]]for line in res.split('\n')]
 
 
-def commit_info(commit: str):
+def commit_info(commit: str) -> str:
+    '''Gets the information for a given submission.
+
+    Args:
+        commit: commit id
+    '''
+
     return commit_file_info(commit)
 
 
-def commit_file_info(commit: str, file_name: str = ''):
+def commit_file_info(commit: str, file_name: str = '') -> str:
+    '''Gets the change of a file in a given commit.
+
+    Args:
+        commit: commit id
+        file_name: file name(include full path)
+    '''
+
     arg = 'show %s %s' % (commit, file_name)
     resp = __git(arg).rstrip()
     return resp
 
 
 def stashs() -> str:
+    '''Get stash list.'''
+
     arg = 'stash list'
     resp = __git(arg)
     return resp
 
 
 def diff(file: str, tracked: bool = True, cached: bool = False) -> str:
+    '''Get the diff of given file.
+
+    Args:
+        file: file path
+        tracked: Is the file tracked
+        cached: Is the file staged
+    '''
+
     args = ['diff', '--submodule', '--no-ext-diff']
     if cached:
         args.append('--cached')
@@ -102,6 +188,8 @@ def diff(file: str, tracked: bool = True, cached: bool = False) -> str:
 
 
 def is_selected_branch(branch: str) -> bool:
+    '''Determine whether a branch is the current branch.'''
+
     return branch.startswith('* ')
 
 

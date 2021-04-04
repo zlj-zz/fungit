@@ -65,6 +65,7 @@ class Renderer:
                 if Selected.change[box.genre]:
                     cls._is_changed = True
 
+                    box.generate()
                     box.update()
                     cls.now(box.box, box.box_content)
                     Selected.change[box.genre] = False
