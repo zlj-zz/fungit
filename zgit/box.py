@@ -2,9 +2,9 @@ import math
 import enum
 from typing import List, Tuple, Any
 
-from style import Symbol, Fx, Color, Cursor, ConfigColor
-from shared import BOXS
-from coordinate import fetch_content, Selected, Git
+from .style import Symbol, Fx, Color, Cursor, ConfigColor
+from .shared import BOXS
+from .coordinate import fetch_content, Selected, Git
 
 BOX_SELECTED_COLOR = Color.fg('#32cd32')
 
@@ -459,30 +459,3 @@ if __name__ == '__main__':
     import os
     import time
     from pprint import pprint
-    from coordinate import create_git_tree
-
-    t = {}
-    create_git_tree(t)
-    w = os.get_terminal_size().columns
-    h = os.get_terminal_size().lines
-
-    from term import Term
-    from renderer import Renderer
-    Term.width = os.get_terminal_size().columns
-    Term.height = os.get_terminal_size().lines
-
-    Renderer.now(Term.alt_screen, Term.clear, Term.hide_cursor,
-                 Term.mouse_on, Term.title("ZGit"))
-
-    create_boxs(t, w, h)
-    # print(sub.x, sub.y, sub.w, sub.h)
-    from key import Key
-    Key.start()
-
-    while True:
-        for sub in GitTypeBox.__subclasses__():
-            print(sub.box)
-        while Key.has_key():
-            print(Key.get())
-
-        time.sleep(.2)

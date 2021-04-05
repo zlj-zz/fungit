@@ -1,5 +1,5 @@
-from term import Term
-from key import Key, Timer, process_key
+from .key import Key, Timer, process_key
+from .term import Term
 
 
 def main():

@@ -11,7 +11,7 @@ try:
 except:
     LONG_DESCRIPTION = ""
 
-VERSION = '1.3'
+VERSION = '2.0'
 
 setup(
     name='pyzgit',
@@ -39,6 +39,7 @@ setup(
     entry_points='''
         [console_scripts]
         g=git.main:g
+        zgit=zgit.zgit:main
     ''',
-    python_requires='>=3.5',
+    python_requires='>=3.6',
 )

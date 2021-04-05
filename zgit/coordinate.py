@@ -1,8 +1,8 @@
 import re
 from typing import Dict, List
 
-import commands as git
-from shared import GitType
+import zgit.commands as git
+from .shared import GitType
 
 
 class Git():
@@ -77,6 +77,8 @@ class Selected(GitType):
 
     @classmethod
     def switch_to_prev(cls):
+        cls.old = cls.current
+
         old_index = cls.selects.index(cls.current)
         new_index = cls.selects_len - 1 - \
             (cls.selects_len - old_index) % cls.selects_len
@@ -84,9 +86,18 @@ class Selected(GitType):
 
     @classmethod
     def switch_to_next(cls):
+        cls.old = cls.current
+
         old_index = cls.selects.index(cls.current)
         new_index = (old_index + 1) % cls.selects_len
         cls.current = cls.selects[new_index]
+
+    @classmethod
+    def switch_by_index(cls, index):
+        cls.old = cls.current
+
+        _index = int(index) - 1
+        cls.current = cls.selects[_index]
 
     @classmethod
     @property
@@ -135,6 +146,18 @@ class Selected(GitType):
             git.unstage(_file)
         else:
             git.stage(_file)
+        Git.update_status()
+
+        cls.change[cls.current] = True
+
+    @classmethod
+    def switch_all(cls):
+        for _status, _ in Git.tree[cls.STATUS]:
+            if not _CACHED.match(_status):
+                git.stage_all()
+                break
+        else:
+            git.unstage_all()
         Git.update_status()
 
         cls.change[cls.current] = True

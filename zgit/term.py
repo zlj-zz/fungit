@@ -4,8 +4,8 @@ import termios
 import threading
 from typing import List, Tuple
 
-from renderer import Renderer
-from style import Symbol, Fx, Color, Cursor
+from .renderer import Renderer
+from .style import Symbol, Fx, Color, Cursor
 
 SELETED = ''
 

@@ -8,7 +8,7 @@ import sys
 from time import sleep, time
 from select import select
 
-from coordinate import Selected
+from .coordinate import Selected
 
 
 class Timer:
@@ -273,20 +273,22 @@ def process_key():
 
         if key == 'q':
             exit(0)  # TODO: need finish complete exit program
-        elif key == 'h':
-            Selected.old = Selected.current
+        elif key == 'h' or key == 'left':
             Selected.switch_to_prev()
-        elif key == 'l':
-            Selected.old = Selected.current
+        elif key == 'l' or key == 'right':
             Selected.switch_to_next()
-        elif key == 'j':
+        elif key == 'j' or key == 'down':
             Selected.next_item()
-        elif key == 'k':
+        elif key == 'k' or key == 'up':
             Selected.prev_item()
+        elif '1' <= key <= '5':
+            Selected.switch_by_index(key)
         elif key == ' ':
             if Selected.current == Selected.STATUS:
                 Selected.switch_status()
-                pass
+        elif key == 'a':
+            if Selected.current == Selected.STATUS:
+                Selected.switch_all()
         else:
             continue
 
