@@ -193,6 +193,11 @@ def is_selected_branch(branch: str) -> bool:
     return branch.startswith('* ')
 
 
+def pull():
+
+    __git('pull')
+
+
 # TODO: just temp introduce
 INTRODUCE = '''\
 A terminal tool, help you use git more simple. Support Linux and MacOS.
