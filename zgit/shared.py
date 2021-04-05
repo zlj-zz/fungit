@@ -1,5 +1,7 @@
 BOXS = {}
 
+TIP = 'Pulling...'
+
 
 class GitType:
     STATE = 1
@@ -8,3 +10,14 @@ class GitType:
     BRANCH = 1 << 3
     STASH = 1 << 4
     CONTENT = 1 << 5
+    Tip = 1 << 6
+    Input = 1 << 7
+
+
+class GitStatus:
+    NONE = 1
+    PULLING = 1 << 1
+
+
+if __name__ == '__main__':
+    print(GitStatus.NONE, GitStatus.PULLING)

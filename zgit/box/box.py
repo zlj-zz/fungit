@@ -1,9 +1,9 @@
-import math
 from typing import List, Tuple, Any
 
 from .basic_box import Box, GitTypeBox
 from zgit.style import Fx, Color, Cursor, ConfigColor
 from zgit.coordinate import fetch_content, Selected, Git
+from zgit.shared import TIP
 
 BOX_SELECTED_COLOR = Color.fg('#32cd32')
 
@@ -257,8 +257,35 @@ class TipBox(Box):
     pass
 
     @classmethod
-    def initial(w, h):
-        pass
+    def create(cls, w, h):
+        cls.content_orignal = TIP
+        cls.x = round(w / 4)
+        cls.w = round(w / 2)
+        _w = cls.w - 2
+        _len = len(cls.content_orignal)
+        if _len > _w:
+            idx = 0
+            while idx + _w < _len:
+                cls.content.append(cls.content_orignal[idx:idx + _w])
+                idx += _w
+            cls.content.append(cls.content_orignal[idx:])
+        cls.h = len(cls.content) + 2
+        cls.y = round(h / 2) - round(cls.h / 2)
+
+    @classmethod
+    def update(cls):
+        start_x = cls.x + 1
+        start_y = cls.y + 1
+        line_w = cls.w - 2
+
+        cls.box_content = ''
+        for idx, line in enumerate(cls.content_orignal):
+            if idx < cls.h - 2:
+                _line = f'{Cursor.to(start_y, start_x)}{line}'
+                if cls.genre & Selected.current and idx == Selected.commit:
+                    _line = f'{Fx.b}{_line}{Fx.ub}'
+                cls.box_content += _line
+                start_y += 1
 
 
 class InputBox(Box):

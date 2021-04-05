@@ -1,3 +1,5 @@
+import math
+
 from zgit.shared import BOXS
 from .box import *
 

@@ -3,8 +3,8 @@ import copy
 from typing import Dict
 
 from .coordinate import Git, Selected
-from .shared import BOXS
-from .box import create_boxs
+from .shared import BOXS, GitStatus
+from .box import create_boxs, TipBox
 
 
 class Renderer:
@@ -35,7 +35,7 @@ class Renderer:
             Selected.initial()
             Git.initial()  # create tree
 
-        if not cls.old_tree:
+        if not cls.old_tree or Selected.full:
             # ... create box
             boxs = create_boxs(cls._w, cls._h)
 
@@ -43,6 +43,7 @@ class Renderer:
                 box = BOXS[key]
                 cls.now(box.box)
                 cls.now(box.box_content)
+            Selected.full = False
         else:
             if Selected.old != Selected.current:
                 cls._is_changed = True
@@ -74,6 +75,14 @@ class Renderer:
                 cls._is_changed = False
 
             # do diff
+            pass
+
+        # check state
+        if Selected.statu == GitStatus.PULLING:
+            TipBox.create(w, h)
+            TipBox.create_profile()
+            TipBox.update()
+            cls.now(TipBox.box, TipBox.box_content)
             pass
 
         cls.old_tree = copy.deepcopy(Git.tree)  # cache tree

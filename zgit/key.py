@@ -289,6 +289,10 @@ def process_key():
         elif key == 'a':
             if Selected.current == Selected.STATUS:
                 Selected.switch_all()
+        elif key == 'p':
+            if Selected.current == Selected.STATUS:
+                Selected.pull()
+                pass
         else:
             continue
 

@@ -1,8 +1,9 @@
 import re
+import threading
 from typing import Dict, List
 
 import zgit.commands as git
-from .shared import GitType
+from .shared import GitType, GitStatus
 
 
 class Git():
@@ -43,6 +44,10 @@ class Selected(GitType):
     selects_len: int = 0
 
     selected: Dict = {}
+    change: Dict = {}
+    statu: GitStatus = GitStatus.NONE
+
+    full = False
 
     @classmethod
     def initial(cls) -> None:
@@ -161,6 +166,24 @@ class Selected(GitType):
         Git.update_status()
 
         cls.change[cls.current] = True
+
+    @classmethod
+    def pull(cls):
+        '''
+        0. 设置 tip 内容
+        1. 触发开启 tip box
+        2. git.pull
+        3. 触发关闭  tip box
+        '''
+        def _pull():
+            cls.statu = GitStatus.PULLING
+            git.pull()
+            cls.statu = GitStatus.NONE
+            cls.full = True
+            pass
+
+        if cls.statu == GitStatus.NONE:
+            threading.Thread(target=_pull).start()
 
 
 _CACHED = re.compile(r'^[A-Z]\s$')
