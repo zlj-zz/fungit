@@ -48,6 +48,7 @@ class Selected(GitType):
     action: GitActionStatus = GitActionStatus.NONE
 
     full = False
+    tip: str = ''
 
     @classmethod
     def initial(cls) -> None:
@@ -182,6 +183,7 @@ class Selected(GitType):
             TipBox.create(w, h)
             TipBox.create_profile()
 
+            cls.tip = 'Pulling...'
             cls.action = GitActionStatus.PULLING
             git.pull()
             cls.action = GitActionStatus.NONE
@@ -190,6 +192,26 @@ class Selected(GitType):
 
         if cls.action == GitActionStatus.NONE:
             threading.Thread(target=_pull).start()
+
+    @classmethod
+    def push(cls):
+        def _push():
+            import os
+            from zgit.box import TipBox
+            w, h = os.get_terminal_size()
+            TipBox.create(w, h)
+            TipBox.create_profile()
+
+            cls.tip = 'Pushing...'
+            cls.action = GitActionStatus.PULLING
+            git.pull()
+            cls.action = GitActionStatus.NONE
+            cls.full = True
+            pass
+
+        if cls.action == GitActionStatus.NONE:
+            threading.Thread(target=_push).start()
+        pass
 
 
 _CACHED = re.compile(r'^[A-Z]\s$')

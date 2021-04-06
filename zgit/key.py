@@ -294,6 +294,7 @@ def process_key():
             Selected.pull()
             pass
         elif key == 'P':
+            Selected.push()
             pass
         else:
             continue

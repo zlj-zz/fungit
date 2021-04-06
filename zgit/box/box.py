@@ -3,7 +3,6 @@ from typing import List, Tuple, Any
 from .basic_box import Box, GitTypeBox
 from zgit.style import Fx, Color, Cursor, ConfigColor
 from zgit.coordinate import fetch_content, Selected, Git
-from zgit.shared import TIP
 
 BOX_SELECTED_COLOR = Color.fg('#32cd32')
 
@@ -260,7 +259,7 @@ class TipBox(Box):
 
     @classmethod
     def create(cls, w, h):
-        cls.content_orignal = TIP
+        cls.content_orignal = Selected.tip
         cls.x = round(w / 4)
         cls.w = round(w / 2)
         _w = cls.w - 2
