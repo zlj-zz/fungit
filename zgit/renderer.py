@@ -60,6 +60,7 @@ class Renderer:
                 if Selected.change[box.genre]:
                     cls._is_changed = True
 
+                    box.create_profile()
                     box.generate()
                     box.update()
                     cls.now(box.box, box.box_content)

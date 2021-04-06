@@ -1,7 +1,7 @@
 from typing import List, Tuple, Any
 
 from zgit.style import Symbol, Fx, Color, Cursor
-from zgit.coordinate import fetch_content, Selected, Git
+from zgit.coordinate import Selected
 
 
 BOX_SELECTED_COLOR = Color.fg('#32cd32')
@@ -28,6 +28,7 @@ class Box:
 
 class GitTypeBox(Box):
     name: str
+    genre: int
     t_w: int
     t_h: int
     x: int
@@ -43,8 +44,10 @@ class GitTypeBox(Box):
     def create_profile(cls):
         # print(cls.genre& SELECTED['selected'])
         _line_color = BOX_SELECTED_COLOR if cls.genre & Selected.current else ''
+        _item_msg = f'{Selected.selected[cls.genre] + 1} of {len(cls.content)}' if len(
+            cls.content) > 1 else ''
         cls.box = create_profile(
-            cls.x, cls.y, cls.w, cls.h, cls.name, line_color=_line_color)
+            cls.x, cls.y, cls.w, cls.h, cls.name, _item_msg, line_color=_line_color)
 
     @classmethod
     def update(cls):
@@ -103,7 +106,8 @@ def create_profile(x: int = 0, y: int = 0, width: int = 0, height: int = 0, titl
         numbered: str = ""
         out += f'{Cursor.to(y, x + 2)}{Symbol.title_left}{Fx.b}{numbered}{title_color}{title}{Fx.ub}{line_color}{Symbol.title_right}'
     if title2:
-        out += f'{Cursor.to(hlines[1], x + 2)}{Symbol.title_left}{title_color}{Fx.b}{title2}{Fx.ub}{line_color}{Symbol.title_right}'
+        # out += f'{Cursor.to(hlines[1], width - 2 - len(title2))}{Symbol.title_left}{title_color}{Fx.b}{title2}{Fx.ub}{line_color}{Symbol.title_right}'
+        out += f'{Cursor.to(hlines[1], width - 2 - len(title2))}{title_color}{Fx.b}{title2}{Fx.ub}{line_color}'
 
     # return f'{out}{Term.fg}{Cursor.to(y + 1, x + 1)}'
     return f'{out}{Fx.reset}'

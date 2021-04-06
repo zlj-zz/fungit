@@ -58,6 +58,7 @@ class Selected(GitType):
         cls.selected[cls.STATUS] = 0
         cls.selected[cls.BRANCH] = 0
         cls.selected[cls.COMMIT] = 0
+        cls.selected[cls.STASH] = 0
         cls.selected[cls.CONTENT] = 0
 
         cls.selects = [cls.STATE, cls.STATUS,

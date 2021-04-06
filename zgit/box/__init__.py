@@ -99,8 +99,8 @@ def create_content_box(w, h):
 def create_boxs(w: int, h: int):
     update_git_box_w_h(w, h)  # generate profile w, h
     for sub in GitTypeBox.__subclasses__():
-        sub.create_profile()  # generate profile
         sub.generate()  # process data
+        sub.create_profile()  # generate profile
         sub.update()  # generate box content
         BOXS[sub.name] = sub
         # print(sub)
