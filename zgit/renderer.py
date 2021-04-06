@@ -3,7 +3,7 @@ import copy
 from typing import Dict
 
 from .coordinate import Git, Selected
-from .shared import BOXS, GitStatus
+from .shared import BOXS, GitActionStatus
 from .box import create_boxs, TipBox
 
 
@@ -35,26 +35,29 @@ class Renderer:
             Selected.initial()
             Git.initial()  # create tree
 
-        if not cls.old_tree or Selected.full:
+        if not cls.old_tree or Selected.full or Selected.old != Selected.current:
             # ... create box
-            boxs = create_boxs(cls._w, cls._h)
+            create_boxs(cls._w, cls._h)
 
             for key in BOXS.keys():
                 box = BOXS[key]
                 cls.now(box.box)
                 cls.now(box.box_content)
-            Selected.full = False
-        else:
-            if Selected.old != Selected.current:
-                cls._is_changed = True
 
-                for key in BOXS.keys():
-                    box = BOXS[key]
-                    if box.genre & Selected.old or box.genre & Selected.current:
-                        box.create_profile()
-                        box.update()
-                        cls.now(box.box, box.box_content)
+            Selected.full = False
+            if Selected.old != Selected.current:
                 Selected.old = Selected.current
+        else:
+            # if Selected.old != Selected.current:
+            #     cls._is_changed = True
+
+            #     for key in BOXS.keys():
+            #         box = BOXS[key]
+            #         if box.genre & Selected.old or box.genre & Selected.current:
+            #             box.create_profile()
+            #             box.update()
+            #             cls.now(box.box, box.box_content)
+            #     Selected.old = Selected.current
 
             for key in BOXS.keys():
                 box = BOXS[key]
@@ -78,7 +81,7 @@ class Renderer:
             pass
 
         # check state
-        if Selected.statu == GitStatus.PULLING:
+        if Selected.action == GitActionStatus.PULLING:
             TipBox.create(w, h)
             TipBox.create_profile()
             TipBox.update()

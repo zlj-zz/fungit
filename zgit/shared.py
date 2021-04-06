@@ -1,4 +1,8 @@
+TREE = {}
+
 BOXS = {}
+
+FUNC_BOX = {}
 
 TIP = 'Pulling...'
 
@@ -14,10 +18,10 @@ class GitType:
     Input = 1 << 7
 
 
-class GitStatus:
+class GitActionStatus:
     NONE = 1
     PULLING = 1 << 1
 
 
 if __name__ == '__main__':
-    print(GitStatus.NONE, GitStatus.PULLING)
+    print(GitActionStatus.NONE, GitActionStatus.PULLING)

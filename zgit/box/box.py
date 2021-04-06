@@ -257,18 +257,23 @@ class TipBox(Box):
     pass
 
     @classmethod
+    def start(cls):
+        pass
+
+    @classmethod
     def create(cls, w, h):
         cls.content_orignal = TIP
         cls.x = round(w / 4)
         cls.w = round(w / 2)
         _w = cls.w - 2
         _len = len(cls.content_orignal)
+        idx = 0
+        cls.content = []
         if _len > _w:
-            idx = 0
             while idx + _w < _len:
                 cls.content.append(cls.content_orignal[idx:idx + _w])
                 idx += _w
-            cls.content.append(cls.content_orignal[idx:])
+        cls.content.append(cls.content_orignal[idx:])
         cls.h = len(cls.content) + 2
         cls.y = round(h / 2) - round(cls.h / 2)
 
@@ -279,7 +284,8 @@ class TipBox(Box):
         line_w = cls.w - 2
 
         cls.box_content = ''
-        for idx, line in enumerate(cls.content_orignal):
+        for idx, line in enumerate(cls.content):
+
             if idx < cls.h - 2:
                 _line = f'{Cursor.to(start_y, start_x)}{line}'
                 if cls.genre & Selected.current and idx == Selected.commit:
@@ -298,9 +304,3 @@ class ConfirmBox(Box):
 
 class HelpBox(Box):
     pass
-
-
-if __name__ == '__main__':
-    import os
-    import time
-    from pprint import pprint

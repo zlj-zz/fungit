@@ -3,11 +3,11 @@ import threading
 from typing import Dict, List
 
 import zgit.commands as git
-from .shared import GitType, GitStatus
+from .shared import GitType, GitActionStatus, TREE
 
 
 class Git():
-    tree: dict = {}
+    tree: dict = TREE
 
     @classmethod
     def initial(cls):
@@ -45,7 +45,7 @@ class Selected(GitType):
 
     selected: Dict = {}
     change: Dict = {}
-    statu: GitStatus = GitStatus.NONE
+    action: GitActionStatus = GitActionStatus.NONE
 
     full = False
 
@@ -176,13 +176,13 @@ class Selected(GitType):
         3. 触发关闭  tip box
         '''
         def _pull():
-            cls.statu = GitStatus.PULLING
+            cls.action = GitActionStatus.PULLING
             git.pull()
-            cls.statu = GitStatus.NONE
+            cls.action = GitActionStatus.NONE
             cls.full = True
             pass
 
-        if cls.statu == GitStatus.NONE:
+        if cls.action == GitActionStatus.NONE:
             threading.Thread(target=_pull).start()
 
 
