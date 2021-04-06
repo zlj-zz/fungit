@@ -272,7 +272,8 @@ def process_key():
         key = Key.get()
 
         if key == 'q':
-            exit(0)  # TODO: need finish complete exit program
+            from .quit import clean_quit
+            clean_quit()
         elif key == 'h' or key == 'left':
             Selected.switch_to_prev()
         elif key == 'l' or key == 'right':

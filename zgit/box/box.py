@@ -254,11 +254,9 @@ class TipBox(Box):
     content: List = []
     box: str = ''
     box_content: str = ''
-    pass
 
-    @classmethod
-    def start(cls):
-        pass
+    count = 0
+    process_symbol = ['/', '-', '\\', '|']
 
     @classmethod
     def create(cls, w, h):
@@ -288,10 +286,14 @@ class TipBox(Box):
 
             if idx < cls.h - 2:
                 _line = f'{Cursor.to(start_y, start_x)}{line}'
-                if cls.genre & Selected.current and idx == Selected.commit:
-                    _line = f'{Fx.b}{_line}{Fx.ub}'
                 cls.box_content += _line
                 start_y += 1
+        cls.box_content += cls.process_symbol[cls.count % 4]
+        cls.count += 1
+
+    @classmethod
+    def destroy(cls):
+        pass
 
 
 class InputBox(Box):

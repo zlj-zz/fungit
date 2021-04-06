@@ -3,7 +3,7 @@ from .term import Term
 
 
 def main():
-    # Term.init()
+    Term.init()
     Key.start()
 
     def run():

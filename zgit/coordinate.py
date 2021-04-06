@@ -176,6 +176,12 @@ class Selected(GitType):
         3. 触发关闭  tip box
         '''
         def _pull():
+            import os
+            from zgit.box import TipBox
+            w, h = os.get_terminal_size()
+            TipBox.create(w, h)
+            TipBox.create_profile()
+
             cls.action = GitActionStatus.PULLING
             git.pull()
             cls.action = GitActionStatus.NONE

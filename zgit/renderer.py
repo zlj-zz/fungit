@@ -2,7 +2,6 @@ import threading
 import copy
 from typing import Dict
 
-from .coordinate import Git, Selected
 from .shared import BOXS, GitActionStatus
 from .box import create_boxs, TipBox
 
@@ -27,13 +26,10 @@ class Renderer:
 
     @classmethod
     def render(cls, *args):
-        w, h = args
+        tree, Selected, w, h = args
+
         if w != cls._w or h != cls._h:
             cls._w, cls._h = w, h
-
-        if not Git.tree:
-            Selected.initial()
-            Git.initial()  # create tree
 
         if not cls.old_tree or Selected.full or Selected.old != Selected.current:
             # ... create box
@@ -81,14 +77,13 @@ class Renderer:
             pass
 
         # check state
-        if Selected.action == GitActionStatus.PULLING:
-            TipBox.create(w, h)
-            TipBox.create_profile()
-            TipBox.update()
-            cls.now(TipBox.box, TipBox.box_content)
+        if Selected.action != GitActionStatus.NONE:
+            if Selected.action == GitActionStatus.PULLING:
+                TipBox.update()
+                cls.now(TipBox.box, TipBox.box_content)
             pass
 
-        cls.old_tree = copy.deepcopy(Git.tree)  # cache tree
+        cls.old_tree = copy.deepcopy(tree)  # cache tree
 
     @classmethod
     def now(cls, *args):
@@ -101,7 +96,3 @@ class Renderer:
             pass
             print(*args, sep="", end="", flush=True)
         cls.idle.set()
-
-
-if __name__ == '__main__':
-    pass
