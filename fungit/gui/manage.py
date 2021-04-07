@@ -4,8 +4,8 @@ from .box_option import initial_git_box as refresh_all
 from .box.navigation_box import GitTypeBox
 from .box.git_box import GIT_BOXS
 from .box.func_box import DynamicPromptBox
-from zgit.shared import GitType
-import zgit.commands as git
+from fungit.shared import GitType
+import fungit.commands as git
 
 
 class Manager:

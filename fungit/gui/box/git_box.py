@@ -3,8 +3,8 @@ from typing import List, Any
 
 from .navigation_box import GitTypeBox
 from ..style import Fx, Color, Cursor, ConfigColor
-import zgit.commands as git
-from zgit.shared import GitType
+import fungit.commands as git
+from fungit.shared import GitType
 
 
 class StateBox(GitTypeBox):

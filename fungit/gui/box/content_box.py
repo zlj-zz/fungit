@@ -3,8 +3,8 @@ from typing import List, Any
 
 from . import Box
 from ..style import Cursor
-from zgit.shared import GitType
-import zgit.commands as git
+from fungit.shared import GitType
+import fungit.commands as git
 
 
 class ContentBox(Box):

@@ -1,5 +1,5 @@
 from .key import Key
-from zgit.gui.manage import Manager
+from fungit.gui.manage import Manager
 
 
 def process_key():

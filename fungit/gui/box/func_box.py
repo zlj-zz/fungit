@@ -1,7 +1,7 @@
 import os
 import time
 
-from zgit.event.key import Key
+from fungit.event.key import Key
 from ..utils import create_profile
 from ..style import Cursor, Symbol
 from . import Box
