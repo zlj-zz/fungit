@@ -120,7 +120,7 @@ def branch_log(branch: str) -> str:
     if branch.startswith('* '):
         branch = branch[2:]
 
-    arg = 'log %s --graph --all --decorate' % branch
+    arg = 'log %s --graph --decorate' % branch
     resp = __git(arg).rstrip()
     return resp
 
