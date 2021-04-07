@@ -1,7 +1,7 @@
 import os
 import math
 
-from zgit.shared import BOXS, GitType
+from fungit.shared import BOXS, GitType
 from .box.navigation_box import GitTypeBox
 from .box.git_box import GIT_BOXS
 from .box.content_box import ContentBox
