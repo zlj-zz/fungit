@@ -1,45 +1,53 @@
-from typing import List, Tuple, Any
+import re
+from typing import List, Any
 
-from .basic_box import Box, GitTypeBox
-from zgit.style import Fx, Color, Cursor, ConfigColor
-from zgit.coordinate import fetch_content, Selected, Git
-
-BOX_SELECTED_COLOR = Color.fg('#32cd32')
+from .navigation_box import GitTypeBox
+from ..style import Fx, Color, Cursor, ConfigColor
+import zgit.commands as git
+from zgit.shared import GitType
 
 
 class StateBox(GitTypeBox):
     name: str = 'state'
-    genre = Selected.STATE
+    genre = GitType.STATE
     x: int = 0
     y: int = 0
     w: int = 0
     h: int = 0
     content_orignal: Any = None
     content: List = []
+    selected: int = 0
     box: str = ''
     box_content: str = ''
 
     @classmethod
+    def fetch_data(cls):
+        cls.content_orignal = git.state()
+
+    @classmethod
     def generate(cls):
-        cls.content_orignal = Git.tree[cls.genre]
         cls.content = [cls.content_orignal]
 
 
 class StatusBox(GitTypeBox):
     name: str = 'status'
-    genre = Selected.STATUS
+    genre = GitType.STATUS
     x: int = 0
     y: int = 0
     w: int = 0
     h: int = 0
     content_orignal: Any = None
     content: List = []
+    selected: int = 0
     box: str = ''
     box_content: str = ''
 
     @classmethod
+    def fetch_data(cls):
+        cls.content_orignal = git.status()
+
+    @classmethod
     def generate(cls):
-        cls.content_orignal = Git.tree[cls.genre]  # if no data, empty list
 
         _content = []
         for item in cls.content_orignal:
@@ -52,7 +60,7 @@ class StatusBox(GitTypeBox):
         start_y = cls.y + 1
         line_w = cls.w - 2
 
-        _current = Selected.selected[cls.genre]
+        _current = cls.selected
         _limit = 0
         if _current + 1 >= cls.h - 2:  # current selected index big than heigth
             _limit = _current + 1 - (cls.h - 2)
@@ -63,7 +71,7 @@ class StatusBox(GitTypeBox):
                 _c = cls.line_color(line[:2])
 
                 _line = f'{Cursor.to(start_y, start_x)}{_c}{line if len(line) < line_w else line[:line_w]}{ConfigColor.default}'
-                if cls.genre & Selected.current and idx == Selected.status:
+                if cls.genre & cls.current and idx == _current:
                     _line = f'{Fx.b}{_line}{Fx.ub}'
                 cls.box_content += _line
                 start_y += 1
@@ -93,22 +101,47 @@ class StatusBox(GitTypeBox):
 
         return color
 
+    @classmethod
+    def switch_status(cls):
+        _status, _path = cls.content_orignal[cls.selected]
+        if _CACHED.match(_status):
+            git.unstage(_path)
+        else:
+            git.stage(_path)
+
+        cls.notify(update_data=True)
+
+    @classmethod
+    def switch_all(cls):
+        for _status, _ in cls.content_orignal:
+            if not _CACHED.match(_status):
+                git.stage_all()
+                break
+        else:
+            git.unstage_all()
+
+        cls.notify(update_data=True)
+
 
 class BranchBox(GitTypeBox):
     name: str = 'branch'
-    genre = Selected.BRANCH
+    genre = GitType.BRANCH
     x: int = 0
     y: int = 0
     w: int = 0
     h: int = 0
     content_orignal: Any = None
     content: List = []
+    selected: int = 0
     box: str = ''
     box_content: str = ''
 
     @classmethod
+    def fetch_data(cls):
+        cls.content_orignal = git.branchs()[0]
+
+    @classmethod
     def generate(cls):
-        cls.content_orignal = Git.tree[cls.genre]  # if no data, empty list
         cls.content = cls.content_orignal
 
     @classmethod
@@ -117,7 +150,7 @@ class BranchBox(GitTypeBox):
         start_y = cls.y + 1
         line_w = cls.w - 2
 
-        _current = Selected.selected[cls.genre]
+        _current = cls.selected
         _limit = 0
         if _current + 1 >= cls.h - 2:  # current selected index big than heigth
             _limit = _current + 1 - (cls.h - 2)
@@ -129,7 +162,7 @@ class BranchBox(GitTypeBox):
                 if _line.startswith('* '):
                     _line = f'{ConfigColor.status_new}{_line}{ConfigColor.default}'
                 _line = f'{Cursor.to(start_y, start_x)}{_line}'
-                if cls.genre & Selected.current and idx == Selected.branch:
+                if cls.genre & cls.current and idx == _current:
                     _line = f'{Fx.b}{_line}{Fx.ub}'
                 cls.box_content += _line
                 start_y += 1
@@ -137,19 +170,23 @@ class BranchBox(GitTypeBox):
 
 class CommitBox(GitTypeBox):
     name: str = 'commit'
-    genre = Selected.COMMIT
+    genre = GitType.COMMIT
     x: int = 0
     y: int = 0
     w: int = 0
     h: int = 0
     content_orignal: Any = None
     content: List = []
+    selected: int = 0
     box: str = ''
     box_content: str = ''
 
     @classmethod
+    def fetch_data(cls):
+        cls.content_orignal = git.commits()
+
+    @classmethod
     def generate(cls):
-        cls.content_orignal = Git.tree[cls.genre]  # if no data, empty list
 
         _content = []
         for item in cls.content_orignal:
@@ -162,7 +199,7 @@ class CommitBox(GitTypeBox):
         start_y = cls.y + 1
         line_w = cls.w - 2 - 9
 
-        _current = Selected.selected[cls.genre]
+        _current = cls.selected
         _limit = 0
         if _current + 1 >= cls.h - 2:  # current selected index big than heigth
             _limit = _current + 1 - (cls.h - 2)
@@ -175,7 +212,7 @@ class CommitBox(GitTypeBox):
 
             if idx >= _limit and idx - _limit < cls.h - 2:
                 _line = f'{Cursor.to(start_y, start_x)}{_id} {_msg}'
-                if cls.genre & Selected.current and idx == Selected.commit:
+                if cls.genre & cls.current and idx == _current:
                     _line = f'{Fx.b}{_line}{Fx.ub}'
                 cls.box_content += _line
                 start_y += 1
@@ -183,7 +220,7 @@ class CommitBox(GitTypeBox):
 
 class StashBox(GitTypeBox):
     name: str = 'stash'
-    genre = Selected.STASH
+    genre = GitType.STASH
     x: int = 0
     y: int = 0
     w: int = 0
@@ -194,8 +231,11 @@ class StashBox(GitTypeBox):
     box_content: str = ''
 
     @classmethod
+    def fetch_data(cls):
+        cls.content_orignal = git.stashs()
+
+    @classmethod
     def generate(cls):
-        cls.content_orignal = Git.tree[cls.genre]
 
         if cls.content_orignal:
             cls.content = cls.content_orignal.split('\n')
@@ -203,105 +243,6 @@ class StashBox(GitTypeBox):
             cls.content = []
 
 
-class ContentBox(Box):
-    name: str = 'content'
-    genre = Selected.CONTENT
-    x: int = 0
-    y: int = 0
-    w: int = 0
-    h: int = 0
-    content_orignal: Any = None
-    content: List = []
-    box: str = ''
-    box_content: str = ''
+GIT_BOXS = [StateBox, StatusBox, BranchBox, CommitBox, StashBox]
 
-    @classmethod
-    def generate(cls):
-        cls.content_orignal = fetch_content()
-        _content = []
-
-        for line in cls.content_orignal.split('\n'):
-            if len(line) < cls.w - 2:
-                _content.append(line)
-            else:
-                _content.append(line[:cls.w - 2])
-                _content.append(line[cls.w - 2:])
-
-        cls.content = _content
-
-    @classmethod
-    def update(self):
-        start_y = self.y + 1
-        start_x = self.x + 1
-        # print(self.x, self.y, self.w, self.h)
-
-        self.box_content = ''
-        for idx, line in enumerate(self.content):
-            if idx < self.h - 2:
-                self.box_content += f'{Cursor.to(start_y, start_x)}{line}'
-                start_y += 1
-
-
-class TipBox(Box):
-    name: str = 'tip'
-    genre = Selected.Tip
-    x: int = 0
-    y: int = 0
-    w: int = 0
-    h: int = 0
-    content_orignal: Any = None
-    content: List = []
-    box: str = ''
-    box_content: str = ''
-
-    count = 0
-    process_symbol = ['/', '-', '\\', '|']
-
-    @classmethod
-    def create(cls, w, h):
-        cls.content_orignal = Selected.tip
-        cls.x = round(w / 4)
-        cls.w = round(w / 2)
-        _w = cls.w - 2
-        _len = len(cls.content_orignal)
-        idx = 0
-        cls.content = []
-        if _len > _w:
-            while idx + _w < _len:
-                cls.content.append(cls.content_orignal[idx:idx + _w])
-                idx += _w
-        cls.content.append(cls.content_orignal[idx:])
-        cls.h = len(cls.content) + 2
-        cls.y = round(h / 2) - round(cls.h / 2)
-
-    @classmethod
-    def update(cls):
-        start_x = cls.x + 1
-        start_y = cls.y + 1
-        line_w = cls.w - 2
-
-        cls.box_content = ''
-        for idx, line in enumerate(cls.content):
-
-            if idx < cls.h - 2:
-                _line = f'{Cursor.to(start_y, start_x)}{line}'
-                cls.box_content += _line
-                start_y += 1
-        cls.box_content += cls.process_symbol[cls.count % 4]
-        cls.count += 1
-
-    @classmethod
-    def destroy(cls):
-        pass
-
-
-class InputBox(Box):
-    pass
-
-
-class ConfirmBox(Box):
-    pass
-
-
-class HelpBox(Box):
-    pass
+_CACHED = re.compile(r'^[A-Z]\s$')

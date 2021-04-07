@@ -1,14 +1,17 @@
-from .key import Key, Timer, process_key
 from .term import Term
+from .gui.box_option import initial_git_box
+from .event.key import Key
+from .event.process import process_key
 
 
 def main():
     Term.init()
+    initial_git_box()
     Key.start()
 
     def run():
         while not False:
-            Term.refresh()
+            # Term.refresh()
             # Timer.stamp()
 
             # while Timer.not_zero():

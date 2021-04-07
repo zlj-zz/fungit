@@ -4,8 +4,7 @@ import termios
 import threading
 from typing import List, Tuple
 
-from .renderer import Renderer
-from .coordinate import Git, Selected
+from .gui.renderer import Renderer
 
 
 class Term:
@@ -41,16 +40,14 @@ class Term:
         Renderer.now(Term.alt_screen, Term.clear, Term.hide_cursor,
                      Term.mouse_on, Term.title("ZGit"))
         Term.echo(False)
-        Selected.initial()
-        Git.initial()  # create tree
 
-    @classmethod
-    def refresh(cls, *args, force: bool = False):
-        cls._w, cls._h = os.get_terminal_size()
-        if cls._w != cls.width or cls._h != cls.height:
-            cls.width, cls.height = cls._w, cls._h
+    # @classmethod
+    # def refresh(cls, *args, force: bool = False):
+    #     cls._w, cls._h = os.get_terminal_size()
+    #     if cls._w != cls.width or cls._h != cls.height:
+    #         cls.width, cls.height = cls._w, cls._h
 
-        Renderer.render(Git.tree, Selected, cls.width, cls.height)
+    #     Renderer.render(Git.tree, Selected, cls.width, cls.height)
 
     @staticmethod
     def title(text: str = "") -> str:

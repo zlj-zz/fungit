@@ -1,4 +1,3 @@
-from typing import List, Dict, Tuple, Union
 import threading
 import tty
 import termios
@@ -7,8 +6,7 @@ import os
 import sys
 from time import sleep, time
 from select import select
-
-from .coordinate import Selected
+from typing import List, Dict, Tuple, Union
 
 
 class Timer:
@@ -265,43 +263,3 @@ class Key:
             cls.idle.set()
             cls.list.clear()
             # clean_quit(1, thread=True)
-
-
-def process_key():
-    while Key.has_key():
-        key = Key.get()
-
-        if key == 'q':
-            from .quit import clean_quit
-            clean_quit()
-        elif key == 'h' or key == 'left':
-            Selected.switch_to_prev()
-        elif key == 'l' or key == 'right':
-            Selected.switch_to_next()
-        elif key == 'j' or key == 'down':
-            Selected.next_item()
-        elif key == 'k' or key == 'up':
-            Selected.prev_item()
-        elif '1' <= key <= '5':
-            Selected.switch_by_index(key)
-        elif key == ' ':
-            if Selected.current == Selected.STATUS:
-                Selected.switch_status()
-        elif key == 'a':
-            if Selected.current == Selected.STATUS:
-                Selected.switch_all()
-        elif key == 'p':
-            Selected.pull()
-            pass
-        elif key == 'P':
-            Selected.push()
-            pass
-        else:
-            continue
-
-
-if __name__ == '__main__':
-    Key.start()
-    while True:
-        while Key.has_key():
-            print(Key.get())
