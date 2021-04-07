@@ -83,9 +83,21 @@ class Manager:
         t.setDaemon(True)
         t.start()
 
-        DynamicPromptBox.main('', 'Pulling...')
+        DynamicPromptBox.main('', 'Pulling... ')
         refresh_all()
-        pass
+
+    @staticmethod
+    def push():
+        def _push_option():
+            git.push()
+            DynamicPromptBox.close = True
+
+        t = threading.Thread(target=_push_option)
+        t.setDaemon(True)
+        t.start()
+
+        DynamicPromptBox.main('', 'Pushing.. ')
+        refresh_all()
 
 
 def index_of(t, need_box: bool = True):

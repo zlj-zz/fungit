@@ -4,6 +4,7 @@ import time
 from fungit.event.key import Key
 from ..utils import create_profile
 from ..style import Cursor, Symbol
+from ..renderer import Renderer
 from . import Box
 
 
@@ -33,6 +34,7 @@ class DynamicPromptBox(Box):
         cls.y = round(f_h / 2) - round(cls.h / 2)
 
         cls.box = create_profile(cls.x, cls.y, cls.w, cls.h, title=title)
+        Renderer.now(cls.box)
 
         start_x = cls.x + 1
         start_y = cls.y + 1
@@ -57,7 +59,8 @@ class DynamicPromptBox(Box):
                 cls.box_content = box_content + \
                     cls.process_symbol[cls.count % len(cls.process_symbol)]
                 start_time = time.time()
-            cls.render()
+            # cls.render()
+            Renderer.now(cls.box_content)
 
             while Key.has_key():
                 key = Key.get()

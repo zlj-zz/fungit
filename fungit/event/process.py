@@ -26,9 +26,7 @@ def process_key():
             Manager.a_event()
         elif key == 'p':
             Manager.pull()
-            pass
-        # elif key == 'P':
-        #     Selected.push()
-        #     pass
+        elif key == 'P':
+            Manager.push()
         else:
             continue
