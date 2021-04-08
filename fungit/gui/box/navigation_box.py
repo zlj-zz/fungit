@@ -2,13 +2,11 @@ from typing import List, Any
 
 from fungit.shared import GitType
 from ..renderer import Renderer
-from ..style import Fx, Color, Cursor
+from ..style import Fx, Cursor
+from ..theme import Theme
 from ..utils import create_profile
 from . import Box
 from .content_box import ContentBox
-
-
-BOX_SELECTED_COLOR = Color.fg('#32cd32')
 
 
 class GitTypeBox(Box):
@@ -35,8 +33,7 @@ class GitTypeBox(Box):
 
     @classmethod
     def create_profile(cls):
-        # print(cls.genre& SELECTED['selected'])
-        _line_color = BOX_SELECTED_COLOR if cls.genre & cls.current else ''
+        _line_color = Theme.BOX_SELECTED_COLOR if cls.genre & cls.current else ''
         _item_msg = f'{cls.selected + 1} of {len(cls.content)}' if len(
             cls.content) > 1 else ''
         cls.box = create_profile(

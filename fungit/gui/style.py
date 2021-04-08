@@ -254,15 +254,6 @@ class Symbol:
     # fail: str = f'{Color.fg("#ff3050")}!{Color.fg("#cc")}'
 
 
-class ConfigColor:
-    default = Color.fg('#ffffff')
-    box_selected_color = Color.fg('7CFC00`')
-    status_new = status_cached = status_rename = status_deled = Color.fg(
-        '#32cd32')
-    status_untrack = status_del = status_change = Color.fg('#FF4500')
-    commit_id = Color.fg('#F0E68C')
-
-
 if __name__ == '__main__':
     green = (Color.fg('#00ff00'))
     a = (f'{green}abcde')
