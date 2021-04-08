@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 import sys
 
 PYTHON_VERSION = sys.version_info[:2]
-if PYTHON_VERSION < (3, 5):
+if PYTHON_VERSION < (3, 6):
     print('Python version must be greater than or equal to 3.5')
     sys.exit()
 
@@ -25,7 +25,6 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     classifiers=[
-        "Programming Language :: Python :: 3.5",
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
@@ -39,7 +38,7 @@ setup(
     entry_points='''
         [console_scripts]
         g=git.main:g
-        zgit=zgit.zgit:main
+        fungit=fungit.main:main
     ''',
     python_requires='>=3.6',
 )
