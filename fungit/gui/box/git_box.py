@@ -2,9 +2,10 @@ import re
 from typing import List, Any
 
 from .navigation_box import GitTypeBox
-from ..style import Fx, Color, Cursor, ConfigColor
-import fungit.commands as git
+from ..style import Fx, Cursor, Symbol
+from ..theme import Theme
 from fungit.shared import GitType
+import fungit.commands as git
 
 
 class StateBox(GitTypeBox):
@@ -26,7 +27,8 @@ class StateBox(GitTypeBox):
 
     @classmethod
     def generate(cls):
-        cls.content = [cls.content_orignal]
+        _project, _head = cls.content_orignal
+        cls.content = [f'{_project} {Symbol.right} {_head}']
 
 
 class StatusBox(GitTypeBox):
@@ -70,7 +72,7 @@ class StatusBox(GitTypeBox):
             if idx >= _limit and idx - _limit < cls.h - 2:
                 _c = cls.line_color(line[:2])
 
-                _line = f'{Cursor.to(start_y, start_x)}{_c}{line if len(line) < line_w else line[:line_w]}{ConfigColor.default}'
+                _line = f'{Cursor.to(start_y, start_x)}{_c}{line if len(line) < line_w else line[:line_w]}{Theme.DEFAULT}'
                 if cls.genre & cls.current and idx == _current:
                     _line = f'{Fx.b}{_line}{Fx.ub}'
                 cls.box_content += _line
@@ -79,25 +81,21 @@ class StatusBox(GitTypeBox):
     @classmethod
     def line_color(cls, flag):
         if flag == '??':
-            color = ConfigColor.status_untrack
+            color = Theme.FILE_UNTRACK
         elif flag == 'M ':
-            color = ConfigColor.status_cached
+            color = Theme.FILE_CACHED
         elif flag == ' M':
-            color = ConfigColor.status_change
+            color = Theme.FILE_CHANGE
         elif flag == 'A ':
-            color = ConfigColor.status_new
+            color = Theme.FILE_NEW
         elif flag == ' D':
-            color = ConfigColor.status_del
+            color = Theme.FILE_DEL
         elif flag == 'D ':
-            color = ConfigColor.status_deled
+            color = Theme.FILE_DELED
         elif flag == 'R ':
-            color = ConfigColor.status_rename
-        elif flag == '':
-            pass
-        elif flag == '':
-            pass
+            color = Theme.FILE_RENAME
         else:
-            color = ConfigColor.status_del
+            color = Theme.DEFAULT
 
         return color
 
@@ -138,11 +136,21 @@ class BranchBox(GitTypeBox):
 
     @classmethod
     def fetch_data(cls):
-        cls.content_orignal = git.branchs()[0]
+        # cls.content_orignal = git.branchs()[0]
+        cls.content_orignal = git.load_branch()
 
     @classmethod
     def generate(cls):
-        cls.content = cls.content_orignal
+        _content = []
+        for branch in cls.content_orignal:
+            if branch.is_head:
+                _content.append(
+                    f'* {branch.name} {Symbol.up}{branch.pushables} {Symbol.down}{branch.pullables}')
+            else:
+                _content.append(
+                    f'  {branch.name} {Symbol.up}{branch.pushables} {Symbol.down}{branch.pullables}')
+
+        cls.content = _content
 
     @classmethod
     def update(cls):
@@ -160,7 +168,7 @@ class BranchBox(GitTypeBox):
             if idx >= _limit and idx - _limit < cls.h - 2:
                 _line = line if len(line) < line_w else line[:line_w]
                 if _line.startswith('* '):
-                    _line = f'{ConfigColor.status_new}{_line}{ConfigColor.default}'
+                    _line = f'{Theme.BRANCH}{_line}{Theme.DEFAULT}'
                 _line = f'{Cursor.to(start_y, start_x)}{_line}'
                 if cls.genre & cls.current and idx == _current:
                     _line = f'{Fx.b}{_line}{Fx.ub}'
@@ -207,8 +215,8 @@ class CommitBox(GitTypeBox):
         cls.box_content = ''
         for idx, line in enumerate(cls.content_orignal):
             _id, _msg = line
-            _id = f'{ConfigColor.commit_id}{_id}'
-            _msg = f'{ConfigColor.default}{_msg if len(_msg) < line_w else _msg[:line_w]}'
+            _id = f'{Theme.COMMIT_ID}{_id}'
+            _msg = f'{Theme.DEFAULT}{_msg if len(_msg) < line_w else _msg[:line_w]}'
 
             if idx >= _limit and idx - _limit < cls.h - 2:
                 _line = f'{Cursor.to(start_y, start_x)}{_id} {_msg}'

@@ -1,11 +1,15 @@
 import subprocess
+import sys
+import os
 import re
 from typing import List
+
+from .module.branch import Branch
 
 _GIT = 'git'
 
 
-def __git(*args) -> str:
+def _git(*args) -> str:
     '''Execute a git command and return the result.
 
     Args:
@@ -26,11 +30,17 @@ def __git(*args) -> str:
         return ''
 
 
-def state() -> str:
-    '''Get current status.'''
+def state() -> list:
+    '''Get current project name and head branch.'''
 
-    res = __git('symbolic-ref', '-q', '--short', 'HEAD').strip()
-    return res
+    path = _git('rev-parse --git-dir').strip()
+    if path == '.git':
+        project = os.getcwd().split('/')[-1]
+    else:
+        project = path.split('/')[-2]
+
+    _head = _git('symbolic-ref', '-q', '--short', 'HEAD').strip()
+    return [project, _head]
 
 
 def status(*args) -> List[List]:
@@ -40,19 +50,14 @@ def status(*args) -> List[List]:
         args: File tuple
     '''
 
-    command = 'status -s'
-    s = __git(' '.join([command, *args])).rstrip()
+    command = 'status -s -u'
+    s = _git(' '.join([command, *args])).rstrip()
 
     _status = []
     if s:
         files = s.split('\n')
         for item in files:
-            if item.endswith('/'):  # It's a directory
-                _dir = item.split(' ')[1]
-                fs = status(_dir)
-                _status.extend(fs)
-            else:
-                _status.append((item[:2], item[3:]))
+            _status.append((item[:2], item[3:]))
 
     return _status
 
@@ -61,13 +66,13 @@ def stage(*args) -> None:
     '''Stage files.'''
 
     command = 'add --'
-    s = __git(' '.join([command, *args])).rstrip()
+    s = _git(' '.join([command, *args])).rstrip()
 
 
 def stage_all() -> None:
     '''Stage all files.'''
 
-    __git('add -A')
+    _git('add -A')
 
 
 def unstage(*args, tracked: bool = True) -> None:
@@ -78,13 +83,13 @@ def unstage(*args, tracked: bool = True) -> None:
     else:
         command = 'rm --cached --force --'
 
-    __git(' '.join([command, *args]))
+    _git(' '.join([command, *args]))
 
 
 def unstage_all() -> None:
     '''Unstage all files.'''
 
-    __git('reset')
+    _git('reset')
 
 
 def branchs() -> List:
@@ -97,7 +102,7 @@ def branchs() -> List:
     '''
 
     command = 'branch'
-    b = __git(command).rstrip()
+    b = _git(command).rstrip()
 
     brs = b.split('\n')
 
@@ -110,6 +115,48 @@ def branchs() -> List:
     return [res, curr]
 
 
+def load_branch() -> List[Branch]:
+    command = 'for-each-ref --sort=-committerdate --format="%(HEAD)|%(refname:short)|%(upstream:short)|%(upstream:track)" refs/heads'
+    resp = _git(command).strip()
+
+    if not resp:
+        return []
+
+    branchs = []
+    lines = resp.split('\n')
+
+    for line in lines:
+        items = line.split('|')
+        branch = Branch(items[1], '?', '?', items[0] == '*')
+
+        upstream_name = items[2]
+
+        if not upstream_name:
+            branchs.append(branch)
+            continue
+
+        branch.upstream_name = upstream_name
+
+        track = items[3]
+        _re = re.compile(r'ahead (\d+)')
+        match = _re.search(track)
+        if match:
+            branch.pushables = str(match[1])
+        else:
+            branch.pushables = '0'
+
+        _re = re.compile(r'behind (\d+)')
+        match = _re.search(track)
+        if match:
+            branch.pullables = str(match[1])
+        else:
+            branch.pullables = '0'
+
+        branchs.append(branch)
+
+    return branchs
+
+
 def branch_log(branch: str) -> str:
     '''Gets all logs of a given branch.
 
@@ -117,18 +164,19 @@ def branch_log(branch: str) -> str:
         branch: branch name
     '''
 
-    if branch.startswith('* '):
-        branch = branch[2:]
+    # if branch.startswith('* '):
+    #     branch = branch[2:]
+    branch_name = branch.name
 
-    arg = 'log %s --graph --decorate' % branch
-    resp = __git(arg).rstrip()
+    arg = 'log %s --graph --decorate' % branch_name
+    resp = _git(arg).rstrip()
     return resp
 
 
 def commits() -> List[List]:
     '''Return current branch all commits.'''
 
-    res = __git('log', '--oneline').strip()
+    res = _git('log', '--oneline').strip()
     return [[line[:7], line[8:]]for line in res.split('\n')]
 
 
@@ -151,7 +199,7 @@ def commit_file_info(commit: str, file_name: str = '') -> str:
     '''
 
     arg = 'show %s %s' % (commit, file_name)
-    resp = __git(arg).rstrip()
+    resp = _git(arg).rstrip()
     return resp
 
 
@@ -159,7 +207,7 @@ def stashs() -> str:
     '''Get stash list.'''
 
     arg = 'stash list'
-    resp = __git(arg)
+    resp = _git(arg)
     return resp
 
 
@@ -183,7 +231,7 @@ def diff(file: str, tracked: bool = True, cached: bool = False) -> str:
 
     args.append(file)
 
-    res = __git(*args).rstrip()
+    res = _git(*args).rstrip()
     return res
 
 
@@ -195,7 +243,7 @@ def is_selected_branch(branch: str) -> bool:
 
 def pull():
 
-    __git('pull')
+    _git('pull')
 
 
 # TODO: just temp introduce
