@@ -1,5 +1,6 @@
-from .key import Key
 from fungit.gui.manage import Manager
+from .key import Key
+from .clean_quit import quit_app
 
 
 def process_key():
@@ -7,9 +8,7 @@ def process_key():
         key = Key.get()
 
         if key == 'q':
-            # from .quit import clean_quit
-            # clean_quit()
-            pass
+            quit_app()
         elif '1' <= key <= '5':
             Manager.switch_box_by_index(key)
         elif key == 'h' or key == 'left':

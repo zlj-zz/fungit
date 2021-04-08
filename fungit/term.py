@@ -38,16 +38,14 @@ class Term:
         Term.height = os.get_terminal_size().lines
 
         Renderer.now(Term.alt_screen, Term.clear, Term.hide_cursor,
-                     Term.mouse_on, Term.title("ZGit"))
-        Term.echo(False)
+                     Term.mouse_on, Term.title("fungit"))
+        cls.echo(False)
 
-    # @classmethod
-    # def refresh(cls, *args, force: bool = False):
-    #     cls._w, cls._h = os.get_terminal_size()
-    #     if cls._w != cls.width or cls._h != cls.height:
-    #         cls.width, cls.height = cls._w, cls._h
-
-    #     Renderer.render(Git.tree, Selected, cls.width, cls.height)
+    @classmethod
+    def clear(cls):
+        Renderer.now(Term.clear, Term.normal_screen, Term.show_cursor,
+                     Term.mouse_off, Term.mouse_direct_off, Term.title())
+        cls.echo(True)
 
     @staticmethod
     def title(text: str = "") -> str:
