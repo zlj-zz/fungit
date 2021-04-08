@@ -13,7 +13,7 @@ class Manager:
     @staticmethod
     def switch_box_by_index(idx):
         NavBox.set_current(GIT_BOXS[int(idx) - 1].genre)
-        refresh_all()
+        refresh_all(update_data=False)
 
     @staticmethod
     def prev_box():
@@ -22,7 +22,7 @@ class Manager:
         _len = len(GIT_BOXS)
         new_index = _len - 1 - (_len - _index) % _len
         NavBox.set_current(GIT_BOXS[new_index].genre)
-        refresh_all()
+        refresh_all(update_data=False)
 
     @staticmethod
     def next_box():
@@ -31,7 +31,7 @@ class Manager:
         _len = len(GIT_BOXS)
         new_index = (_index + 1) % _len
         NavBox.set_current(GIT_BOXS[new_index].genre)
-        refresh_all()
+        refresh_all(update_data=False)
 
     @staticmethod
     def prev_item():

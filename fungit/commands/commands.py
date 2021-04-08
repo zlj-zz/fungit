@@ -5,6 +5,7 @@ import re
 from typing import List
 
 from .module.branch import Branch
+from .module.commit import Commit
 
 _GIT = 'git'
 
@@ -30,6 +31,10 @@ def _git(*args) -> str:
         return ''
 
 
+def current_head():
+    return _git('symbolic-ref -q --short HEAD').strip()
+
+
 def state() -> list:
     '''Get current project name and head branch.'''
 
@@ -39,7 +44,7 @@ def state() -> list:
     else:
         project = path.split('/')[-2]
 
-    _head = _git('symbolic-ref', '-q', '--short', 'HEAD').strip()
+    _head = current_head()
     return [project, _head]
 
 
@@ -92,30 +97,7 @@ def unstage_all() -> None:
     _git('reset')
 
 
-def branchs() -> List:
-    '''Get all branchs and current branch, return a list.
-
-    Returns:
-        branch list
-        example:
-            [ ['* main', 'dev', 'test'], 'main']
-    '''
-
-    command = 'branch'
-    b = _git(command).rstrip()
-
-    brs = b.split('\n')
-
-    res = []
-    curr = ''
-    for br in brs:
-        res.append(br)
-        if is_selected_branch(br):
-            curr = br[2:]
-    return [res, curr]
-
-
-def load_branch() -> List[Branch]:
+def load_branches() -> List[Branch]:
     command = 'for-each-ref --sort=-committerdate --format="%(HEAD)|%(refname:short)|%(upstream:short)|%(upstream:track)" refs/heads'
     resp = _git(command).strip()
 
@@ -157,7 +139,7 @@ def load_branch() -> List[Branch]:
     return branchs
 
 
-def branch_log(branch: str) -> str:
+def branch_log(branch: Branch) -> str:
     '''Gets all logs of a given branch.
 
     Args:
@@ -173,11 +155,58 @@ def branch_log(branch: str) -> str:
     return resp
 
 
-def commits() -> List[List]:
-    '''Return current branch all commits.'''
+def get_first_pushed_commit(branch_name: str):
+    command = 'merge-base %s %s@{u}' % (branch_name, branch_name)
+    resp = _git(command).strip()
+    return resp
 
-    res = _git('log', '--oneline').strip()
-    return [[line[:7], line[8:]]for line in res.split('\n')]
+
+def get_log(branch_name: str, limit: bool = False, filter_path: str = ''):
+    limit_flag = '-300' if limit else ''
+    filter_flag = f'--follow -- {filter_path}' if filter_path else ''
+    command = f'log {branch_name} --oneline --pretty=format:"%H|%at|%aN|%d|%p|%s" {limit_flag} --abbrev=20 --date=unix {filter_flag}'
+    resp = _git(command).strip()
+    return resp
+
+
+def load_commits(branch_name: str):
+    '''Return given branch all commits.'''
+
+    passed_first_pushed_commit = False
+    first_pushed_commit = get_first_pushed_commit(branch_name)
+
+    if not first_pushed_commit:
+        passed_first_pushed_commit = True
+
+    commits = []
+    lines = get_log(branch_name).split('\n')
+    for line in lines:
+        split_ = line.split('|')
+
+        sha = split_[0]
+        unix_timestamp = int(split_[1])
+        author = split_[2]
+        extra_info = (split_[3]).strip()
+        parent_hashes = split_[4]
+        message = '|'.join(split_[5:])
+
+        tag = []
+        if extra_info:
+            _re = re.compile(r'tag: ([^,\\]+)')
+            match = _re.search(extra_info)
+            if match:
+                tag.append(match[1])
+
+        if sha == first_pushed_commit:
+            passed_first_pushed_commit = True
+        status = {True: "unpushed", False: "pushed"}[
+            not passed_first_pushed_commit]
+
+        commit_ = Commit(sha, message, author,
+                         unix_timestamp, status, extra_info, tag)
+        commits.append(commit_)
+
+    return commits
 
 
 def commit_info(commit: str) -> str:
@@ -254,18 +283,3 @@ Usage: g <option> [<args>]
 
 You can use `-h` and `--help` to get how to use pyzgit.
 '''
-
-
-if __name__ == '__main__':
-    from pprint import pprint
-    # pprint(status())
-    # print(branchs())
-    # print(state())
-    # print(commits())
-    # print(diff('style.py', tracked=False))
-    pprint(diff('git/shared.py'))
-    # print(diff('git/shared.py', cached=True))
-    # print(branch_log('main'))
-    # print(commit_file_info('1210f62', 'git/main.py'))
-    # print(commit_info('1210f62'))
-    pass

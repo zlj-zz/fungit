@@ -93,12 +93,13 @@ def create_content_box():
     # BOXS[ContentBox.name] = ContentBox
 
 
-def initial_git_box(lazy_render: bool = False):
+def initial_git_box(update_data: bool = True, lazy_render: bool = False):
     update_git_box_w_h()
     create_content_box()
 
     for sub in GIT_BOXS:
-        sub.fetch_data()
+        if update_data:
+            sub.fetch_data()
         sub.generate()
         sub.create_profile()
         sub.update()

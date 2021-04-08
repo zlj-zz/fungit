@@ -1,3 +1,4 @@
+from os import name
 import re
 from typing import List, Any
 
@@ -136,27 +137,37 @@ class BranchBox(NavBox):
 
     @classmethod
     def fetch_data(cls):
-        # cls.content_orignal = git.branchs()[0]
-        cls.content_orignal = git.load_branch()
+        cls.content_orignal = git.load_branches()
 
     @classmethod
     def generate(cls):
-        _content = []
-        for branch in cls.content_orignal:
-            if branch.is_head:
-                _content.append(
-                    f'* {branch.name} {Symbol.up}{branch.pushables} {Symbol.down}{branch.pullables}')
-            else:
-                _content.append(
-                    f'  {branch.name} {Symbol.up}{branch.pushables} {Symbol.down}{branch.pullables}')
+        line_w = cls.w - 2
+        content_ = []
 
-        cls.content = _content
+        for branch in cls.content_orignal:
+            prefix_ = '* ' if branch.is_head else '  '
+            prefix_len = len(prefix_)
+
+            status_, status_len = '', 0
+            if branch.upstream_name:
+                status_ = f' {Symbol.up}{branch.pushables}{Symbol.down}{branch.pullables}'
+                status_len = len(branch.pushables) + len(branch.pullables) + 3
+
+            less_len = line_w - prefix_len - status_len
+            name_ = branch.name
+            name_len = len(branch.name)
+            if name_len > less_len:
+                name_ = f'{name_[:less_len - 3]}...'
+
+            line_ = f'{Theme.BRANCH}{prefix_}{Theme.DEFAULT}{name_}{Theme.BRANCH_STATUS}{status_}{Theme.DEFAULT}'
+            content_.append(line_)
+
+        cls.content = content_
 
     @classmethod
     def update(cls):
         start_x = cls.x + 1
         start_y = cls.y + 1
-        line_w = cls.w - 2
 
         _current = cls.selected
         _limit = 0
@@ -166,10 +177,7 @@ class BranchBox(NavBox):
         cls.box_content = ''
         for idx, line in enumerate(cls.content):
             if idx >= _limit and idx - _limit < cls.h - 2:
-                _line = line if len(line) < line_w else line[:line_w]
-                if _line.startswith('* '):
-                    _line = f'{Theme.BRANCH}{_line}{Theme.DEFAULT}'
-                _line = f'{Cursor.to(start_y, start_x)}{_line}'
+                _line = f'{Cursor.to(start_y, start_x)}{line}'
                 if cls.genre & cls.current and idx == _current:
                     _line = f'{Fx.b}{_line}{Fx.ub}'
                 cls.box_content += _line
@@ -191,21 +199,27 @@ class CommitBox(NavBox):
 
     @classmethod
     def fetch_data(cls):
-        cls.content_orignal = git.commits()
+        # get current head commit list
+        cls.content_orignal = git.load_commits(git.current_head())
 
     @classmethod
     def generate(cls):
+        line_w = cls.w - 2 - 9
+        content_ = []
 
-        _content = []
-        for item in cls.content_orignal:
-            _content.append(' '.join(item))
-        cls.content = _content
+        for commit in cls.content_orignal:
+            color_ = Theme.PUSHED if commit.is_pushed() else Theme.UNPUSHED
+            id_ = commit.sha[:7]
+            msg_ = commit.msg
+            msg_ = msg_ if len(msg_) <= line_w else msg_[line_w]
+            content_.append(f'{color_}{id_} {Theme.DEFAULT}{msg_}')
+
+        cls.content = content_
 
     @classmethod
     def update(cls):
         start_x = cls.x + 1
         start_y = cls.y + 1
-        line_w = cls.w - 2 - 9
 
         _current = cls.selected
         _limit = 0
@@ -213,13 +227,10 @@ class CommitBox(NavBox):
             _limit = _current + 1 - (cls.h - 2)
 
         cls.box_content = ''
-        for idx, line in enumerate(cls.content_orignal):
-            _id, _msg = line
-            _id = f'{Theme.COMMIT_ID}{_id}'
-            _msg = f'{Theme.DEFAULT}{_msg if len(_msg) < line_w else _msg[:line_w]}'
+        for idx, line in enumerate(cls.content):
 
             if idx >= _limit and idx - _limit < cls.h - 2:
-                _line = f'{Cursor.to(start_y, start_x)}{_id} {_msg}'
+                _line = f'{Cursor.to(start_y, start_x)}{line}'
                 if cls.genre & cls.current and idx == _current:
                     _line = f'{Fx.b}{_line}{Fx.ub}'
                 cls.box_content += _line

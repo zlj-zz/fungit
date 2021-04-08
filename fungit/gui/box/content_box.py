@@ -86,7 +86,7 @@ def fetch_content(c):
         if not args:
             return ''
         else:
-            _commit_id = args[c.selected][0]
+            _commit_id = args[c.selected].sha
             return git.commit_info(_commit_id)
     elif selected & GitType.BRANCH:
         args = c.content_orignal

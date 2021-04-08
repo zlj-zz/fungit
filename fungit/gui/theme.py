@@ -16,5 +16,7 @@ class Theme:
     FILE_CHANGE = Color.fg('#9370DB')
 
     BRANCH = Color.fg('#87CEFA')
+    BRANCH_STATUS = Color.fg('#F0E68C')
 
-    COMMIT_ID = Color.fg('#F0E68C')
+    PUSHED = Color.fg('#F0E68C')
+    UNPUSHED = Color.fg('#F08080')
