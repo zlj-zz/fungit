@@ -2,7 +2,7 @@ import os
 import math
 
 from fungit.shared import BOXS, GitType
-from .box.navigation_box import GitTypeBox
+from .box.navigation_box import NavBox
 from .box.git_box import GIT_BOXS
 from .box.content_box import ContentBox
 
@@ -10,7 +10,7 @@ from .box.content_box import ContentBox
 def update_git_box_w_h():
     w, h = os.get_terminal_size()
 
-    _selected_type = GitTypeBox.current
+    _selected_type = NavBox.current
     limit_w = math.floor(w / 3)
 
     if w < 90 or h < 8:

@@ -1,14 +1,14 @@
 import re
 from typing import List, Any
 
-from .navigation_box import GitTypeBox
+from .navigation_box import NavBox
 from ..style import Fx, Cursor, Symbol
 from ..theme import Theme
 from fungit.shared import GitType
 import fungit.commands as git
 
 
-class StateBox(GitTypeBox):
+class StateBox(NavBox):
     name: str = 'state'
     genre = GitType.STATE
     x: int = 0
@@ -31,7 +31,7 @@ class StateBox(GitTypeBox):
         cls.content = [f'{_project} {Symbol.right} {_head}']
 
 
-class StatusBox(GitTypeBox):
+class StatusBox(NavBox):
     name: str = 'status'
     genre = GitType.STATUS
     x: int = 0
@@ -121,7 +121,7 @@ class StatusBox(GitTypeBox):
         cls.notify(update_data=True)
 
 
-class BranchBox(GitTypeBox):
+class BranchBox(NavBox):
     name: str = 'branch'
     genre = GitType.BRANCH
     x: int = 0
@@ -176,7 +176,7 @@ class BranchBox(GitTypeBox):
                 start_y += 1
 
 
-class CommitBox(GitTypeBox):
+class CommitBox(NavBox):
     name: str = 'commit'
     genre = GitType.COMMIT
     x: int = 0
@@ -226,7 +226,7 @@ class CommitBox(GitTypeBox):
                 start_y += 1
 
 
-class StashBox(GitTypeBox):
+class StashBox(NavBox):
     name: str = 'stash'
     genre = GitType.STASH
     x: int = 0

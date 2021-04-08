@@ -9,9 +9,9 @@ from . import Box
 from .content_box import ContentBox
 
 
-class GitTypeBox(Box):
+class NavBox(Box):
     # only change in father class, sub class only read
-    current: GitType = GitType.STATUS
+    current: int= GitType.STATUS
 
     t_w: int
     t_h: int
@@ -28,7 +28,7 @@ class GitTypeBox(Box):
     box_content: str
 
     @classmethod
-    def set_current(cls, t: GitType):
+    def set_current(cls, t: int):
         cls.current = t
 
     @classmethod

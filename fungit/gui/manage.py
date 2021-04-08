@@ -1,7 +1,7 @@
 import threading
 
 from .box_option import initial_git_box as refresh_all
-from .box.navigation_box import GitTypeBox
+from .box.navigation_box import NavBox
 from .box.git_box import GIT_BOXS
 from .box.func_box import DynamicPromptBox
 from fungit.shared import GitType
@@ -12,30 +12,30 @@ class Manager:
 
     @staticmethod
     def switch_box_by_index(idx):
-        GitTypeBox.set_current(GIT_BOXS[int(idx) - 1].genre)
+        NavBox.set_current(GIT_BOXS[int(idx) - 1].genre)
         refresh_all()
 
     @staticmethod
     def prev_box():
-        _current = GitTypeBox.current
+        _current = NavBox.current
         _index = index_of(_current, need_box=False)
         _len = len(GIT_BOXS)
         new_index = _len - 1 - (_len - _index) % _len
-        GitTypeBox.set_current(GIT_BOXS[new_index].genre)
+        NavBox.set_current(GIT_BOXS[new_index].genre)
         refresh_all()
 
     @staticmethod
     def next_box():
-        _current = GitTypeBox.current
+        _current = NavBox.current
         _index = index_of(_current, need_box=False)
         _len = len(GIT_BOXS)
         new_index = (_index + 1) % _len
-        GitTypeBox.set_current(GIT_BOXS[new_index].genre)
+        NavBox.set_current(GIT_BOXS[new_index].genre)
         refresh_all()
 
     @staticmethod
     def prev_item():
-        _current = GitTypeBox.current
+        _current = NavBox.current
         _, box = index_of(_current)
 
         if box.selected > 0:
@@ -43,7 +43,7 @@ class Manager:
 
     @staticmethod
     def next_item():
-        _current = GitTypeBox.current
+        _current = NavBox.current
         _, box = index_of(_current)
 
         _max_len = len(box.content_orignal) - 1
@@ -53,7 +53,7 @@ class Manager:
 
     @staticmethod
     def space_event():
-        _current = GitTypeBox.current
+        _current = NavBox.current
         _, box = index_of(_current)
 
         if _current & GitType.STATUS:
@@ -64,7 +64,7 @@ class Manager:
 
     @staticmethod
     def a_event():
-        _current = GitTypeBox.current
+        _current = NavBox.current
         _, box = index_of(_current)
 
         if _current & GitType.STATUS:
