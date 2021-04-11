@@ -11,7 +11,7 @@ from .content_box import ContentBox
 
 class NavBox(Box):
     # only change in father class, sub class only read
-    current: int= GitType.STATUS
+    current: int = GitType.STATUS
 
     t_w: int
     t_h: int
@@ -21,7 +21,7 @@ class NavBox(Box):
     y: int
     w: int
     h: int
-    content_orignal: Any
+    raw: Any
     content: List
     selected: int
     box: str
@@ -40,13 +40,32 @@ class NavBox(Box):
             cls.x, cls.y, cls.w, cls.h, cls.name, _item_msg, line_color=_line_color)
 
     @classmethod
-    def fetch_data(cls): ...
+    def fetch_data(cls):
+        '''Get raw data.
+
+            Get the list of original data and cache it in `cls.raw`, 
+            each of which is an independent data object instance
+            (Override by subclass).
+        '''
+        ...
 
     @classmethod
-    def generate(cls): ...
+    def generate(cls):
+        '''Content of production display.
+
+            All the acquired data is produced as the class content that can be 
+            displayed, colored and cached in `cls.content`(Override by subclass).
+        '''
+        ...
 
     @classmethod
     def update(cls):
+        '''Updatee display content.
+
+            According to the currently selected item to update the displayed 
+            content block (current item BOLD), generate a content string, and 
+            assign it to `cla.box_content`.
+        '''
         start_x = cls.x + 1
         start_y = cls.y + 1
         line_w = cls.w - 2

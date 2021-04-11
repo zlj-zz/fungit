@@ -16,7 +16,7 @@ class StateBox(NavBox):
     y: int = 0
     w: int = 0
     h: int = 0
-    content_orignal: Any = None
+    raw: Any = None
     content: List = []
     selected: int = 0
     box: str = ''
@@ -24,11 +24,11 @@ class StateBox(NavBox):
 
     @classmethod
     def fetch_data(cls):
-        cls.content_orignal = git.state()
+        cls.raw = git.state()
 
     @classmethod
     def generate(cls):
-        _project, _head = cls.content_orignal
+        _project, _head = cls.raw
         cls.content = [f'{_project} {Symbol.right} {_head}']
 
 
@@ -39,7 +39,7 @@ class StatusBox(NavBox):
     y: int = 0
     w: int = 0
     h: int = 0
-    content_orignal: Any = None
+    raw: Any = None
     content: List = []
     selected: int = 0
     box: str = ''
@@ -47,21 +47,27 @@ class StatusBox(NavBox):
 
     @classmethod
     def fetch_data(cls):
-        cls.content_orignal = git.status()
+        cls.raw = git.load_files()
 
     @classmethod
     def generate(cls):
-
+        line_w = cls.w - 2
         _content = []
-        for item in cls.content_orignal:
-            _content.append(' '.join(item))
+
+        for file_ in cls.raw:
+            str_len = len(file_.display_str)
+            display_str = file_.display_str if str_len > line_w else file_.display_str[
+                :line_w]
+            color_ = cls.line_color(file_)
+            line_ = f'{color_}{display_str}{Theme.DEFAULT}'
+            _content.append(line_)
+
         cls.content = _content
 
     @classmethod
     def update(cls):
         start_x = cls.x + 1
         start_y = cls.y + 1
-        line_w = cls.w - 2
 
         _current = cls.selected
         _limit = 0
@@ -71,30 +77,28 @@ class StatusBox(NavBox):
         cls.box_content = ''
         for idx, line in enumerate(cls.content):
             if idx >= _limit and idx - _limit < cls.h - 2:
-                _c = cls.line_color(line[:2])
-
-                _line = f'{Cursor.to(start_y, start_x)}{_c}{line if len(line) < line_w else line[:line_w]}{Theme.DEFAULT}'
+                _line = f'{Cursor.to(start_y, start_x)}{line}'
                 if cls.genre & cls.current and idx == _current:
                     _line = f'{Fx.b}{_line}{Fx.ub}'
                 cls.box_content += _line
                 start_y += 1
 
     @classmethod
-    def line_color(cls, flag):
-        if flag == '??':
+    def line_color(cls, f):
+        if not f.tracked:
             color = Theme.FILE_UNTRACK
-        elif flag == 'M ':
+        elif f.has_staged_change:
             color = Theme.FILE_CACHED
-        elif flag == ' M':
+        elif f.has_unstaged_change:
             color = Theme.FILE_CHANGE
-        elif flag == 'A ':
+        elif f.added:
             color = Theme.FILE_NEW
-        elif flag == ' D':
+        elif f.deleted:
             color = Theme.FILE_DEL
-        elif flag == 'D ':
-            color = Theme.FILE_DELED
-        elif flag == 'R ':
-            color = Theme.FILE_RENAME
+        # elif flag == 'D ':
+        #     color = Theme.FILE_DELED
+        # elif flag == 'R ':
+        #     color = Theme.FILE_RENAME
         else:
             color = Theme.DEFAULT
 
@@ -102,18 +106,18 @@ class StatusBox(NavBox):
 
     @classmethod
     def switch_status(cls):
-        _status, _path = cls.content_orignal[cls.selected]
-        if _CACHED.match(_status):
-            git.unstage(_path)
+        file_ = cls.raw[cls.selected]
+        if file_.has_unstaged_change:
+            git.stage(file_.name)
         else:
-            git.stage(_path)
+            git.unstage(file_.name)
 
         cls.notify(update_data=True)
 
     @classmethod
     def switch_all(cls):
-        for _status, _ in cls.content_orignal:
-            if not _CACHED.match(_status):
+        for file_ in cls.raw:
+            if file_.has_unstaged_change:
                 git.stage_all()
                 break
         else:
@@ -129,7 +133,7 @@ class BranchBox(NavBox):
     y: int = 0
     w: int = 0
     h: int = 0
-    content_orignal: Any = None
+    raw: Any = None
     content: List = []
     selected: int = 0
     box: str = ''
@@ -137,14 +141,14 @@ class BranchBox(NavBox):
 
     @classmethod
     def fetch_data(cls):
-        cls.content_orignal = git.load_branches()
+        cls.raw = git.load_branches()
 
     @classmethod
     def generate(cls):
         line_w = cls.w - 2
         content_ = []
 
-        for branch in cls.content_orignal:
+        for branch in cls.raw:
             prefix_ = '* ' if branch.is_head else '  '
             prefix_len = len(prefix_)
 
@@ -191,7 +195,7 @@ class CommitBox(NavBox):
     y: int = 0
     w: int = 0
     h: int = 0
-    content_orignal: Any = None
+    raw: Any = None
     content: List = []
     selected: int = 0
     box: str = ''
@@ -200,14 +204,14 @@ class CommitBox(NavBox):
     @classmethod
     def fetch_data(cls):
         # get current head commit list
-        cls.content_orignal = git.load_commits(git.current_head())
+        cls.raw = git.load_commits(git.current_head())
 
     @classmethod
     def generate(cls):
         line_w = cls.w - 2 - 9
         content_ = []
 
-        for commit in cls.content_orignal:
+        for commit in cls.raw:
             color_ = Theme.PUSHED if commit.is_pushed() else Theme.UNPUSHED
             id_ = commit.sha[:7]
             msg_ = commit.msg
@@ -244,24 +248,22 @@ class StashBox(NavBox):
     y: int = 0
     w: int = 0
     h: int = 0
-    content_orignal: Any = None
+    raw: Any = None
     content: List = []
     box: str = ''
     box_content: str = ''
 
     @classmethod
     def fetch_data(cls):
-        cls.content_orignal = git.stashs()
+        cls.raw = git.stashs()
 
     @classmethod
     def generate(cls):
 
-        if cls.content_orignal:
-            cls.content = cls.content_orignal.split('\n')
+        if cls.raw:
+            cls.content = cls.raw.split('\n')
         else:
             cls.content = []
 
 
 GIT_BOXS = [StateBox, StatusBox, BranchBox, CommitBox, StashBox]
-
-_CACHED = re.compile(r'^[A-Z]\s$')

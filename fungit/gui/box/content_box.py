@@ -62,34 +62,34 @@ class ContentBox(Box):
         pass
 
 
-_CACHED = re.compile(r'^[A-Z]\s$')
+# _CACHED = re.compile(r'^[A-Z]\s$')
 
 
 def fetch_content(c):
     selected = c.current
 
     if selected & GitType.STATUS:
-        _status_list = c.content_orignal
+        _status_list = c.raw
         if not _status_list:
             return ''
         else:
-            _state, _path = _status_list[c.selected]
+            file_ = _status_list[c.selected]
 
-            if _state == '??':  # is mean untrack
-                return git.diff(_path, tracked=False)
-            elif _CACHED.match(_state):
-                return git.diff(_path, cached=True)
+            if not file_.tracked:  # is mean untrack
+                return git.diff(file_.name, tracked=False)
+            elif file_.has_staged_change:
+                return git.diff(file_.name, cached=True)
             else:
-                return git.diff(_path)
+                return git.diff(file_.name)
     elif selected & GitType.COMMIT:
-        args = c.content_orignal
+        args = c.raw
         if not args:
             return ''
         else:
             _commit_id = args[c.selected].sha
             return git.commit_info(_commit_id)
     elif selected & GitType.BRANCH:
-        args = c.content_orignal
+        args = c.raw
         if not args:
             return ''
         else:

@@ -4,6 +4,7 @@ import os
 import re
 from typing import List
 
+from .module.file import File
 from .module.branch import Branch
 from .module.commit import Commit
 
@@ -48,7 +49,7 @@ def state() -> list:
     return [project, _head]
 
 
-def status(*args) -> List[List]:
+def load_files(*args) -> List[List]:
     '''Get all file status.
 
     Args:
@@ -56,15 +57,36 @@ def status(*args) -> List[List]:
     '''
 
     command = 'status -s -u'
-    s = _git(' '.join([command, *args])).rstrip()
+    resp = _git(' '.join([command, *args])).rstrip()
 
-    _status = []
-    if s:
-        files = s.split('\n')
-        for item in files:
-            _status.append((item[:2], item[3:]))
+    files_ = []
+    if resp:
+        lines_ = resp.split('\n')
+        for line_ in lines_:
+            # _status.append((item[:2], item[3:]))
+            change = line_[:2]
+            staged_change = line_[:1]
+            unstaged_change = line_[1:2]
+            name = line_[3:]
+            untracked = change in ['??', 'A ', 'AM']
+            has_no_staged_change = staged_change in [' ', 'U', '?']
+            has_merged_conflicts = change in [
+                'DD', 'AA', 'UU', 'AU', 'UA', 'UD', 'DU']
+            has_inline_merged_conflicts = change in ['UU', 'AA']
 
-    return _status
+            file_ = File(name=name,
+                         display_str=line_,
+                         short_status=change,
+                         has_staged_change=not has_no_staged_change,
+                         has_unstaged_change=unstaged_change != ' ',
+                         tracked=not untracked,
+                         deleted=unstaged_change == 'D' or staged_change == 'D',
+                         added=unstaged_change == 'A' or untracked,
+                         has_merged_conflicts=has_merged_conflicts,
+                         has_inline_merged_conflicts=has_inline_merged_conflicts)
+            files_.append(file_)
+
+    return files_
 
 
 def stage(*args) -> None:
@@ -109,7 +131,10 @@ def load_branches() -> List[Branch]:
 
     for line in lines:
         items = line.split('|')
-        branch = Branch(items[1], '?', '?', items[0] == '*')
+        branch = Branch(name=items[1],
+                        pushables='?',
+                        pullables='?',
+                        is_head=items[0] == '*')
 
         upstream_name = items[2]
 
@@ -202,8 +227,13 @@ def load_commits(branch_name: str):
         status = {True: "unpushed", False: "pushed"}[
             not passed_first_pushed_commit]
 
-        commit_ = Commit(sha, message, author,
-                         unix_timestamp, status, extra_info, tag)
+        commit_ = Commit(sha=sha,
+                         msg=message,
+                         author=author,
+                         unix_timestamp=unix_timestamp,
+                         status=status,
+                         extra_info=extra_info,
+                         tag=tag)
         commits.append(commit_)
 
     return commits

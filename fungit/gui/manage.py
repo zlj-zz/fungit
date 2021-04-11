@@ -46,7 +46,7 @@ class Manager:
         _current = NavBox.current
         _, box = index_of(_current)
 
-        _max_len = len(box.content_orignal) - 1
+        _max_len = len(box.raw) - 1
 
         if box.selected < _max_len:
             box.set_selected(box.selected + 1)
