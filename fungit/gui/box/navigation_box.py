@@ -43,28 +43,27 @@ class NavBox(Box):
     def fetch_data(cls):
         '''Get raw data.
 
-            Get the list of original data and cache it in `cls.raw`, 
-            each of which is an independent data object instance
-            (Override by subclass).
+        Get the list of original data and cache it in `cls.raw`, each of which 
+        is an independent data object instance(Override by subclass).
         '''
-        ...
+        pass
 
     @classmethod
     def generate(cls):
         '''Content of production display.
 
-            All the acquired data is produced as the class content that can be 
-            displayed, colored and cached in `cls.content`(Override by subclass).
+        All the acquired data is produced as the class content that can be 
+        displayed, colored and cached in `cls.content`(Override by subclass).
         '''
-        ...
+        pass
 
     @classmethod
     def update(cls):
         '''Updatee display content.
 
-            According to the currently selected item to update the displayed 
-            content block (current item BOLD), generate a content string, and 
-            assign it to `cla.box_content`.
+        According to the currently selected item to update the displayed content 
+        block (current item BOLD), generate a content string, and assign it to 
+        `cla.box_content`.
         '''
         start_x = cls.x + 1
         start_y = cls.y + 1

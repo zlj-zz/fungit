@@ -5,7 +5,7 @@ sys.path.append('.')
 
 
 def test_load_branches():
-    from fungit.commands.commands import _git, load_branches
+    from fungit.commands.commands import run_with_git, load_branches
     resp = load_branches()
     print(len(resp))
     for branch in resp:
@@ -24,7 +24,7 @@ def test_load_commits():
 
 
 def test_load_files():
-    from fungit.commands.commands import _git, load_files
+    from fungit.commands.commands import run_with_git, load_files
     resp = load_files()
     for file in resp:
         # print(file.name, file.display_str, file.short_status, file.has_staged_change,
