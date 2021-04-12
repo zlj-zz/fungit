@@ -185,7 +185,11 @@ class Key:
 
     @classmethod
     def _get_key(cls):
-        """Get a key or escape sequence from stdin, convert to readable format and save to keys list. Meant to be run in it's own thread."""
+        """Get recive keys.
+
+        Get a key or escape sequence from stdin, convert to readable format
+        and save to keys list. Meant to be run in it's own thread.
+        """
         input_key: str = ""
         clean_key: str = ""
         try:
