@@ -1,12 +1,11 @@
 import sys
-import os
 
-sys.path.append('.')
+sys.path.insert(0, ".")
 
-if __name__ == '__main__':
+from fungit.event.key import Key
 
-    from fungit.event.key import Key
-    # from old_zgit.key import Key
+if __name__ == "__main__":
+
     Key.start()
     while True:
         while Key.has_key():

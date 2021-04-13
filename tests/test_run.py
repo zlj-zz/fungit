@@ -1,10 +1,11 @@
+from __future__ import absolute_import
 import sys
-import os
 
-sys.path.append(os.path.dirname(os.path.dirname(__file__)))
+sys.path.insert(0, ".")
 
 
-if __name__ == '__main__':
-    from fungit.main import main
+from fungit.main import main
+
+if __name__ == "__main__":
     main()
     pass
