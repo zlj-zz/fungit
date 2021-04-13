@@ -4,26 +4,27 @@ from typing import List, Dict, Tuple, Union, Iterable
 
 class Cursor:
     """Class with collection of cursor movement functions: .t[o](line, column) | .r[ight](columns) | .l[eft](columns) | .u[p](lines) | .d[own](lines) | .save() | .restore()"""
+
     @staticmethod
     def to(line: int, col: int) -> str:
         # * Move cursor to line, column
-        return '\033[{};{}f'.format(line, col)
+        return "\033[{};{}f".format(line, col)
 
     @staticmethod
     def right(dx: int) -> str:
-        return '\033[{}C'.format(dx)
+        return "\033[{}C".format(dx)
 
     @staticmethod
     def left(dx: int) -> str:
-        return '\033[{}D'.format(dx)
+        return "\033[{}D".format(dx)
 
     @staticmethod
     def up(dy: int) -> str:
-        return '\033[{}A'.format(dy)
+        return "\033[{}A".format(dy)
 
     @staticmethod
     def down(dy: int) -> str:
-        return '\033[{}B'.format(dy)
+        return "\033[{}B".format(dy)
 
     save: str = "\033[s"  # * Save cursor position
     restore: str = "\033[u"  # * Restore saved cursor postion
@@ -37,7 +38,9 @@ class Cursor:
 class Fx:
     """Text effects
     * trans(string: str): Replace whitespace with escape move right to not overwrite background behind whitespace.
-    * uncolor(string: str) : Removes all 24-bit color and returns string ."""
+    * uncolor(string: str) : Removes all 24-bit color and returns string .
+    """
+
     start = "\033["  # * Escape sequence start
     sep = ";"  # * Escape sequence separator
     end = "m"  # * Escape sequence end
@@ -69,7 +72,7 @@ class Fx:
 
 
 class Color:
-    '''Holds representations for a 24-bit color value
+    """Holds representations for a 24-bit color value
     __init__(color, depth="fg", default=False)
     -- color accepts 6 digit hexadecimal: string "#RRGGBB", 2 digit hexadecimal: string "#FF" or decimal RGB "255 255 255" as a string.
     -- depth accepts "fg" or "bg"
@@ -77,7 +80,8 @@ class Color:
     __str__ returns escape sequence to set color
     __iter__ returns iteration over red, green and blue in integer values of 0-255.
     * Values:  .hexa: str  |  .dec: Tuple[int, int, int]  |  .red: int  |  .green: int  |  .blue: int  |  .depth: str  |  .escape: str
-    '''
+    """
+
     hexa: str
     dec: Tuple[int, int, int]
     red: int
@@ -107,11 +111,15 @@ class Color:
                     c = int(self.hexa[1:3], base=16)
                     self.dec = (c, c, c)
                 elif len(self.hexa) == 7:
-                    self.dec = (int(self.hexa[1:3], base=16), int(
-                        self.hexa[3:5], base=16), int(self.hexa[5:7], base=16))
+                    self.dec = (
+                        int(self.hexa[1:3], base=16),
+                        int(self.hexa[3:5], base=16),
+                        int(self.hexa[5:7], base=16),
+                    )
                 else:
                     raise ValueError(
-                        f'Incorrectly formatted hexadecimal rgb string: {self.hexa}')
+                        f"Incorrectly formatted hexadecimal rgb string: {self.hexa}"
+                    )
 
             else:
                 c_t = tuple(map(int, color.split(" ")))
@@ -121,8 +129,8 @@ class Color:
                     raise ValueError(f'RGB dec should be "0-255 0-255 0-255"')
 
             ct = self.dec[0] + self.dec[1] + self.dec[2]
-            if ct > 255*3 or ct < 0:
-                raise ValueError(f'RGB values out of range: {color}')
+            if ct > 255 * 3 or ct < 0:
+                raise ValueError(f"RGB values out of range: {color}")
         except Exception as e:
             # errlog.exception(str(e))
             self.escape = ""
@@ -136,7 +144,7 @@ class Color:
             self.escape = f'\033[{38 if self.depth == "fg" else 48};2;{";".join(str(c) for c in self.dec)}m'
 
         if Color.TRUE_COLOR:
-            self.escape = f'{self.truecolor_to_256(rgb=self.dec, depth=self.depth)}'
+            self.escape = f"{self.truecolor_to_256(rgb=self.dec, depth=self.depth)}"
 
     def __str__(self) -> str:
         return self.escape
@@ -158,17 +166,18 @@ class Color:
         out: str = ""
         pre: str = f'\033[{"38" if depth == "fg" else "48"};5;'
 
-        greyscale: Tuple[int, int, int] = (
-            rgb[0] // 11, rgb[1] // 11, rgb[2] // 11)
+        greyscale: Tuple[int, int, int] = (rgb[0] // 11, rgb[1] // 11, rgb[2] // 11)
         if greyscale[0] == greyscale[1] == greyscale[2]:
-            out = f'{pre}{232 + greyscale[0]}m'
+            out = f"{pre}{232 + greyscale[0]}m"
         else:
-            out = f'{pre}{round(rgb[0] / 51) * 36 + round(rgb[1] / 51) * 6 + round(rgb[2] / 51) + 16}m'
+            out = f"{pre}{round(rgb[0] / 51) * 36 + round(rgb[1] / 51) * 6 + round(rgb[2] / 51) + 16}m"
 
         return out
 
     @staticmethod
-    def escape_color(hexa: str = "", r: int = 0, g: int = 0, b: int = 0, depth: str = "fg") -> str:
+    def escape_color(
+        hexa: str = "", r: int = 0, g: int = 0, b: int = 0, depth: str = "fg"
+    ) -> str:
         """Returns escape sequence to set color
         * accepts either 6 digit hexadecimal hexa="#RRGGBB", 2 digit hexadecimal: hexa="#FF"
         * or decimal RGB: r=0-255, g=0-255, b=0-255
@@ -181,22 +190,22 @@ class Color:
                 if len(hexa) == 3:
                     c = int(hexa[1:], base=16)
                     if Color.TRUE_COLOR:
-                        color = f'\033[{dint};2;{c};{c};{c}m'
+                        color = f"\033[{dint};2;{c};{c};{c}m"
                     else:
-                        color = f'{Color.truecolor_to_256(rgb=(c, c, c), depth=depth)}'
+                        color = f"{Color.truecolor_to_256(rgb=(c, c, c), depth=depth)}"
                 elif len(hexa) == 7:
                     if Color.TRUE_COLOR:
-                        color = f'\033[{dint};2;{int(hexa[1:3], base=16)};{int(hexa[3:5], base=16)};{int(hexa[5:7], base=16)}m'
+                        color = f"\033[{dint};2;{int(hexa[1:3], base=16)};{int(hexa[3:5], base=16)};{int(hexa[5:7], base=16)}m"
                     else:
-                        color = f'{Color.truecolor_to_256(rgb=(int(hexa[1:3], base=16), int(hexa[3:5], base=16), int(hexa[5:7], base=16)), depth=depth)}'
+                        color = f"{Color.truecolor_to_256(rgb=(int(hexa[1:3], base=16), int(hexa[3:5], base=16), int(hexa[5:7], base=16)), depth=depth)}"
             except ValueError as e:
                 # errlog.exception(f'{e}')
                 pass
         else:
             if Color.TRUE_COLOR:
-                color = f'\033[{dint};2;{r};{g};{b}m'
+                color = f"\033[{dint};2;{r};{g};{b}m"
             else:
-                color = f'{Color.truecolor_to_256(rgb=(r, g, b), depth=depth)}'
+                color = f"{Color.truecolor_to_256(rgb=(r, g, b), depth=depth)}"
         return color
 
     @classmethod
@@ -226,21 +235,61 @@ class Symbol:
     div_up: str = "┬"
     div_down: str = "┴"
     graph_up: Dict[float, str] = {
-        0.0: " ", 0.1: "⢀", 0.2: "⢠", 0.3: "⢰", 0.4: "⢸",
-        1.0: "⡀", 1.1: "⣀", 1.2: "⣠", 1.3: "⣰", 1.4: "⣸",
-        2.0: "⡄", 2.1: "⣄", 2.2: "⣤", 2.3: "⣴", 2.4: "⣼",
-        3.0: "⡆", 3.1: "⣆", 3.2: "⣦", 3.3: "⣶", 3.4: "⣾",
-        4.0: "⡇", 4.1: "⣇", 4.2: "⣧", 4.3: "⣷", 4.4: "⣿"
+        0.0: " ",
+        0.1: "⢀",
+        0.2: "⢠",
+        0.3: "⢰",
+        0.4: "⢸",
+        1.0: "⡀",
+        1.1: "⣀",
+        1.2: "⣠",
+        1.3: "⣰",
+        1.4: "⣸",
+        2.0: "⡄",
+        2.1: "⣄",
+        2.2: "⣤",
+        2.3: "⣴",
+        2.4: "⣼",
+        3.0: "⡆",
+        3.1: "⣆",
+        3.2: "⣦",
+        3.3: "⣶",
+        3.4: "⣾",
+        4.0: "⡇",
+        4.1: "⣇",
+        4.2: "⣧",
+        4.3: "⣷",
+        4.4: "⣿",
     }
     graph_up_small = graph_up.copy()
     graph_up_small[0.0] = "\033[1C"
 
     graph_down: Dict[float, str] = {
-        0.0: " ", 0.1: "⠈", 0.2: "⠘", 0.3: "⠸", 0.4: "⢸",
-        1.0: "⠁", 1.1: "⠉", 1.2: "⠙", 1.3: "⠹", 1.4: "⢹",
-        2.0: "⠃", 2.1: "⠋", 2.2: "⠛", 2.3: "⠻", 2.4: "⢻",
-        3.0: "⠇", 3.1: "⠏", 3.2: "⠟", 3.3: "⠿", 3.4: "⢿",
-        4.0: "⡇", 4.1: "⡏", 4.2: "⡟", 4.3: "⡿", 4.4: "⣿"
+        0.0: " ",
+        0.1: "⠈",
+        0.2: "⠘",
+        0.3: "⠸",
+        0.4: "⢸",
+        1.0: "⠁",
+        1.1: "⠉",
+        1.2: "⠙",
+        1.3: "⠹",
+        1.4: "⢹",
+        2.0: "⠃",
+        2.1: "⠋",
+        2.2: "⠛",
+        2.3: "⠻",
+        2.4: "⢻",
+        3.0: "⠇",
+        3.1: "⠏",
+        3.2: "⠟",
+        3.3: "⠿",
+        3.4: "⢿",
+        4.0: "⡇",
+        4.1: "⡏",
+        4.2: "⡟",
+        4.3: "⡿",
+        4.4: "⣿",
     }
     graph_down_small = graph_down.copy()
     graph_down_small[0.0] = "\033[1C"
@@ -254,7 +303,7 @@ class Symbol:
     # fail: str = f'{Color.fg("#ff3050")}!{Color.fg("#cc")}'
 
 
-if __name__ == '__main__':
-    green = (Color.fg('#00ff00'))
-    a = (f'{green}abcde')
+if __name__ == "__main__":
+    green = Color.fg("#00ff00")
+    a = f"{green}abcde"
     print(len(a))

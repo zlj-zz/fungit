@@ -67,36 +67,37 @@ class Nonblocking(object):
 
 class Key:
     """Handles the threaded input reader for keypresses and mouse events"""
+
     list: List[str] = []
     mouse: Dict[str, List[List[int]]] = {}
     mouse_pos: Tuple[int, int] = (0, 0)
     escape: Dict[Union[str, Tuple[str, str]], str] = {
-        "\n":					"enter",
-        ("\x7f", "\x08"):		"backspace",
-        ("[A", "OA"):			"up",
-        ("[B", "OB"):			"down",
-        ("[D", "OD"):			"left",
-        ("[C", "OC"):			"right",
-        "[2~":					"insert",
-        "[3~":					"delete",
-        "[H":					"home",
-        "[F":					"end",
-        "[5~":					"page_up",
-        "[6~":					"page_down",
-        "\t":					"tab",
-        "[Z":					"shift_tab",
-        "OP":					"f1",
-        "OQ":					"f2",
-        "OR":					"f3",
-        "OS":					"f4",
-        "[15":					"f5",
-        "[17":					"f6",
-        "[18":					"f7",
-        "[19":					"f8",
-        "[20":					"f9",
-        "[21":					"f10",
-        "[23":					"f11",
-        "[24":					"f12"
+        "\n": "enter",
+        ("\x7f", "\x08"): "backspace",
+        ("[A", "OA"): "up",
+        ("[B", "OB"): "down",
+        ("[D", "OD"): "left",
+        ("[C", "OC"): "right",
+        "[2~": "insert",
+        "[3~": "delete",
+        "[H": "home",
+        "[F": "end",
+        "[5~": "page_up",
+        "[6~": "page_down",
+        "\t": "tab",
+        "[Z": "shift_tab",
+        "OP": "f1",
+        "OQ": "f2",
+        "OR": "f3",
+        "OS": "f4",
+        "[15": "f5",
+        "[17": "f6",
+        "[18": "f7",
+        "[19": "f8",
+        "[20": "f9",
+        "[21": "f10",
+        "[23": "f11",
+        "[24": "f12",
     }
     new = threading.Event()
     idle = threading.Event()
@@ -161,11 +162,11 @@ class Key:
 
     @classmethod
     def input_wait(cls, sec: float = 0.0, mouse: bool = False) -> bool:
-        '''Returns True if key is detected else waits out timer and returns False'''
+        """Returns True if key is detected else waits out timer and returns False"""
         if cls.list:
             return True
         # if mouse:
-            # Draw.now(Term.mouse_direct_on)
+        # Draw.now(Term.mouse_direct_on)
         cls.new.wait(sec if sec > 0 else 0.0)
         # if mouse:
         # Draw.now(Term.mouse_direct_off, Term.mouse_on)
@@ -200,7 +201,9 @@ class Key:
                         continue
                     # * Read 1 key safely with blocking on
                     input_key += sys.stdin.read(1)
-                    if input_key == "\033":  # * If first character is a escape sequence keep reading
+                    if (
+                        input_key == "\033"
+                    ):  # * If first character is a escape sequence keep reading
                         # * Report IO block in progress to prevent Draw functions from getting a IO Block error
                         cls.idle.clear()
                         # Draw.idle.wait()  # * Wait for Draw function to finish if busy
@@ -213,12 +216,18 @@ class Key:
                         cls.idle.set()  # * Report IO blocking done
                     # errlog.debug(f'{repr(input_key)}')
                     if input_key == "\033":
-                        clean_key = "escape"  # * Key is "escape" key if only containing \033
+                        clean_key = (
+                            "escape"  # * Key is "escape" key if only containing \033
+                        )
                     # * Detected mouse event
-                    elif input_key.startswith(("\033[<0;", "\033[<35;", "\033[<64;", "\033[<65;")):
+                    elif input_key.startswith(
+                        ("\033[<0;", "\033[<35;", "\033[<64;", "\033[<65;")
+                    ):
                         try:
-                            cls.mouse_pos = (int(input_key.split(";")[1]), int(
-                                input_key.split(";")[2].rstrip("mM")))
+                            cls.mouse_pos = (
+                                int(input_key.split(";")[1]),
+                                int(input_key.split(";")[2].rstrip("mM")),
+                            )
                         except:
                             pass
                         else:
@@ -233,11 +242,18 @@ class Key:
                             elif input_key.startswith("\033[<65;"):
                                 clean_key = "mouse_scroll_down"
                             # * Detected mouse click release
-                            elif input_key.startswith("\033[<0;") and input_key.endswith("m"):
+                            elif input_key.startswith(
+                                "\033[<0;"
+                            ) and input_key.endswith("m"):
                                 if False:
                                     clean_key = "mouse_click"
                                 else:
-                                    for key_name, positions in cls.mouse.items():  # * Check if mouse position is clickable
+                                    for (
+                                        key_name,
+                                        positions,
+                                    ) in (
+                                        cls.mouse.items()
+                                    ):  # * Check if mouse position is clickable
                                         if list(cls.mouse_pos) in positions:
                                             clean_key = key_name
                                             break
@@ -246,7 +262,11 @@ class Key:
                     elif input_key == "\\":
                         clean_key = "\\"  # * Clean up "\" to not return escaped
                     else:
-                        for code in cls.escape.keys():  # * Go trough dict of escape codes to get the cleaned key name
+                        for (
+                            code
+                        ) in (
+                            cls.escape.keys()
+                        ):  # * Go trough dict of escape codes to get the cleaned key name
                             if input_key.lstrip("\033").startswith(code):
                                 clean_key = cls.escape[code]
                                 break

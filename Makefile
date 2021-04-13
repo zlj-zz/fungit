@@ -4,7 +4,6 @@ PY = python3
 test:
 	$(PY) ./tests/test_run.py
 
-
 .PHONY: lint
 lint:
 	@if [ ! -f flake8 ]; then $(PY) -m pip install flake8; fi
@@ -20,6 +19,10 @@ del:
 release: del
 	$(PY) setup.py sdist bdist_wheel 
 	twine upload dist/*
+
+.PHONY: install
+install: del
+	$(PY) setup.py install
 
 .PHONY: clean
 clean:

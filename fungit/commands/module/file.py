@@ -1,8 +1,17 @@
 class File:
-    def __init__(self, name: str, display_str: str, short_status: str,
-                 has_staged_change: bool, has_unstaged_change: bool,
-                 tracked: bool, deleted: bool, added: bool,
-                 has_merged_conflicts: bool, has_inline_merged_conflicts: bool) -> None:
+    def __init__(
+        self,
+        name: str,
+        display_str: str,
+        short_status: str,
+        has_staged_change: bool,
+        has_unstaged_change: bool,
+        tracked: bool,
+        deleted: bool,
+        added: bool,
+        has_merged_conflicts: bool,
+        has_inline_merged_conflicts: bool,
+    ) -> None:
         self.name = name
         self.display_str = display_str
         self.short_status = short_status

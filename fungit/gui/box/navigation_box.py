@@ -33,49 +33,50 @@ class NavBox(Box):
 
     @classmethod
     def create_profile(cls):
-        _line_color = Theme.BOX_SELECTED_COLOR if cls.genre & cls.current else ''
-        _item_msg = f'{cls.selected + 1} of {len(cls.content)}' if len(
-            cls.content) > 1 else ''
+        _line_color = Theme.BOX_SELECTED_COLOR if cls.genre & cls.current else ""
+        _item_msg = (
+            f"{cls.selected + 1} of {len(cls.content)}" if len(cls.content) > 1 else ""
+        )
         cls.box = create_profile(
-            cls.x, cls.y, cls.w, cls.h, cls.name, _item_msg,
-            line_color=_line_color)
+            cls.x, cls.y, cls.w, cls.h, cls.name, _item_msg, line_color=_line_color
+        )
 
     @classmethod
     def fetch_data(cls):
-        '''Get raw data.
+        """Get raw data.
 
         Get the list of original data and cache it in `cls.raw`, each of which
         is an independent data object instance(Override by subclass).
-        '''
+        """
         pass
 
     @classmethod
     def generate(cls):
-        '''Content of production display.
+        """Content of production display.
 
         All the acquired data is produced as the class content that can be
         displayed, colored and cached in `cls.content`(Override by subclass).
-        '''
+        """
         pass
 
     @classmethod
     def update(cls):
-        '''Updatee display content.
+        """Updatee display content.
 
         According to the currently selected item to update the displayed
         content block (current item BOLD), generate a content string, and
         assign it to `cla.box_content`.
-        '''
+        """
         start_x = cls.x + 1
         start_y = cls.y + 1
         line_w = cls.w - 2
 
-        cls.box_content = ''
+        cls.box_content = ""
         for idx, line in enumerate(cls.content):
             if idx < cls.h - 2:
-                _line = f'{Cursor.to(start_y, start_x)}{line if len(line) < line_w else line[:line_w]}'
+                _line = f"{Cursor.to(start_y, start_x)}{line if len(line) < line_w else line[:line_w]}"
                 if cls.genre & cls.current:
-                    _line = f'{Fx.b}{_line}{Fx.ub}'
+                    _line = f"{Fx.b}{_line}{Fx.ub}"
                 cls.box_content += _line
                 start_y += 1
 

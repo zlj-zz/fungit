@@ -9,7 +9,6 @@ import fungit.commands as git
 
 
 class Manager:
-
     @staticmethod
     def switch_box_by_index(idx):
         NavBox.set_current(GIT_BOXS[int(idx) - 1].genre)
@@ -83,7 +82,7 @@ class Manager:
         t.setDaemon(True)
         t.start()
 
-        DynamicPromptBox.main('', 'Pulling... ')
+        DynamicPromptBox.main("", "Pulling... ")
         refresh_all()
 
     @staticmethod
@@ -96,7 +95,7 @@ class Manager:
         t.setDaemon(True)
         t.start()
 
-        DynamicPromptBox.main('', 'Pushing.. ')
+        DynamicPromptBox.main("", "Pushing.. ")
         refresh_all()
 
 

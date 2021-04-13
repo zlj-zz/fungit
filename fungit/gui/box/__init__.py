@@ -22,9 +22,10 @@ class Box:
     @classmethod
     def create_profile(cls):
         # _line_color = BOX_SELECTED_COLOR if cls.genre & cls.current else ''
-        _line_color = ''
+        _line_color = ""
         cls.box = create_profile(
-            cls.x, cls.y, cls.w, cls.h, cls.name, line_color=_line_color)
+            cls.x, cls.y, cls.w, cls.h, cls.name, line_color=_line_color
+        )
 
     @classmethod
     def render(cls):
