@@ -1,7 +1,7 @@
 import os
 import math
 
-from fungit.shared import BOXS, GitType
+from fungit.shared import GitType
 from .box.navigation_box import NavBox
 from .box.git_box import GIT_BOXS
 from .box.content_box import ContentBox
@@ -14,7 +14,9 @@ def update_git_box_w_h():
     limit_w = math.floor(w / 3)
 
     if w < 90 or h < 8:
+        # TODO: need create error box and show...
         pass
+
     elif h <= 20:
         _old = None
         for sub in GIT_BOXS:
@@ -94,7 +96,7 @@ def create_content_box():
 
 
 def initial_git_box(update_data: bool = True, lazy_render: bool = False):
-    update_git_box_w_h()
+    update_git_box_w_h()  # update all nav box (w)idth and (h)eigth.
     create_content_box()
 
     for sub in GIT_BOXS:
@@ -105,14 +107,3 @@ def initial_git_box(update_data: bool = True, lazy_render: bool = False):
         sub.update()
         if not lazy_render:
             sub.render()
-
-
-# def create_boxs(w: int, h: int):
-#     update_git_box_w_h(w, h)  # generate profile w, h
-#     for sub in GitTypeBox.__subclasses__():
-#         sub.generate()  # process data
-#         sub.create_profile()  # generate profile
-#         sub.update()  # generate box content
-#         BOXS[sub.name] = sub
-#         # print(sub)
-#     create_content_box(w, h)

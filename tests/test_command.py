@@ -1,11 +1,11 @@
 import sys
-import os
+import re
 
 sys.path.append('.')
 
 
 def test_load_branches():
-    from fungit.commands.commands import run_with_git, load_branches
+    from fungit.commands import run_with_git, load_branches
     resp = load_branches()
     print(len(resp))
     for branch in resp:
@@ -14,7 +14,7 @@ def test_load_branches():
 
 
 def test_load_commits():
-    from fungit.commands.commands import current_head, load_commits
+    from fungit.commands import current_head, load_commits
     head = current_head()
     resp = load_commits(head)
     print(len(resp))
@@ -24,7 +24,7 @@ def test_load_commits():
 
 
 def test_load_files():
-    from fungit.commands.commands import run_with_git, load_files
+    from fungit.commands import run_with_git, load_files
     resp = load_files()
     for file in resp:
         # print(file.name, file.display_str, file.short_status, file.has_staged_change,
@@ -33,6 +33,21 @@ def test_load_files():
         print(file.name,  file.has_staged_change, file.has_unstaged_change,)
 
 
+def test_diff():
+    from fungit.commands import diff
+    re_1 = re.compile(r'(@@).*?(@@)')
+    resp = diff('fungit/gui/box/navigation_box.py')
+    rrr = re_1.sub('>>>>', resp)
+    # print(resp)
+    print(rrr)
+
+
+def test_commit_info():
+    from fungit.commands import commit_info
+    resp = commit_info('HEAD')
+    print(resp)
+
+
 if __name__ == '__main__':
-    test_load_files()
+    test_commit_info()
     pass

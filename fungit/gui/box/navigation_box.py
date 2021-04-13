@@ -37,13 +37,14 @@ class NavBox(Box):
         _item_msg = f'{cls.selected + 1} of {len(cls.content)}' if len(
             cls.content) > 1 else ''
         cls.box = create_profile(
-            cls.x, cls.y, cls.w, cls.h, cls.name, _item_msg, line_color=_line_color)
+            cls.x, cls.y, cls.w, cls.h, cls.name, _item_msg,
+            line_color=_line_color)
 
     @classmethod
     def fetch_data(cls):
         '''Get raw data.
 
-        Get the list of original data and cache it in `cls.raw`, each of which 
+        Get the list of original data and cache it in `cls.raw`, each of which
         is an independent data object instance(Override by subclass).
         '''
         pass
@@ -52,7 +53,7 @@ class NavBox(Box):
     def generate(cls):
         '''Content of production display.
 
-        All the acquired data is produced as the class content that can be 
+        All the acquired data is produced as the class content that can be
         displayed, colored and cached in `cls.content`(Override by subclass).
         '''
         pass
@@ -61,9 +62,9 @@ class NavBox(Box):
     def update(cls):
         '''Updatee display content.
 
-        According to the currently selected item to update the displayed content 
-        block (current item BOLD), generate a content string, and assign it to 
-        `cla.box_content`.
+        According to the currently selected item to update the displayed
+        content block (current item BOLD), generate a content string, and
+        assign it to `cla.box_content`.
         '''
         start_x = cls.x + 1
         start_y = cls.y + 1
@@ -86,11 +87,13 @@ class NavBox(Box):
             ContentBox.notify(cls)
 
     @classmethod
-    def notify(cls, update_data: bool = False):
+    def notify(cls, update_data: bool = False, re_profile: bool = True):
         if update_data:
             cls.fetch_data()
             cls.generate()
-        cls.create_profile()
+        if re_profile:
+            cls.create_profile()
+        # every notify must update display string and render all.
         cls.update()
         cls.render()
 

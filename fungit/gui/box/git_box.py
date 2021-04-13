@@ -250,6 +250,7 @@ class StashBox(NavBox):
     h: int = 0
     raw: Any = None
     content: List = []
+    selected: int = 0
     box: str = ''
     box_content: str = ''
 

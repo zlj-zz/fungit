@@ -20,3 +20,6 @@ class Theme:
 
     PUSHED = Color.fg('#F0E68C')
     UNPUSHED = Color.fg('#F08080')
+
+    ADDITION = Color.fg('#87CEFA')
+    DELETION = Color.fg('#F08080')
