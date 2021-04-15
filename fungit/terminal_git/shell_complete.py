@@ -2,25 +2,10 @@ import os
 import re
 import typing
 
-from .gitoptions import (
-    GIT_OPTIONS,
-    is_branch_option,
-    is_commit_option,
-    is_conflict_option,
-    is_fetch_option,
-    is_index_option,
-    is_log_option,
-    is_merge_option,
-    is_push_option,
-    is_remote_option,
-    is_stash_option,
-    is_tag_option,
-    is_tree_option,
-)
+from .. import __HOME__, __FUNGITDIR__
+from .gitoptions import GIT_OPTIONS
 from .shared import run_shell, run_shell_with_resp, okay, warn, echo
 
-_HOME = os.environ["HOME"]
-_DIR = _HOME + "/.config/.pyzgit"
 
 _TEMPLATE_ZSH = """\
 #compdef g
@@ -62,14 +47,14 @@ def get_current_shell() -> str:
 
 
 def ensure_config_path(file_name: str) -> str:
-    if not os.path.exists(_DIR):
+    if not os.path.exists(__FUNGITDIR__):
         try:
-            os.mkdir(_DIR)
-            return "{}/{}".format(_DIR, file_name)
+            os.mkdir(__FUNGITDIR__)
+            return "{}/{}".format(__FUNGITDIR__, file_name)
         except Exception as e:
             pass
     else:
-        return "{}/{}".format(_DIR, file_name)
+        return "{}/{}".format(__FUNGITDIR__, file_name)
 
 
 def generate_complete_script(template: str, fn: typing.Callable, name: str = "_g"):
@@ -87,10 +72,10 @@ def using_completion(file_name: str, path: str, config_path: str):
 
     Args:
         file_name: generated completion script.
-        path: `pyzgit` configuration path.
+        path: `fungit` configuration path.
         config_path: shell configuration path.
     """
-    run_shell("mv {} {}".format(file_name, _DIR))
+    run_shell("mv {} {}".format(file_name, __FUNGITDIR__))
 
     with open(config_path) as f:
         conf = f.read()
@@ -114,7 +99,7 @@ def add_zsh_completion():
     _path = ensure_config_path(_name)
 
     def gen_completion():
-        avrs = []
+        vars = []
 
         _type = [
             "Branch",
@@ -136,13 +121,13 @@ def add_zsh_completion():
             desc = GIT_OPTIONS[k]["help-msg"]
             if not desc:
                 desc = "no description."
-            avrs.append('    {}\\:"{}"\\\n'.format(k, desc))
+            vars.append('    {}\\:"{}"\\\n'.format(k, desc))
 
-        return ("\n".join(avrs)).rstrip()
+        return ("\n".join(vars)).rstrip()
 
     generate_complete_script(_TEMPLATE_ZSH, gen_completion, _name)
 
-    using_completion(_name, _path, _HOME + "/.zshrc")
+    using_completion(_name, _path, __HOME__ + "/.zshrc")
 
 
 def add_bash_completion():
@@ -154,7 +139,7 @@ def add_bash_completion():
 
     generate_complete_script(_TEMPLATE_BASH, gen_completion, _name)
 
-    using_completion(_name, _path, _HOME + "/.bashrc")
+    using_completion(_name, _path, __HOME__ + "/.bashrc")
 
 
 def add_completion():
@@ -167,7 +152,7 @@ def add_completion():
     elif _shell == "bash":
         add_bash_completion()
     else:
-        warn("Dont support completion of %s" % _shell)
+        warn("Don't support completion of %s" % _shell)
 
 
 if __name__ == "__main__":

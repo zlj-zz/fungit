@@ -1,49 +1,29 @@
 import enum
 import subprocess
 
-SET_SEQ = "\033[{}m"
-REST_SEQ = "\033[0m"
+from fungit.style import Color, Fx
 
 
-class Color(enum.Enum):
-    BLACK = "30"
-    RED = "31"
-    GREEN = "32"
-    YELLOW = "33"
-    BLUE = "34"
-    PURPLE = "35"
-    SKYBLUE = "36"
-    WHITE = "37"
+class CommandColor:
+    RED = Color.fg("#FF6347")  # Tomato
+    GREEN = Color.fg("#98FB98")  # PaleGreen
+    YELLOW = Color.fg("#FFD700")  # Gold
 
 
-class Style(enum.Enum):
-    BOLD = "1"
-    UNDERLINE = "4"
-    FLASH = "5"
-
-
-def echo(msg: str, color: Color = None, style: Style = None, nl: bool = True):
-    c = []
-    if color:
-        c.append(color.value)
-    if style:
-        c.append(style.value)
-
-    SEQ = SET_SEQ.format(";".join(c))
-
-    print("{}{}{}".format(SEQ, str(msg), REST_SEQ), end="\n" if nl else "")
+def echo(msg: str, color="", style="", nl: bool = True):
+    print(f"{style}{color}{msg}{Fx.reset}", end="\n" if nl else "")
 
 
 def okay(msg: str):
-    echo(msg, Color.GREEN, Style.BOLD)
+    echo(f"{Fx.b}{CommandColor.GREEN}{msg}{Fx.reset}")
 
 
 def warn(msg: str):
-    echo("WARN: {}".format(msg), Color.YELLOW, Style.BOLD)
+    echo(f"{Fx.b}{CommandColor.YELLOW}{msg}{Fx.reset}")
 
 
 def err(msg: str):
-    echo("ERROR: {}".format(msg), Color.RED, Style.BOLD)
+    echo(f"{Fx.b}{CommandColor.RED}{msg}{Fx.reset}")
 
 
 def run_shell(c: str):

@@ -1,9 +1,9 @@
 from .gitoptions import GIT_OPTIONS
-from .shared import echo, run_shell_with_resp, warn, err, Color, Style
+from .shared import echo, run_shell_with_resp, warn, err, CommandColor, Fx
 
 
 def echo_one_help_msg(k: str):
-    echo("    " + k, color=Color.GREEN, nl=False)
+    echo("    " + k, color=CommandColor.GREEN, nl=False)
     if GIT_OPTIONS[k]["help-msg"]:
         msg = GIT_OPTIONS[k]["help-msg"]
     else:
@@ -12,7 +12,7 @@ def echo_one_help_msg(k: str):
 
 
 def echo_help_msg(keys: list):
-    echo("Usage: g <option> [<args>]\n", style=Style.BOLD)
+    echo("Usage: g <option> [<args>]\n", style=Fx.b)
     # echo('')
     if keys:
         invalid_keys = []
@@ -23,7 +23,7 @@ def echo_help_msg(keys: list):
                 invalid_keys.append(k)
         if invalid_keys:
             echo("\nDont support these options: ", nl=False)
-            echo(" ".join(invalid_keys), color=Color.RED)
+            echo(" ".join(invalid_keys), color=CommandColor.RED)
     else:
         echo(
             """
@@ -50,28 +50,28 @@ def give_tip(c: str):
 
 
 def echo_description():
-    from .version import VERSION
+    from .. import __version__
 
     has_git = False
     try:
-        git_veriosn = run_shell_with_resp("git --version")
+        git_version = run_shell_with_resp("git --version")
         has_git = True
     except Exception as e:
-        git_veriosn = ""
+        git_version = ""
 
-    echo("[pyzgit] version: %s" % VERSION, style=Style.BOLD)
-    echo(" " + git_veriosn + "\n")
+    echo("[fungit] version: %s" % __version__, style=Fx.b)
+    echo(" " + git_version + "\n")
     echo(
-        "A terminal tool, help you use git more simple. Support Linux and MacOS.\n",
-        style=Style.UNDERLINE,
+        "Fungit terminal tool, help you use git more simple. Support Linux and MacOS.\n",
+        style=Fx.dark,
     )
 
-    echo("Usage: g <option> [<args>]", style=Style.BOLD)
+    echo("Usage: g <option> [<args>]", style=Fx.b)
     echo("You can use ", nl=False)
-    echo("-h", color=Color.GREEN, nl=False)
+    echo("-h", color=CommandColor.GREEN, nl=False)
     echo(" and ", nl=False)
-    echo("--help", color=Color.GREEN, nl=False)
-    echo(" to get how to use pyzgit.\n")
+    echo("--help", color=CommandColor.GREEN, nl=False)
+    echo(" to get how to use command fungit.\n")
 
     if not has_git:
-        warn("Dont found Git, maybe need install.")
+        warn("Don't found Git, maybe need install.")

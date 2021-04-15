@@ -1,6 +1,6 @@
 import re
 
-from .shared import run_shell, echo, warn, Color, Style
+from .shared import run_shell, echo, warn, okay
 
 
 class GitOptionState:
@@ -62,7 +62,7 @@ def process_origin_command(c: str, args: list):
     else:
         command = origin_command
 
-    echo(command, Color.GREEN, Style.BOLD)
+    okay(command)
     run_shell([command])
 
 

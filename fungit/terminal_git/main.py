@@ -1,9 +1,8 @@
-from .gitoptions import GIT_OPTIONS, process
-from .helper import give_tip, echo_help_msg, echo_description
-from .shell_complete import add_completion
 import sys
 
-sys.path.append(".")
+from .gitoptions import GIT_OPTIONS, process
+from .msg_helper import give_tip, echo_help_msg, echo_description
+from .shell_complete import add_completion
 
 
 def g(custom_commands: list = None):
@@ -22,7 +21,3 @@ def g(custom_commands: list = None):
         exit(0)
     else:
         process(commands[1], commands[2:])
-
-
-if __name__ == "__main__":
-    g()
