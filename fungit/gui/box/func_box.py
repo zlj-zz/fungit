@@ -75,3 +75,76 @@ class DynamicPromptBox(Box):
 
         cls.close = False
         cls.count = 0
+
+
+class ConfirmBox():
+    close: bool = False
+
+    @classmethod
+    def main(cls, title: str, prompt: str):
+        f_w, f_h = os.get_terminal_size()
+
+        # get box `x` and `(w)idth`
+        cls.x = round(f_w / 4)
+        cls.w = round(f_w / 2)
+
+        line_len = cls.w - 2
+        prompt_len = len(prompt)
+
+        # process prompt string.
+        idx: int = 0
+        cls.content = []
+        if prompt_len > line_len:
+            while idx + line_len < prompt_len:
+                cls.content.append(prompt[idx:idx + line_len])
+                idx += line_len
+        cls.content.append(prompt[idx:])
+
+        # get box `y` and `(h)eigth`.
+        cls.h = len(cls.content) + 2
+        cls.y = round(f_h / 2) - round(cls.h / 2)
+
+        # create box profile
+        cls.box = create_profile(cls.x, cls.y, cls.w, cls.h, title=title)
+
+        # create the content in box.
+        start_x = cls.x + 1
+        start_y = cls.y + 1
+
+        cls.box_content = ''
+        for idx, line in enumerate(cls.content):
+
+            if idx < cls.h - 2:
+                _line = f'{Cursor.to(start_y, start_x)}{line}'
+                cls.box_content += _line
+                start_y += 1
+
+        # render
+        Renderer.now(cls.box, cls.box_content)
+
+        # listen key
+        is_confirm: bool = False
+        while not cls.close:
+            Key.clear()
+            while Key.has_key():
+                key = Key.get()
+
+                if key == 'q':
+                    # TODO
+                    pass
+                elif key == 'enter' or key == 'y' or key == 'Y':
+                    cls.close = True
+                    is_confirm = True
+                    break
+                elif key == 'scape':  # escape
+                    cls.close = True
+                    break
+                else:
+                    continue
+
+        cls.close = False
+        return is_confirm
+
+
+class InputBox():
+    pass
