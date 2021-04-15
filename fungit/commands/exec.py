@@ -1,4 +1,5 @@
 import subprocess
+from sys import argv
 
 _GIT = "git"
 
@@ -21,3 +22,25 @@ def run_with_git(*args) -> str:
     except Exception as e:
         print(e)
         return ""
+
+
+def run_cmd(*args) -> str:
+    try:
+        with subprocess.Popen(" ".join(args), shell=True) as proc:
+            proc.wait()
+    except Exception as e:
+        print(e)
+        return ""
+
+
+def run_cmd_with_resp(*args) -> str:
+    try:
+        with subprocess.Popen(
+            " ".join(args), stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=True
+        ) as proc:
+            res = proc.stdout.read().decode()
+            err = proc.stderr.read().decode()
+            return err, res
+    except Exception as e:
+        print(e)
+        return e, ""

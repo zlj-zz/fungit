@@ -1,4 +1,3 @@
-from setuptools import setup, find_packages
 import sys
 
 PYTHON_VERSION = sys.version_info[:2]
@@ -11,17 +10,18 @@ try:
 except:
     LONG_DESCRIPTION = ""
 
+from setuptools import setup, find_packages
 import fungit
 
 setup(
-    name="pyzgit",
+    name="fungit",
     version=fungit.__version__,
     author=fungit.__author__,
     author_email=fungit.__email__,
     description="Simple terminal tool of Git.",
     long_description=LONG_DESCRIPTION,
     long_description_content_type="text/markdown",
-    url="https://github.com/zlj-zz/pyzgit.git",
+    url=fungit.__git_url__,
     packages=find_packages(),
     include_package_data=True,
     classifiers=[
@@ -35,8 +35,8 @@ setup(
     install_requires=[],
     entry_points="""
         [console_scripts]
-        g=git.main:g
         fungit=fungit.main:main
+        g=fungit.terminal_git.main:g
     """,
-    python_requires=">=3.6",
+    python_requires=">=3.7",
 )

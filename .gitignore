@@ -1,9 +1,9 @@
 build/
 dist/
 pyzgit.egg-info/
+fungit.egg-info/
 
 log
-.vscode/
 __pycache__/
 
 ./test.py

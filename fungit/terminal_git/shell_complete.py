@@ -3,8 +3,9 @@ import re
 import typing
 
 from .. import __HOME__, __FUNGITDIR__
+from fungit.commands.exec import run_cmd
 from .gitoptions import GIT_OPTIONS
-from .shared import run_shell, run_shell_with_resp, okay, warn, echo
+from .shared import okay, warn, echo
 
 
 _TEMPLATE_ZSH = """\
@@ -38,12 +39,12 @@ _complete_g(){
 complete -F _complete_g g
 """
 
-_re = re.compile(r"\/\.config\/\.pyzgit/([^\s]+)")
+_re = re.compile(r"\/\.config\/\.fungit/([^\s]+)")
 
 
 def get_current_shell() -> str:
     """Gets the currently used shell"""
-    return run_shell_with_resp("echo $SHELL").split("/")[-1].strip()
+    return run_cmd("echo $SHELL").split("/")[-1].strip()
 
 
 def ensure_config_path(file_name: str) -> str:
@@ -75,7 +76,7 @@ def using_completion(file_name: str, path: str, config_path: str):
         path: `fungit` configuration path.
         config_path: shell configuration path.
     """
-    run_shell("mv {} {}".format(file_name, __FUNGITDIR__))
+    run_cmd("mv {} {}".format(file_name, __FUNGITDIR__))
 
     with open(config_path) as f:
         conf = f.read()
@@ -88,7 +89,7 @@ def using_completion(file_name: str, path: str, config_path: str):
                 has_injected = True
 
     if not has_injected:
-        run_shell('echo "source %s" >> %s ' % (path, config_path))
+        run_cmd('echo "source %s" >> %s ' % (path, config_path))
         okay("\nPlease run: source {}".format(config_path))
     else:
         warn("This configuration already exists.")

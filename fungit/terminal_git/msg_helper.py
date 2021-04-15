@@ -1,5 +1,6 @@
+from fungit.commands.exec import run_cmd_with_resp
 from .gitoptions import GIT_OPTIONS
-from .shared import echo, run_shell_with_resp, warn, err, CommandColor, Fx
+from .shared import echo, warn, err, CommandColor, Fx
 
 
 def echo_one_help_msg(k: str):
@@ -22,13 +23,13 @@ def echo_help_msg(keys: list):
             else:
                 invalid_keys.append(k)
         if invalid_keys:
-            echo("\nDont support these options: ", nl=False)
+            echo("\nDon't support these options: ", nl=False)
             echo(" ".join(invalid_keys), color=CommandColor.RED)
     else:
         echo(
             """
 -h / --help [<args>]  :get help mesage, default is all.
-                       You can also follow the parameters to 
+                       You can also follow the parameters to
                        get help information for specific commands.
 
 --complete            :You can use this option to get shell auto completion.
@@ -41,7 +42,7 @@ def echo_help_msg(keys: list):
 
 
 def give_tip(c: str):
-    err("Don't support option: {}".format(c))
+    err(f"Don't support option: {c}")
     echo("\nMaybe what you want is:")
     c = c[0]
     for k in GIT_OPTIONS.keys():
@@ -54,16 +55,17 @@ def echo_description():
 
     has_git = False
     try:
-        git_version = run_shell_with_resp("git --version")
+        _, git_version = run_cmd_with_resp("git --version")
         has_git = True
-    except Exception as e:
+    except Exception:
         git_version = ""
 
     echo("[fungit] version: %s" % __version__, style=Fx.b)
-    echo(" " + git_version + "\n")
+    echo(git_version)
+    echo("Description:", style=Fx.b)
     echo(
         "Fungit terminal tool, help you use git more simple. Support Linux and MacOS.\n",
-        style=Fx.dark,
+        style=Fx.underline,
     )
 
     echo("Usage: g <option> [<args>]", style=Fx.b)
