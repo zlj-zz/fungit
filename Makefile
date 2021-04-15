@@ -1,4 +1,10 @@
-PY = python3
+Project = fungit
+PY ?= $(shell (python3 -c 'import sys; sys.exit(sys.version < "3.6")' && \
+	      which python3) )
+
+ifeq ($(PY),)
+  $(error No suitable python found.)
+endif
 
 .PHONY: test
 test:
@@ -13,7 +19,7 @@ lint:
 del:
 	@if [ -d ./dist ]; then rm -r ./dist/; fi
 	@if [ -d ./build ]; then rm -r ./build; fi
-	@if [ -d ./pyzgit.egg-info ]; then rm -r ./pyzgit.egg-info; fi
+	@if [ -d ./$(Project).egg-info ]; then rm -r "./$(Project).egg-info"; fi
 
 .PHONY: release
 release: del
