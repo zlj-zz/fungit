@@ -1,6 +1,6 @@
 from typing import Tuple
 
-from .style import Symbol, Fx, Color, Cursor
+from ..style import Symbol, Fx, Color, Cursor
 
 
 def create_profile(

@@ -3,8 +3,8 @@ from typing import List, Any
 
 import fungit.commands as git
 from fungit.shared import GitType
+from fungit.style import Cursor, Fx
 from . import Box
-from ..style import Cursor, Fx
 
 ADDITION_FLAG = "+"
 DELETION_FLAG = "-"

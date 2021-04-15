@@ -1,4 +1,4 @@
-from .style import Color
+from ..style.color import Color
 
 
 class Theme:

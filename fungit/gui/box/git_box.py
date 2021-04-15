@@ -2,11 +2,11 @@ from os import name
 import re
 from typing import List, Any
 
-from .navigation_box import NavBox
-from ..style import Fx, Cursor, Symbol
-from ..theme import Theme
 from fungit.shared import GitType
 import fungit.commands as git
+from fungit.style import Fx, Cursor, Symbol
+from .navigation_box import NavBox
+from ..theme import Theme
 
 
 class StateBox(NavBox):

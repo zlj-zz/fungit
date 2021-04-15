@@ -1,8 +1,8 @@
 from typing import List, Any
 
 from fungit.shared import GitType
+from fungit.style import Fx, Cursor
 from ..renderer import Renderer
-from ..style import Fx, Cursor
 from ..theme import Theme
 from ..utils import create_profile
 from . import Box

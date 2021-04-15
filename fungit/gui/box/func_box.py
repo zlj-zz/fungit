@@ -2,8 +2,8 @@ import os
 import time
 
 from fungit.event.key import Key
+from fungit.style import Cursor, Symbol
 from ..utils import create_profile
-from ..style import Cursor, Symbol
 from ..renderer import Renderer
 from . import Box
 
@@ -12,8 +12,7 @@ class DynamicPromptBox(Box):
 
     close: bool = False
     count = 0
-    process_symbol = [Symbol.graph_down[key]
-                      for key in Symbol.graph_down.keys()]
+    process_symbol = [Symbol.graph_down[key] for key in Symbol.graph_down.keys()]
 
     @classmethod
     def main(cls, title, prompt):
@@ -27,7 +26,7 @@ class DynamicPromptBox(Box):
         cls.content = []
         if _len > _w:
             while idx + _w < _len:
-                cls.content.append(prompt[idx:idx + _w])
+                cls.content.append(prompt[idx : idx + _w])
                 idx += _w
         cls.content.append(prompt[idx:])
         cls.h = len(cls.content) + 2
@@ -40,24 +39,27 @@ class DynamicPromptBox(Box):
         start_y = cls.y + 1
         line_w = cls.w - 2
 
-        box_content = ''
+        box_content = ""
         for idx, line in enumerate(cls.content):
 
             if idx < cls.h - 2:
-                _line = f'{Cursor.to(start_y, start_x)}{line}'
+                _line = f"{Cursor.to(start_y, start_x)}{line}"
                 box_content += _line
                 start_y += 1
 
         # cls.box_content += cls.process_symbol[cls.count % 4]
         # cls.count += 1
-        cls.box_content = box_content + \
-            cls.process_symbol[cls.count % len(cls.process_symbol)]
+        cls.box_content = (
+            box_content + cls.process_symbol[cls.count % len(cls.process_symbol)]
+        )
         start_time = time.time()
         while not cls.close:
             if time.time() - start_time > 0.2:
                 cls.count += 1
-                cls.box_content = box_content + \
-                    cls.process_symbol[cls.count % len(cls.process_symbol)]
+                cls.box_content = (
+                    box_content
+                    + cls.process_symbol[cls.count % len(cls.process_symbol)]
+                )
                 start_time = time.time()
             # cls.render()
             Renderer.now(cls.box_content)
@@ -65,9 +67,9 @@ class DynamicPromptBox(Box):
             while Key.has_key():
                 key = Key.get()
 
-                if key == 'q':
+                if key == "q":
                     pass
-                elif key == 'scape':
+                elif key == "scape":
                     cls.close = True
                     break
                 else:
@@ -77,7 +79,7 @@ class DynamicPromptBox(Box):
         cls.count = 0
 
 
-class ConfirmBox():
+class ConfirmBox:
     close: bool = False
 
     @classmethod
@@ -96,7 +98,7 @@ class ConfirmBox():
         cls.content = []
         if prompt_len > line_len:
             while idx + line_len < prompt_len:
-                cls.content.append(prompt[idx:idx + line_len])
+                cls.content.append(prompt[idx : idx + line_len])
                 idx += line_len
         cls.content.append(prompt[idx:])
 
@@ -111,11 +113,11 @@ class ConfirmBox():
         start_x = cls.x + 1
         start_y = cls.y + 1
 
-        cls.box_content = ''
+        cls.box_content = ""
         for idx, line in enumerate(cls.content):
 
             if idx < cls.h - 2:
-                _line = f'{Cursor.to(start_y, start_x)}{line}'
+                _line = f"{Cursor.to(start_y, start_x)}{line}"
                 cls.box_content += _line
                 start_y += 1
 
@@ -129,14 +131,14 @@ class ConfirmBox():
             while Key.has_key():
                 key = Key.get()
 
-                if key == 'q':
+                if key == "q":
                     # TODO
                     pass
-                elif key == 'enter' or key == 'y' or key == 'Y':
+                elif key == "enter" or key == "y" or key == "Y":
                     cls.close = True
                     is_confirm = True
                     break
-                elif key == 'scape':  # escape
+                elif key == "scape":  # escape
                     cls.close = True
                     break
                 else:
@@ -146,5 +148,5 @@ class ConfirmBox():
         return is_confirm
 
 
-class InputBox():
+class InputBox:
     pass
