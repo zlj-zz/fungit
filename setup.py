@@ -7,7 +7,7 @@ if PYTHON_VERSION < (3, 7):
 
 try:
     LONG_DESCRIPTION = open("README.md").read()
-except:
+except Exception:
     LONG_DESCRIPTION = ""
 
 from setuptools import setup, find_packages

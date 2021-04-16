@@ -3,7 +3,7 @@ PY ?= $(shell (python3 -c 'import sys; sys.exit(sys.version < "3.6")' && \
 	      which python3) )
 
 ifeq ($(PY),)
-  $(error No suitable python found.)
+  $(error No suitable python found(>=3.7).)
 endif
 
 .PHONY: test
@@ -13,7 +13,7 @@ test:
 .PHONY: lint
 lint:
 	@if [ ! -f flake8 ]; then $(PY) -m pip install flake8; fi
-	flake8
+	@flake8 --ignore=E501,E402
 
 .PHONY: del
 del:
@@ -23,7 +23,7 @@ del:
 
 .PHONY: release
 release: del
-	$(PY) setup.py sdist bdist_wheel 
+	$(PY) setup.py sdist bdist_wheel
 	twine upload dist/*
 
 .PHONY: install

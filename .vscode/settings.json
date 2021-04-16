@@ -1,6 +1,11 @@
 {
     "cSpell.words": [
         "Popen",
+        "UNTRACK",
+        "fcntl",
+        "termios",
+        "unstage",
+        "unstaged",
         "untracked"
     ]
 }
