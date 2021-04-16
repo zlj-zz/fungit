@@ -34,7 +34,7 @@ _complete_g(){
     COMP_WORD="%s"
     COMPREPLY=($(compgen -W "$COMP_WORD" -- ${COMP_WORDS[${COMP_CWORD}]}))
   fi
-} 
+}
 
 complete -F _complete_g g
 """
@@ -52,7 +52,7 @@ def ensure_config_path(file_name: str) -> str:
         try:
             os.mkdir(__FUNGITDIR__)
             return "{}/{}".format(__FUNGITDIR__, file_name)
-        except Exception as e:
+        except Exception:
             pass
     else:
         return "{}/{}".format(__FUNGITDIR__, file_name)
@@ -102,21 +102,21 @@ def add_zsh_completion():
     def gen_completion():
         vars = []
 
-        _type = [
-            "Branch",
-            "Commit",
-            "Conflict",
-            "Fetch",
-            "Index",
-            "Log",
-            "Merge",
-            "Push",
-            "Remote",
-            "Stash",
-            "Tag",
-            "Working tree",
-            "Setting",
-        ]
+        # _type = [
+        #     "Branch",
+        #     "Commit",
+        #     "Conflict",
+        #     "Fetch",
+        #     "Index",
+        #     "Log",
+        #     "Merge",
+        #     "Push",
+        #     "Remote",
+        #     "Stash",
+        #     "Tag",
+        #     "Working tree",
+        #     "Setting",
+        # ]
 
         for k in GIT_OPTIONS.keys():
             desc = GIT_OPTIONS[k]["help-msg"]

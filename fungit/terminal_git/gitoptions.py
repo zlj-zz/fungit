@@ -1,7 +1,7 @@
 import re
 
 from fungit.commands.exec import run_cmd
-from .shared import warn, okay
+from .shared import warn
 
 
 class GitOptionState:
@@ -238,7 +238,7 @@ GIT_OPTIONS = {
     },
     "fu": {
         "state": GitOptionState.STRING | GitOptionState.MULTI,
-        "command": "git fetch --all --prune && git merge --ff-only @\{u\} ",
+        "command": "git fetch --all --prune && git merge --ff-only @{u} ",
         "help-msg": "removes unexisting remote-tracking references, fetches all remotes and merges.",
     },
     "fb": {

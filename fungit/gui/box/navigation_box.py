@@ -61,7 +61,7 @@ class NavBox(Box):
 
     @classmethod
     def update(cls):
-        """Updatee display content.
+        """Update display content.
 
         According to the currently selected item to update the displayed
         content block (current item BOLD), generate a content string, and

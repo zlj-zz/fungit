@@ -1,5 +1,3 @@
-from os import name
-import re
 from typing import List, Any
 
 from fungit.shared import GitType
@@ -260,7 +258,7 @@ class StashBox(NavBox):
 
     @classmethod
     def fetch_data(cls):
-        cls.raw = git.stashs()
+        cls.raw = git.stashes()
 
     @classmethod
     def generate(cls):
@@ -271,4 +269,4 @@ class StashBox(NavBox):
             cls.content = []
 
 
-GIT_BOXS = [StateBox, StatusBox, BranchBox, CommitBox, StashBox]
+GIT_BOXES = [StateBox, StatusBox, BranchBox, CommitBox, StashBox]

@@ -109,6 +109,10 @@ class StatusContentBox(ContentBox):
         _content = []
         lines_ = cls.raw.split("\n")
 
+        if len(lines_) < 4:
+            super().generate()
+            return
+
         # First four line be bolded.
         for i in range(4):
             _content.append(f"{Fx.b}{lines_[i]}{Fx.ub}")
@@ -191,7 +195,7 @@ def fetch_content(c):
     if selected & GitType.STATUS:
         _status_list = c.raw
         if not _status_list:
-            return ""
+            return "No changed file"
         else:
             file_ = _status_list[c.selected]
 

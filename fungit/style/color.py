@@ -61,7 +61,7 @@ class Color:
             ct = self.dec[0] + self.dec[1] + self.dec[2]
             if ct > 255 * 3 or ct < 0:
                 raise ValueError(f"RGB values out of range: {color}")
-        except Exception as e:
+        except Exception:
             # errlog.exception(str(e))
             self.escape = ""
             return
@@ -128,7 +128,7 @@ class Color:
                         color = f"\033[{dint};2;{int(hexa[1:3], base=16)};{int(hexa[3:5], base=16)};{int(hexa[5:7], base=16)}m"
                     else:
                         color = f"{Color.truecolor_to_256(rgb=(int(hexa[1:3], base=16), int(hexa[3:5], base=16), int(hexa[5:7], base=16)), depth=depth)}"
-            except ValueError as e:
+            except ValueError:
                 # errlog.exception(f'{e}')
                 pass
         else:

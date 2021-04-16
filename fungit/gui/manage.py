@@ -2,7 +2,7 @@ import threading
 
 from .box_option import initial_git_box as refresh_all
 from .box.navigation_box import NavBox
-from .box.git_box import GIT_BOXS
+from .box.git_box import GIT_BOXES
 from .box.func_box import DynamicPromptBox
 from fungit.shared import GitType
 import fungit.commands as git
@@ -11,25 +11,25 @@ import fungit.commands as git
 class Manager:
     @staticmethod
     def switch_box_by_index(idx):
-        NavBox.set_current(GIT_BOXS[int(idx) - 1].genre)
+        NavBox.set_current(GIT_BOXES[int(idx) - 1].genre)
         refresh_all(update_data=False)
 
     @staticmethod
     def prev_box():
         _current = NavBox.current
         _index = index_of(_current, need_box=False)
-        _len = len(GIT_BOXS)
+        _len = len(GIT_BOXES)
         new_index = _len - 1 - (_len - _index) % _len
-        NavBox.set_current(GIT_BOXS[new_index].genre)
+        NavBox.set_current(GIT_BOXES[new_index].genre)
         refresh_all(update_data=False)
 
     @staticmethod
     def next_box():
         _current = NavBox.current
         _index = index_of(_current, need_box=False)
-        _len = len(GIT_BOXS)
+        _len = len(GIT_BOXES)
         new_index = (_index + 1) % _len
-        NavBox.set_current(GIT_BOXS[new_index].genre)
+        NavBox.set_current(GIT_BOXES[new_index].genre)
         refresh_all(update_data=False)
 
     @staticmethod
@@ -100,7 +100,7 @@ class Manager:
 
 
 def index_of(t, need_box: bool = True):
-    for idx, sub in enumerate(GIT_BOXS):
+    for idx, sub in enumerate(GIT_BOXES):
         if sub.genre & t:
             if need_box:
                 return idx, sub

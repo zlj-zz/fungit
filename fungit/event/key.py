@@ -228,7 +228,7 @@ class Key:
                                 int(input_key.split(";")[1]),
                                 int(input_key.split(";")[2].rstrip("mM")),
                             )
-                        except:
+                        except Exception:
                             pass
                         else:
                             # * Detected mouse move in mouse direct mode

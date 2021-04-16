@@ -59,7 +59,7 @@ def commit_file_info(commit: str, file_name: str = "") -> str:
     return resp
 
 
-def stashs() -> str:
+def stashes() -> str:
     """Get stash list."""
 
     arg = "stash list"
@@ -100,7 +100,7 @@ def is_selected_branch(branch: str) -> bool:
 # TODO: just temp introduce
 INTRODUCE = """\
 A terminal tool, help you use git more simple. Support Linux and MacOS.
-   
+
 Usage: g <option> [<args>]
 
 You can use `-h` and `--help` to get how to use pyzgit.

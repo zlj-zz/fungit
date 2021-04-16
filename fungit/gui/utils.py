@@ -17,8 +17,7 @@ def create_profile(
 ) -> str:
     """Create a box from a box object or by given arguments"""
     # out: str = f'{Term.fg}{Term.bg}'
-    out: str = f""
-    num: int = 0
+    out: str = ""
     if not line_color:
         line_color = ""
     if not title_color:
@@ -31,7 +30,6 @@ def create_profile(
         width = box.width
         height = box.height
         title = box.name
-        num = box.num
     hlines: Tuple[int, int] = (y, y + height - 1)
 
     out += f"{line_color}"

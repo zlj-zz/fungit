@@ -1,5 +1,3 @@
-import subprocess
-
 from fungit.style import Color, Fx
 
 
