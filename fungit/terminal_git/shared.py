@@ -1,4 +1,10 @@
+import logging
+
 from fungit.style import Color, Fx
+from . import __TERLOG__
+
+
+LOG = logging.getLogger()
 
 
 class CommandColor:
@@ -21,3 +27,11 @@ def warn(msg: str):
 
 def err(msg: str):
     echo(f"{Fx.b}{CommandColor.RED}{msg}{Fx.reset}")
+
+
+def exit_(*args):
+    if args and args[0] == 1:
+        LOG.error(args[1:])
+        print(f"Please check {__TERLOG__}")
+
+    raise SystemExit(0)

@@ -5,7 +5,7 @@ import typing
 from .. import __HOME__, __FUNGITDIR__
 from ..commands.exec import run_cmd, run_cmd_with_resp
 from .gitoptions import GIT_OPTIONS
-from .shared import okay, warn, echo
+from .shared import okay, warn, echo, exit_
 
 
 _TEMPLATE_ZSH = """\
@@ -56,8 +56,8 @@ def ensure_config_path(file_name: str) -> str:
         try:
             os.mkdir(__FUNGITDIR__)
             return "{}/{}".format(__FUNGITDIR__, file_name)
-        except Exception:
-            pass
+        except Exception as e:
+            exit_(1, e)
     else:
         return "{}/{}".format(__FUNGITDIR__, file_name)
 
@@ -66,9 +66,12 @@ def generate_complete_script(template: str, fn: typing.Callable, name: str = "_g
     complete_src = fn()
     script_src = template % (complete_src)
 
-    with open("./%s" % (name), "w") as f:
-        for line in script_src:
-            f.write(line)
+    try:
+        with open("./%s" % (name), "w") as f:
+            for line in script_src:
+                f.write(line)
+    except Exception as e:
+        exit_(1, e)
 
 
 def using_completion(file_name: str, path: str, config_path: str):
@@ -82,9 +85,12 @@ def using_completion(file_name: str, path: str, config_path: str):
     """
     run_cmd("mv {} {}".format(file_name, __FUNGITDIR__))
 
-    with open(config_path) as f:
-        shell_conf = f.read()
-        files = _re.findall(shell_conf)
+    try:
+        with open(config_path) as f:
+            shell_conf = f.read()
+            files = _re.findall(shell_conf)
+    except Exception as e:
+        exit_(1, e)
 
     has_injected = False
     if files:

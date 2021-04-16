@@ -1,6 +1,11 @@
+import logging
+
 from fungit.commands.exec import run_cmd_with_resp
 from .gitoptions import GIT_OPTIONS
-from .shared import echo, warn, err, CommandColor, Fx
+from .shared import echo, warn, err, exit_, CommandColor, Fx
+
+
+LOG = logging.getLogger()
 
 
 def echo_one_help_msg(k: str):
@@ -55,9 +60,13 @@ def echo_description():
 
     has_git = False
     try:
-        _, git_version = run_cmd_with_resp("git --version")
-        has_git = True
+        err, git_version = run_cmd_with_resp("git --version")
+        if git_version:
+            has_git = True
+        else:
+            exit_(1, err)
     except Exception:
+        LOG.warning("Happen error when run command with get Git version")
         git_version = ""
 
     echo("[fungit] version: %s" % __version__, style=Fx.b)

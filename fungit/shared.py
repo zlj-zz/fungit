@@ -19,7 +19,3 @@ class GitType:
 class GitActionStatus:
     NONE = 1
     PULLING = 1 << 1
-
-
-if __name__ == "__main__":
-    print(GitActionStatus.NONE, GitActionStatus.PULLING)

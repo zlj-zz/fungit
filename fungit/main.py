@@ -1,3 +1,4 @@
+from .logutil import setup_logging
 from .term import Term
 from .gui.box_option import initial_git_box
 from .event.key import Key
@@ -6,6 +7,8 @@ from .event.process import process_key
 
 def main():
     Term.init()
+    setup_logging()
+
     initial_git_box()
     Key.start()
 
@@ -25,7 +28,3 @@ def main():
     #     # clean_quit(1)
     #     print(e)
     #     exit(1)
-
-
-if __name__ == '__main__':
-    main()

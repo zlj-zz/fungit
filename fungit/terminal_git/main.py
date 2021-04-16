@@ -1,16 +1,17 @@
 import sys
 import signal
 
+from ..logutil import setup_logging
+from . import __TERLOG__
 from .gitoptions import GIT_OPTIONS, process
 from .msg_helper import give_tip, echo_help_msg, echo_description
 from .shell_complete import add_completion
-
-
-def exit_(*args):
-    exit(0)
+from .shared import exit_
 
 
 def g(custom_commands: list = None):
+    setup_logging(debug=False, log_file=__TERLOG__)
+
     if custom_commands is not None:
         return
 
