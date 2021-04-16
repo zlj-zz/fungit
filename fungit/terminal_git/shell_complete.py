@@ -3,7 +3,7 @@ import re
 import typing
 
 from .. import __HOME__, __FUNGITDIR__
-from fungit.commands.exec import run_cmd
+from ..commands.exec import run_cmd, run_cmd_with_resp
 from .gitoptions import GIT_OPTIONS
 from .shared import okay, warn, echo
 
@@ -44,7 +44,11 @@ _re = re.compile(r"\/\.config\/\.fungit/([^\s]+)")
 
 def get_current_shell() -> str:
     """Gets the currently used shell"""
-    return run_cmd("echo $SHELL").split("/")[-1].strip()
+    shell_ = ""
+    _, resp = run_cmd_with_resp("echo $SHELL")
+    if resp:
+        shell_ = resp.split("/")[-1].strip()
+    return shell_
 
 
 def ensure_config_path(file_name: str) -> str:
@@ -79,8 +83,8 @@ def using_completion(file_name: str, path: str, config_path: str):
     run_cmd("mv {} {}".format(file_name, __FUNGITDIR__))
 
     with open(config_path) as f:
-        conf = f.read()
-        files = _re.findall(conf)
+        shell_conf = f.read()
+        files = _re.findall(shell_conf)
 
     has_injected = False
     if files:
@@ -154,9 +158,3 @@ def add_completion():
         add_bash_completion()
     else:
         warn("Don't support completion of %s" % _shell)
-
-
-if __name__ == "__main__":
-    # generate_complete_script()
-    add_completion()
-    pass

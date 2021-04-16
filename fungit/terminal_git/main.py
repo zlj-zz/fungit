@@ -1,13 +1,23 @@
 import sys
+import signal
 
 from .gitoptions import GIT_OPTIONS, process
 from .msg_helper import give_tip, echo_help_msg, echo_description
 from .shell_complete import add_completion
 
 
+def exit_(*args):
+    exit(0)
+
+
 def g(custom_commands: list = None):
     if custom_commands is not None:
         return
+
+    try:
+        signal.signal(signal.SIGINT, exit_)
+    except Exception:
+        pass
 
     commands = sys.argv
     if len(commands) == 1:
