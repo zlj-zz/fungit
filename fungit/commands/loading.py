@@ -130,7 +130,7 @@ def load_commits(branch_name: str):
         unix_timestamp = int(split_[1])
         author = split_[2]
         extra_info = (split_[3]).strip()
-        parent_hashes = split_[4]
+        # parent_hashes = split_[4]
         message = "|".join(split_[5:])
 
         tag = []

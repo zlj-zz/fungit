@@ -6,31 +6,30 @@ ifeq ($(PY),)
   $(error No suitable python found(>=3.7).)
 endif
 
-.PHONY: test
 test:
 	$(PY) ./tests/test_run.py
 
-.PHONY: lint
 lint:
 	@if [ ! -f flake8 ]; then $(PY) -m pip install flake8; fi
-	@flake8 --ignore=E501,E402
+	@flake8 -v --ignore=E501,E402,E203,E741 --show-source
 
-.PHONY: del
-del:
+clean:
+	find . -type f -name *.pyc -delete
+	find . -type d -name __pycache__ -delete
+
+del: clean
 	@if [ -d ./dist ]; then rm -r ./dist/; fi
 	@if [ -d ./build ]; then rm -r ./build; fi
 	@if [ -d ./$(Project).egg-info ]; then rm -r "./$(Project).egg-info"; fi
 
-.PHONY: release
 release: del
 	$(PY) setup.py sdist bdist_wheel
 	twine upload dist/*
 
-.PHONY: install
 install: del
 	$(PY) setup.py install
 
-.PHONY: clean
-clean:
-	find . -type f -name *.pyc -delete
-	find . -type d -name __pycache__ -delete
+todo:
+	@grep --color -Ion '\(TODO\|XXX\).*' -r fungit
+
+.PHONY: test lint clean del install release todo

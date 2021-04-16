@@ -56,7 +56,7 @@ class Color:
                 if len(c_t) == 3:
                     self.dec = c_t  # type: ignore
                 else:
-                    raise ValueError(f'RGB dec should be "0-255 0-255 0-255"')
+                    raise ValueError('RGB dec should be "0-255 0-255 0-255"')
 
             ct = self.dec[0] + self.dec[1] + self.dec[2]
             if ct > 255 * 3 or ct < 0:

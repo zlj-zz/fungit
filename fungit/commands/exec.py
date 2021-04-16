@@ -1,5 +1,4 @@
 import subprocess
-from sys import argv
 
 _GIT = "git"
 

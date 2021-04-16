@@ -2,13 +2,14 @@ import os
 import sys
 import termios
 import threading
-from typing import List, Tuple
+from typing import List
 
 from .gui.renderer import Renderer
 
 
 class Term:
     """Terminal info and commands"""
+
     width: int = 0
     height: int = 0
     resized: bool = False
@@ -37,14 +38,25 @@ class Term:
         Term.width = os.get_terminal_size().columns
         Term.height = os.get_terminal_size().lines
 
-        Renderer.now(Term.alt_screen, Term.clear, Term.hide_cursor,
-                     Term.mouse_on, Term.title("fungit"))
+        Renderer.now(
+            Term.alt_screen,
+            Term.clear,
+            Term.hide_cursor,
+            Term.mouse_on,
+            Term.title("fungit"),
+        )
         cls.echo(False)
 
     @classmethod
     def clear(cls):
-        Renderer.now(Term.clear, Term.normal_screen, Term.show_cursor,
-                     Term.mouse_off, Term.mouse_direct_off, Term.title())
+        Renderer.now(
+            Term.clear,
+            Term.normal_screen,
+            Term.show_cursor,
+            Term.mouse_off,
+            Term.mouse_direct_off,
+            Term.title(),
+        )
         cls.echo(True)
 
     @staticmethod
@@ -53,14 +65,15 @@ class Term:
         if out and text:
             out += " "
         if text:
-            out += f'{text}'
-        return f'\033]0;{out}\a'
+            out += f"{text}"
+        return f"\033]0;{out}\a"
 
     @staticmethod
     def echo(on: bool):
         """Toggle input echo"""
-        (iflag, oflag, cflag, lflag, ispeed, ospeed,
-            cc) = termios.tcgetattr(sys.stdin.fileno())
+        (iflag, oflag, cflag, lflag, ispeed, ospeed, cc) = termios.tcgetattr(
+            sys.stdin.fileno()
+        )
         if on:
             lflag |= termios.ECHO  # type: ignore
         else:

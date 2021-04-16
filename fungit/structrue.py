@@ -1,6 +1,6 @@
 from typing import Dict, List
 
-from .shared import GitType, GitActionStatus, TREE
+from .shared import GitType, GitActionStatus
 
 
 class Selected(GitType):
@@ -12,12 +12,12 @@ class Selected(GitType):
     action: GitActionStatus = GitActionStatus.NONE
 
     full = False
-    tip: str = ''
+    tip: str = ""
 
     @classmethod
     def initial(cls) -> None:
-        cls.selected['old_selected'] = 0
-        cls.selected['selected'] = cls.STATUS
+        cls.selected["old_selected"] = 0
+        cls.selected["selected"] = cls.STATUS
         cls.selected[cls.STATE] = 0
         cls.selected[cls.STATUS] = 0
         cls.selected[cls.BRANCH] = 0
@@ -25,8 +25,7 @@ class Selected(GitType):
         cls.selected[cls.STASH] = 0
         cls.selected[cls.CONTENT] = 0
 
-        cls.selects = [cls.STATE, cls.STATUS,
-                       cls.BRANCH, cls.COMMIT, cls.STASH]
+        cls.selects = [cls.STATE, cls.STATUS, cls.BRANCH, cls.COMMIT, cls.STASH]
 
         cls.selects_len = 5
 
@@ -39,12 +38,12 @@ class Selected(GitType):
     @classmethod
     @property
     def old(cls):
-        return cls.selected['old_selected']
+        return cls.selected["old_selected"]
 
     @classmethod
     @property
     def current(cls):
-        return cls.selected['selected']
+        return cls.selected["selected"]
 
     @classmethod
     @property

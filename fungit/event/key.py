@@ -121,7 +121,7 @@ class Key:
             cls.stopping = True
             try:
                 cls.reader.join()
-            except:
+            except Exception:
                 pass
 
     @classmethod
@@ -153,7 +153,7 @@ class Key:
             return False
 
     @classmethod
-    def has_key(cls) -> bool:
+    def has_event(cls) -> bool:
         return bool(cls.list)
 
     @classmethod
@@ -282,7 +282,7 @@ class Key:
                         cls.new.set()  # * Set threading event to interrupt main thread sleep
                     input_key = ""
 
-        except Exception as e:
+        except Exception:
             # errlog.exception(f'Input thread failed with exception: {e}')
             cls.idle.set()
             cls.list.clear()

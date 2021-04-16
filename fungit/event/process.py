@@ -4,7 +4,7 @@ from .clean_quit import quit_app
 
 
 def process_key():
-    while Key.has_key():
+    while Key.has_event():
         key = Key.get()
 
         if key == "q":

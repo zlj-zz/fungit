@@ -5,7 +5,7 @@ def stage(*args) -> None:
     """Stage files."""
 
     command = "add --"
-    s = run_with_git(" ".join([command, *args])).rstrip()
+    run_with_git(" ".join([command, *args])).rstrip()
 
 
 def stage_all() -> None:

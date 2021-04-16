@@ -64,7 +64,7 @@ class DynamicPromptBox(Box):
             # cls.render()
             Renderer.now(cls.box_content)
 
-            while Key.has_key():
+            while Key.has_event():
                 key = Key.get()
 
                 if key == "q":
@@ -128,7 +128,7 @@ class ConfirmBox:
         is_confirm: bool = False
         while not cls.close:
             Key.clear()
-            while Key.has_key():
+            while Key.has_event():
                 key = Key.get()
 
                 if key == "q":
