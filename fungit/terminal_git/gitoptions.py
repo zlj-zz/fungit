@@ -58,8 +58,8 @@ def process_origin_command(c: str, args: list):
     origin_command = GIT_OPTIONS[c]["command"]
 
     if args:
-        args_str = " ".join(args)  # 拼接参数
-        command = " ".join([origin_command, args_str])  # 拼接命令
+        args_str = " ".join(args)
+        command = " ".join([origin_command, args_str])
     else:
         command = origin_command
 
@@ -97,6 +97,10 @@ TYPES = [
     "Setting",
 ]
 
+# Global command dictionary, including attributes:
+#     command type,
+#     complete command,
+#     help information
 GIT_OPTIONS = {
     # Branch
     "b": {

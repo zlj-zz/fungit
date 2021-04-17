@@ -46,7 +46,11 @@ _re = re.compile(r"\/\.config\/fungit/([^\s]+)")
 
 
 def get_current_shell() -> str:
-    """Gets the currently used shell"""
+    """Gets the currently used shell.
+
+    Returns:
+        shell_: Current shell string.
+    """
     shell_ = ""
     _, resp = run_cmd_with_resp("echo $SHELL")
     if resp:
@@ -55,6 +59,17 @@ def get_current_shell() -> str:
 
 
 def ensure_config_path(file_name: str) -> str:
+    """Check config path.
+
+    Check whether the configuration directory exists, if not, try to create
+    it. Failed to exit, successfully returned to complete the file path.
+
+    Args:
+        file_name: Completion prompt script name.
+
+    Returns:
+        file_path: Full path of completion prompt script.
+    """
     LOG.debug(f"{__FUNGITDIR__}, {file_name}")
     if not os.path.exists(__FUNGITDIR__):
         try:
@@ -63,10 +78,21 @@ def ensure_config_path(file_name: str) -> str:
         except Exception as e:
             exit_(1, e)
     else:
-        return "{}/{}".format(__FUNGITDIR__, file_name)
+        file_path = "{}/{}".format(__FUNGITDIR__, file_name)
+        return file_path
 
 
 def generate_complete_script(template: str, fn: typing.Callable, name: str = "_g"):
+    """Generate completion scirpt.
+
+    Generate the completion script of the corresponding shell according to
+    the template.
+
+    Args:
+        template: Script template.
+        fn: Method of generating script content.
+        name: Completion script name.
+    """
     complete_src = fn()
     script_src = template % (complete_src)
 
@@ -79,7 +105,9 @@ def generate_complete_script(template: str, fn: typing.Callable, name: str = "_g
 
 
 def using_completion(file_name: str, path: str, config_path: str):
-    """Inject the load of completion script into the configuration of shell.
+    """Try using completion script.
+
+    Inject the load of completion script into the configuration of shell.
     If it exists in the configuration, the injection will not be repeated.
 
     Args:
@@ -87,7 +115,6 @@ def using_completion(file_name: str, path: str, config_path: str):
         path: `fungit` configuration path.
         config_path: shell configuration path.
     """
-
     try:
         run_cmd("mv {} {}".format(file_name, __FUNGITDIR__))
         with open(config_path) as f:
@@ -114,6 +141,8 @@ def using_completion(file_name: str, path: str, config_path: str):
 
 
 def add_zsh_completion():
+    """Add Zsh completion prompt script."""
+
     _name = "_g"
     _path = ensure_config_path(_name)
 
@@ -134,6 +163,8 @@ def add_zsh_completion():
 
 
 def add_bash_completion():
+    """Add Bash completion prompt script."""
+
     _name = "complete_script"
     _path = ensure_config_path(_name)
 
@@ -146,6 +177,7 @@ def add_bash_completion():
 
 
 def add_completion():
+    """Add completion prompt script."""
     echo("\nTry to add completion ...")
 
     _shell = get_current_shell()

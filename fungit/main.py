@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 import argparse
 
 from .logutil import setup_logging

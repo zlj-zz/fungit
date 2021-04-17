@@ -9,6 +9,15 @@ LOG = logging.getLogger(__name__)
 
 
 def echo_one_help_msg(k: str):
+    """Print a tip.
+
+    Find the corresponding help information according to the `k` value and
+    print it. If the help information does not exist, print the executed
+    full command.
+
+    Args:
+        k: Short command.
+    """
     echo("    " + k, color=CommandColor.GREEN, nl=False)
     if GIT_OPTIONS[k]["help-msg"]:
         msg = GIT_OPTIONS[k]["help-msg"]
@@ -18,12 +27,22 @@ def echo_one_help_msg(k: str):
 
 
 def echo_help_msg():
+    """Print help message."""
     echo("These are short commands that can replace git operations:")
     for k in GIT_OPTIONS.keys():
         echo_one_help_msg(k)
 
 
 def give_tip(t: str):
+    """Print a part of help message.
+
+    Print the help information of the corresponding part according to the
+    incoming command type string. If there is no print error prompt for the
+    type.
+
+    Args:
+        t: A command type.
+    """
     if t not in TYPES:
         err("There is no such type")
         raise SystemExit(0)
@@ -36,11 +55,13 @@ def give_tip(t: str):
 
 
 def echo_types():
+    """Print all command types."""
     for t in TYPES:
         print(f" {t}")
 
 
 def echo_description():
+    """Print the description information"""
     from .. import __version__
 
     has_git = False
@@ -56,7 +77,10 @@ def echo_description():
     echo(git_version)
     echo("Description:", style=Fx.b)
     echo(
-        "Fungit terminal tool, help you use git more simple. Support Linux and MacOS.\n",
+        (
+            "Fungit terminal tool, help you use git more simple."
+            " Support Linux and MacOS.\n"
+        ),
         style=Fx.underline,
     )
 
