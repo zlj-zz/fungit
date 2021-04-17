@@ -4,13 +4,15 @@ from .exec import run_with_git
 
 
 def current_head():
-    return run_with_git("symbolic-ref -q --short HEAD").strip()
+    _, res = run_with_git("symbolic-ref -q --short HEAD")
+    return res.rstrip()
 
 
 def state() -> list:
     """Get current project name and head branch."""
 
-    path = run_with_git("rev-parse --git-dir").strip()
+    _, path = run_with_git("rev-parse --git-dir")
+    path = path.strip()
     if path == ".git":
         project = os.getcwd().split("/")[-1]
     else:
@@ -32,8 +34,8 @@ def branch_log(branch) -> str:
     branch_name = branch.name
 
     arg = "log %s --graph --decorate" % branch_name
-    resp = run_with_git(arg).rstrip()
-    return resp
+    _, resp = run_with_git(arg)
+    return resp.rstrip()
 
 
 def commit_info(commit: str) -> str:
@@ -55,15 +57,15 @@ def commit_file_info(commit: str, file_name: str = "") -> str:
     """
 
     arg = "show %s %s" % (commit, file_name)
-    resp = run_with_git(arg).rstrip()
-    return resp
+    _, resp = run_with_git(arg)
+    return resp.rstrip()
 
 
 def stashes() -> str:
     """Get stash list."""
 
     arg = "stash list"
-    resp = run_with_git(arg)
+    _, resp = run_with_git(arg)
     return resp
 
 
@@ -87,8 +89,8 @@ def diff(file: str, tracked: bool = True, cached: bool = False) -> str:
 
     args.append(file)
 
-    res = run_with_git(*args).rstrip()
-    return res
+    _, res = run_with_git(*args)
+    return res.rstrip()
 
 
 def is_selected_branch(branch: str) -> bool:
@@ -99,9 +101,13 @@ def is_selected_branch(branch: str) -> bool:
 
 # TODO: just temp introduce
 INTRODUCE = """\
+  __                   _ _
+ / _|_   _ _ __   __ _(_) |_
+| |_| | | | '_ \ / _` | | __|
+|  _| |_| | | | | (_| | | |_
+|_|  \__,_|_| |_|\__, |_|\__|
+                 |___/
+
 A terminal tool, help you use git more simple. Support Linux and MacOS.
 
-Usage: g <option> [<args>]
-
-You can use `-h` and `--help` to get how to use pyzgit.
 """

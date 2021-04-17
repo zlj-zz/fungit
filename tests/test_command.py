@@ -36,12 +36,12 @@ def test_load_commits():
         print(
             commit.sha,
             commit.msg,
-            commit.author,
-            commit.unix_timestamp,
-            commit.status,
-            commit.extra_info,
-            commit.tag,
-            commit.action,
+            # commit.author,
+            # commit.unix_timestamp,
+            # commit.status,
+            # commit.extra_info,
+            # commit.tag,
+            # commit.action,
         )
 
 
@@ -77,5 +77,5 @@ def test_commit_info():
 
 
 if __name__ == "__main__":
-    test_commit_info()
+    test_load_commits()
     pass

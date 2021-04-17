@@ -17,7 +17,8 @@ def load_files(*args) -> List[File]:
     """
 
     command = "status -s -u"
-    resp = run_with_git(" ".join([command, *args])).rstrip()
+    _, resp = run_with_git(" ".join([command, *args]))
+    resp = resp.rstrip()
 
     files_ = []
     if resp:
@@ -52,7 +53,8 @@ def load_files(*args) -> List[File]:
 
 def load_branches() -> List[Branch]:
     command = 'for-each-ref --sort=-committerdate --format="%(HEAD)|%(refname:short)|%(upstream:short)|%(upstream:track)" refs/heads'
-    resp = run_with_git(command).strip()
+    _, resp = run_with_git(command)
+    resp = resp.strip()
 
     if not resp:
         return []
@@ -96,16 +98,16 @@ def load_branches() -> List[Branch]:
 
 def get_first_pushed_commit(branch_name: str):
     command = "merge-base %s %s@{u}" % (branch_name, branch_name)
-    resp = run_with_git(command).strip()
-    return resp
+    _, resp = run_with_git(command)
+    return resp.strip()
 
 
 def get_log(branch_name: str, limit: bool = False, filter_path: str = ""):
     limit_flag = "-300" if limit else ""
     filter_flag = f"--follow -- {filter_path}" if filter_path else ""
     command = f'log {branch_name} --oneline --pretty=format:"%H|%at|%aN|%d|%p|%s" {limit_flag} --abbrev=20 --date=unix {filter_flag}'
-    resp = run_with_git(command).strip()
-    return resp
+    _, resp = run_with_git(command)
+    return resp.strip()
 
 
 def load_commits(branch_name: str):

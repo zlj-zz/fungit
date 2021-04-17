@@ -217,7 +217,7 @@ class CommitBox(NavBox):
             color_ = Theme.PUSHED if commit.is_pushed() else Theme.UNPUSHED
             id_ = commit.sha[:7]
             msg_ = commit.msg
-            msg_ = msg_ if len(msg_) <= line_w else msg_[line_w]
+            msg_ = msg_ if len(msg_) <= line_w else msg_[:line_w]
             content_.append(f"{color_}{id_} {Theme.DEFAULT}{msg_}")
 
         cls.content = content_
@@ -229,7 +229,7 @@ class CommitBox(NavBox):
 
         _current = cls.selected
         _limit = 0
-        if _current + 1 >= cls.h - 2:  # current selected index big than heigth
+        if _current + 1 >= cls.h - 2:  # current selected index big than height
             _limit = _current + 1 - (cls.h - 2)
 
         cls.box_content = ""

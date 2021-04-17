@@ -1,9 +1,12 @@
 import subprocess
+import logging
+
+LOG = logging.getLogger(__name__)
 
 _GIT = "git"
 
 
-def run_with_git(*args) -> str:
+def run_with_git(*args) -> tuple:
     """Execute a git command and return the result.
 
     Args:
@@ -13,26 +16,29 @@ def run_with_git(*args) -> str:
         Execution result, string text
     """
 
-    c = " ".join([_GIT, *args])
-    # print(c)
+    command = " ".join([_GIT, *args])
+    LOG.debug(f"<run_with_git> {command}")
     try:
-        with subprocess.Popen([c], stdout=subprocess.PIPE, shell=True) as proc:
-            return proc.stdout.read().decode()
+        with subprocess.Popen(
+            [command], stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True
+        ) as proc:
+            res = proc.stdout.read().decode()
+            err = proc.stdout.read().decode()
+            return err, res
     except Exception as e:
-        print(e)
-        return ""
+        LOG.warning(e)
+        return e, ""
 
 
-def run_cmd(*args) -> str:
+def run_cmd(*args):
     try:
         with subprocess.Popen(" ".join(args), shell=True) as proc:
             proc.wait()
     except Exception as e:
-        print(e)
-        return ""
+        LOG.warning(e)
 
 
-def run_cmd_with_resp(*args) -> str:
+def run_cmd_with_resp(*args) -> tuple:
     try:
         with subprocess.Popen(
             " ".join(args), stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=True
@@ -41,5 +47,6 @@ def run_cmd_with_resp(*args) -> str:
             err = proc.stderr.read().decode()
             return err, res
     except Exception as e:
+        LOG.warning(e)
         print(e)
         return e, ""

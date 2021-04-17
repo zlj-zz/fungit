@@ -7,5 +7,5 @@ sys.path.insert(0, ".")
 from fungit.main import main
 
 if __name__ == "__main__":
-    main()
+    main(["--debug"])
     pass
