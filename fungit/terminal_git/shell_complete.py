@@ -39,7 +39,7 @@ _complete_g(){
 complete -F _complete_g g
 """
 
-_re = re.compile(r"\/\.config\/\.fungit/([^\s]+)")
+_re = re.compile(r"\/\.config\/fungit/([^\s]+)")
 
 
 def get_current_shell() -> str:
@@ -111,22 +111,6 @@ def add_zsh_completion():
 
     def gen_completion():
         vars = []
-
-        # _type = [
-        #     "Branch",
-        #     "Commit",
-        #     "Conflict",
-        #     "Fetch",
-        #     "Index",
-        #     "Log",
-        #     "Merge",
-        #     "Push",
-        #     "Remote",
-        #     "Stash",
-        #     "Tag",
-        #     "Working tree",
-        #     "Setting",
-        # ]
 
         for k in GIT_OPTIONS.keys():
             desc = GIT_OPTIONS[k]["help-msg"]

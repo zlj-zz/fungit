@@ -19,7 +19,7 @@ def ensure_path(file_name: str) -> str:
         os.makedirs(dir_path, exist_ok=True)
 
 
-def setup_logging(debug=True, log_file=__FUNGITDIR__ + "/log/fungit.log"):
+def setup_logging(debug=False, log_file=__FUNGITDIR__ + "/log/fungit.log"):
     root_logger = logging.getLogger()
 
     if debug:

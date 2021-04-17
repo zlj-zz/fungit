@@ -68,13 +68,34 @@ def process_origin_command(c: str, args: list):
 
 
 def process(c: str, args: list = None):
-    state = GIT_OPTIONS[c]["state"]
+    try:
+        state = GIT_OPTIONS[c]["state"]
+    except Exception:
+        print("Don't support this command, please try ", end="")
+        warn("g --show-commands")
+        raise SystemExit(0)
 
     if state & GitOptionState.FUNC:
         process_func(c, args)
     elif state & GitOptionState.STRING:
         process_origin_command(c, args)
 
+
+TYPES = [
+    "Branch",
+    "Commit",
+    "Conflict",
+    "Fetch",
+    "Index",
+    "Log",
+    "Merge",
+    "Push",
+    "Remote",
+    "Stash",
+    "Tag",
+    "Working tree",
+    "Setting",
+]
 
 GIT_OPTIONS = {
     # Branch

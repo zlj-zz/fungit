@@ -1,7 +1,7 @@
 import logging
 
 from fungit.commands.exec import run_cmd_with_resp
-from .gitoptions import GIT_OPTIONS
+from .gitoptions import GIT_OPTIONS, TYPES
 from .shared import echo, warn, err, exit_, CommandColor, Fx
 
 
@@ -17,42 +17,27 @@ def echo_one_help_msg(k: str):
     echo((9 - len(k)) * " " + str(msg))
 
 
-def echo_help_msg(keys: list):
-    echo("Usage: g <option> [<args>]\n", style=Fx.b)
-    # echo('')
-    if keys:
-        invalid_keys = []
-        for k in keys:
-            if GIT_OPTIONS.get(k):
-                echo_one_help_msg(k)
-            else:
-                invalid_keys.append(k)
-        if invalid_keys:
-            echo("\nDon't support these options: ", nl=False)
-            echo(" ".join(invalid_keys), color=CommandColor.RED)
-    else:
-        echo(
-            """
--h / --help [<args>]  :get help mesage, default is all.
-                       You can also follow the parameters to
-                       get help information for specific commands.
-
---complete            :You can use this option to get shell auto completion.
-                       Just support `bash`, `zsh`.
-        """
-        )
-        echo("These are short commands that can replace git operations:")
-        for k in GIT_OPTIONS.keys():
-            echo_one_help_msg(k)
-
-
-def give_tip(c: str):
-    err(f"Don't support option: {c}")
-    echo("\nMaybe what you want is:")
-    c = c[0]
+def echo_help_msg():
+    echo("These are short commands that can replace git operations:")
     for k in GIT_OPTIONS.keys():
-        if k.startswith(c):
+        echo_one_help_msg(k)
+
+
+def give_tip(t: str):
+    if t not in TYPES:
+        err("There is no such type")
+        raise SystemExit(0)
+
+    echo(f"These are the orders of {t}")
+    prefix = t[0].lower()
+    for k in GIT_OPTIONS.keys():
+        if k.startswith(prefix):
             echo_one_help_msg(k)
+
+
+def echo_types():
+    for t in TYPES:
+        print(f" {t}")
 
 
 def echo_description():

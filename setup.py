@@ -36,7 +36,7 @@ setup(
     entry_points="""
         [console_scripts]
         fungit=fungit.main:main
-        g=fungit.terminal_git.main:g
+        g=fungit.terminal_git.main:command_g
     """,
     python_requires=">=3.7",
 )

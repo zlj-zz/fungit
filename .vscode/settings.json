@@ -5,6 +5,7 @@
         "Zhang",
         "datefmt",
         "fcntl",
+        "nargs",
         "termios",
         "unstage",
         "unstaged",
