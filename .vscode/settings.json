@@ -1,8 +1,10 @@
 {
     "cSpell.words": [
         "Popen",
+        "UNPUSHED",
         "UNTRACK",
         "Zhang",
+        "argparse",
         "datefmt",
         "fcntl",
         "nargs",

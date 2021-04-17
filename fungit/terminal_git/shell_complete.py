@@ -1,11 +1,14 @@
 import os
 import re
 import typing
+import logging
 
 from .. import __HOME__, __FUNGITDIR__
 from ..commands.exec import run_cmd, run_cmd_with_resp
 from .gitoptions import GIT_OPTIONS
 from .shared import okay, warn, echo, exit_
+
+LOG = logging.getLogger(__name__)
 
 
 _TEMPLATE_ZSH = """\
@@ -52,6 +55,7 @@ def get_current_shell() -> str:
 
 
 def ensure_config_path(file_name: str) -> str:
+    LOG.debug(f"{__FUNGITDIR__}, {file_name}")
     if not os.path.exists(__FUNGITDIR__):
         try:
             os.mkdir(__FUNGITDIR__)
@@ -83,9 +87,9 @@ def using_completion(file_name: str, path: str, config_path: str):
         path: `fungit` configuration path.
         config_path: shell configuration path.
     """
-    run_cmd("mv {} {}".format(file_name, __FUNGITDIR__))
 
     try:
+        run_cmd("mv {} {}".format(file_name, __FUNGITDIR__))
         with open(config_path) as f:
             shell_conf = f.read()
             files = _re.findall(shell_conf)
@@ -97,9 +101,13 @@ def using_completion(file_name: str, path: str, config_path: str):
         for file in files:
             if file == file_name:
                 has_injected = True
+    LOG.debug(f"has_injected: {has_injected}")
 
     if not has_injected:
-        run_cmd('echo "source %s" >> %s ' % (path, config_path))
+        try:
+            run_cmd('echo "source %s" >> %s ' % (path, config_path))
+        except Exception as e:
+            exit_(1, e)
         okay("\nPlease run: source {}".format(config_path))
     else:
         warn("This configuration already exists.")

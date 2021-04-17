@@ -4,7 +4,7 @@ from fungit.style import Color, Fx
 from . import __TERLOG__
 
 
-LOG = logging.getLogger()
+LOG = logging.getLogger(__name__)
 
 
 class CommandColor:
