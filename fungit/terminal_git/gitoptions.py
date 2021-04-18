@@ -259,12 +259,12 @@ GIT_OPTIONS = {
     "fr": {
         "state": GitOptionState.STRING | GitOptionState.MULTI,
         "command": "git pull --rebase ",
-        "help-msg": "fetches from and rebases on top of another repository or local branch.",
+        "help-msg": "fetches from and rebase on top of another repository or local branch.",
     },
     "fu": {
         "state": GitOptionState.STRING | GitOptionState.MULTI,
         "command": "git fetch --all --prune && git merge --ff-only @{u} ",
-        "help-msg": "removes unexisting remote-tracking references, fetches all remotes and merges.",
+        "help-msg": "removes un-existing remote-tracking references, fetches all remotes and merges.",
     },
     "fb": {
         "state": GitOptionState.FUNC | GitOptionState.ONE,
