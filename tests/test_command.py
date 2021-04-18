@@ -7,10 +7,10 @@ from fungit.commands import (
     load_branches,
     current_head,
     load_commits,
-    run_with_git,
     load_files,
+    checkout,
 )
-from fungit.commands.exec import run_cmd_with_resp
+from fungit.commands.exec import run_with_git, run_cmd_with_resp
 
 
 def test_load_branches():
@@ -77,5 +77,5 @@ def test_commit_info():
 
 
 if __name__ == "__main__":
-    test_load_commits()
+    print(checkout("dev"))
     pass

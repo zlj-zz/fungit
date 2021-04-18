@@ -17,13 +17,13 @@ def run_with_git(*args) -> tuple:
     """
 
     command = " ".join([_GIT, *args])
-    LOG.debug(f"<run_with_git> {command}")
+    # LOG.debug(f"<run_with_git> {command}")
     try:
         with subprocess.Popen(
             [command], stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True
         ) as proc:
             res = proc.stdout.read().decode()
-            err = proc.stdout.read().decode()
+            err = proc.stderr.read().decode()
             return err, res
     except Exception as e:
         LOG.warning(e)

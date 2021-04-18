@@ -1,3 +1,5 @@
+import time
+
 from fungit.gui.manage import Manager
 from .key import Key
 from .clean_quit import quit_app
@@ -29,3 +31,4 @@ def process_key():
             Manager.push()
         else:
             continue
+    time.sleep(0.1)

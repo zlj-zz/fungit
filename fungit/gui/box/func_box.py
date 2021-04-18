@@ -1,3 +1,4 @@
+from fungit.commands.exec import LOG
 import os
 import time
 
@@ -91,16 +92,21 @@ class ConfirmBox:
         cls.w = round(f_w / 2)
 
         line_len = cls.w - 2
-        prompt_len = len(prompt)
+        prompt = prompt.replace("\t", "")
+        prompts = prompt.split("\n")
+
+        LOG.debug(prompts)
 
         # process prompt string.
-        idx: int = 0
         cls.content = []
-        if prompt_len > line_len:
-            while idx + line_len < prompt_len:
-                cls.content.append(prompt[idx : idx + line_len])
-                idx += line_len
-        cls.content.append(prompt[idx:])
+        for line in prompts:
+            prompt_len = len(line)
+            idx: int = 0
+            if prompt_len > line_len:
+                while idx + line_len < prompt_len:
+                    cls.content.append(line[idx : idx + line_len])
+                    idx += line_len
+            cls.content.append(line[idx:])
 
         # get box `y` and `(h)eigth`.
         cls.h = len(cls.content) + 2
@@ -126,15 +132,18 @@ class ConfirmBox:
 
         # listen key
         is_confirm: bool = False
+        Key.clear()
         while not cls.close:
-            Key.clear()
             while Key.has_event():
                 key = Key.get()
+                LOG.debug(key)
 
                 if key == "q":
+                    cls.close = True
+                    break
                     # TODO
-                    pass
                 elif key == "enter" or key == "y" or key == "Y":
+                    # TODO: can't return
                     cls.close = True
                     is_confirm = True
                     break
@@ -143,7 +152,9 @@ class ConfirmBox:
                     break
                 else:
                     continue
+            time.sleep(0.1)
 
+        Key.clear()
         cls.close = False
         return is_confirm
 

@@ -1,11 +1,15 @@
+import logging
 import threading
 
 from .box_option import initial_git_box as refresh_all
 from .box.navigation_box import NavBox
 from .box.git_box import GIT_BOXES
-from .box.func_box import DynamicPromptBox
+from .box.func_box import DynamicPromptBox, ConfirmBox
 from fungit.shared import GitType
 import fungit.commands as git
+
+
+LOG = logging.getLogger(__name__)
 
 
 class Manager:
@@ -53,10 +57,18 @@ class Manager:
     @staticmethod
     def space_event():
         _current = NavBox.current
+        LOG.debug(f"space event: {_current}")
         _, box = index_of(_current)
 
         if _current & GitType.STATUS:
             box.switch_status()
+        if _current & GitType.BRANCH:
+            branch = box.raw[box.selected]
+            err, _ = git.checkout(branch.name)
+            if err:
+                ConfirmBox.main("Error", err)
+                return
+            refresh_all()
         else:
             # TODO:
             pass
