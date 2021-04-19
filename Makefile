@@ -12,6 +12,7 @@ run:
 lint:
 	@if [ ! -f flake8 ]; then $(PY) -m pip install flake8; fi
 	@flake8 -v --ignore=E501,E402,E203,E741 --show-source
+	@echo
 
 clean:
 	find . -type f -name *.pyc -delete

@@ -23,3 +23,5 @@ class Theme:
 
     ADDITION = Color.fg("#87CEFA")
     DELETION = Color.fg("#F08080")
+
+    ERROR = Color.fg("#F08080")  # LightCoral

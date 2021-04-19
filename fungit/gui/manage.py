@@ -5,7 +5,7 @@ from .box_option import initial_git_box as refresh_all
 from .box.navigation_box import NavBox
 from .box.git_box import GIT_BOXES
 from .box.func_box import DynamicPromptBox, ConfirmBox
-from fungit.shared import GitType
+from .shared import GitType, ConfirmType
 import fungit.commands as git
 
 
@@ -66,8 +66,7 @@ class Manager:
             branch = box.raw[box.selected]
             err, _ = git.checkout(branch.name)
             if err:
-                ConfirmBox.main("Error", err)
-                return
+                ConfirmBox.main("Error", err, ConfirmType.ERROR)
             refresh_all()
         else:
             # TODO:

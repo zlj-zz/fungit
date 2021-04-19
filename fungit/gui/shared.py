@@ -19,3 +19,8 @@ class GitType:
 class GitActionStatus:
     NONE = 1
     PULLING = 1 << 1
+
+
+class ConfirmType:
+    NORMAL = 1
+    ERROR = 1 << 1

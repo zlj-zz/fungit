@@ -54,6 +54,7 @@ def test_load_files():
         #       file.has_merged_conflicts, file.has_inline_merged_conflicts)
         print(
             file.name,
+            file.tracked,
             file.has_staged_change,
             file.has_unstaged_change,
         )
@@ -77,5 +78,6 @@ def test_commit_info():
 
 
 if __name__ == "__main__":
-    print(checkout("dev"))
+    # print(checkout("dev"))
+    test_load_files()
     pass

@@ -1,10 +1,10 @@
 from typing import List, Any
 
-from fungit.shared import GitType
 import fungit.commands as git
 from fungit.style import Fx, Cursor, Symbol
-from .navigation_box import NavBox
+from ..shared import GitType
 from ..theme import Theme
+from .navigation_box import NavBox
 
 
 class StateBox(NavBox):
@@ -70,7 +70,7 @@ class StatusBox(NavBox):
 
         _current = cls.selected
         _limit = 0
-        if _current + 1 >= cls.h - 2:  # current selected index big than heigth
+        if _current + 1 >= cls.h - 2:  # current selected index big than height
             _limit = _current + 1 - (cls.h - 2)
 
         cls.box_content = ""
@@ -103,6 +103,21 @@ class StatusBox(NavBox):
         # elif flag == 'R ':
         #     color = Theme.FILE_RENAME
         return color
+
+    @classmethod
+    def notify(cls, update_data: bool = False, re_profile: bool = True):
+        if update_data:
+            cls.fetch_data()
+            cls.generate()
+            try:
+                cls.raw[cls.selected]
+            except ValueError:
+                cls.selected -= 1
+        if re_profile:
+            cls.create_profile()
+        # every notify must update display string and render all.
+        cls.update()
+        cls.render()
 
     @classmethod
     def switch_status(cls):

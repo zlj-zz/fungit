@@ -8,11 +8,14 @@ LOG = logging.getLogger(__name__)
 # ==========================================================
 # File option.
 # ==========================================================
-def stage(*args) -> None:
+def stage(file_path: str) -> None:
     """Stage files."""
 
     command = "add --"
-    run_with_git(" ".join([command, *args]))
+    if "->" in file_path:
+        file_path = file_path.split("->")[-1].strip()
+
+    run_with_git(" ".join([command, file_path]))
 
 
 def stage_all() -> None:
@@ -38,7 +41,7 @@ def unstage_all() -> None:
     run_with_git("reset")
 
 
-def pull():
+def pull() -> None:
     run_with_git("pull")
 
 

@@ -1,7 +1,7 @@
 from typing import List, Any
 
-from fungit.shared import GitType
 from fungit.style import Fx, Cursor
+from ..shared import GitType
 from ..renderer import Renderer
 from ..theme import Theme
 from ..utils import create_profile

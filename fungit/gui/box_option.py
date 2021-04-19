@@ -1,7 +1,7 @@
 import os
 import math
 
-from fungit.shared import GitType
+from .shared import GitType
 from .box.navigation_box import NavBox
 from .box.git_box import GIT_BOXES
 from .box.content_box import ContentBox
@@ -87,12 +87,6 @@ def create_content_box():
     ContentBox.y = 1
     ContentBox.w = w - limit_w
     ContentBox.h = h - 1
-
-    # ContentBox.create_profile()
-    # ContentBox.generate()
-    # ContentBox.update()
-
-    # BOXS[ContentBox.name] = ContentBox
 
 
 def initial_git_box(update_data: bool = True, lazy_render: bool = False):

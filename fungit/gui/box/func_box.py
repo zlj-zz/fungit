@@ -1,12 +1,18 @@
-from fungit.commands.exec import LOG
 import os
 import time
+import logging
 
 from fungit.event.key import Key
 from fungit.style import Cursor, Symbol
+from fungit.event.clean_quit import quit_app
 from ..utils import create_profile
 from ..renderer import Renderer
+from ..shared import ConfirmType
+from ..theme import Theme
 from . import Box
+
+
+LOG = logging.getLogger(__name__)
 
 
 class DynamicPromptBox(Box):
@@ -84,7 +90,7 @@ class ConfirmBox:
     close: bool = False
 
     @classmethod
-    def main(cls, title: str, prompt: str):
+    def main(cls, title: str, prompt: str, status=ConfirmType.NORMAL):
         f_w, f_h = os.get_terminal_size()
 
         # get box `x` and `(w)idth`
@@ -112,8 +118,13 @@ class ConfirmBox:
         cls.h = len(cls.content) + 2
         cls.y = round(f_h / 2) - round(cls.h / 2)
 
+        # get color
+        color = cls.status_color(status)
+
         # create box profile
-        cls.box = create_profile(cls.x, cls.y, cls.w, cls.h, title=title)
+        cls.box = create_profile(
+            cls.x, cls.y, cls.w, cls.h, title=title, line_color=color
+        )
 
         # create the content in box.
         start_x = cls.x + 1
@@ -123,7 +134,7 @@ class ConfirmBox:
         for idx, line in enumerate(cls.content):
 
             if idx < cls.h - 2:
-                _line = f"{Cursor.to(start_y, start_x)}{line}"
+                _line = f"{Cursor.to(start_y, start_x)}{color}{line}{Theme.DEFAULT}"
                 cls.box_content += _line
                 start_y += 1
 
@@ -140,10 +151,8 @@ class ConfirmBox:
 
                 if key == "q":
                     cls.close = True
-                    break
-                    # TODO
-                elif key == "enter" or key == "y" or key == "Y":
-                    # TODO: can't return
+                    quit_app()
+                elif key in ["enter", "y", "Y"]:
                     cls.close = True
                     is_confirm = True
                     break
@@ -157,6 +166,13 @@ class ConfirmBox:
         Key.clear()
         cls.close = False
         return is_confirm
+
+    @classmethod
+    def status_color(cls, status):
+        if status & ConfirmType.ERROR:
+            return Theme.ERROR
+        else:
+            return ""
 
 
 class InputBox:

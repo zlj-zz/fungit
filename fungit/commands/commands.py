@@ -87,6 +87,9 @@ def diff(file: str, tracked: bool = True, cached: bool = False) -> str:
     else:
         args.append("--")
 
+    if "->" in file:  # rename
+        file = file.split("->")[-1].strip()
+
     args.append(file)
 
     _, res = run_with_git(*args)
