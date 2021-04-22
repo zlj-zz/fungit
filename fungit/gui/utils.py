@@ -1,6 +1,6 @@
 from typing import Tuple
 
-from ..style import Symbol, Fx, Color, Cursor
+from fungit.style import Symbol, Fx, Color, Cursor
 
 
 def create_profile(
@@ -43,7 +43,8 @@ def create_profile(
         out += f'{Cursor.to(hpos, x)}{Symbol.v_line}{" " * (width-2) if fill else Cursor.r(width-2)}{Symbol.v_line}'
 
     # * Renderer corners
-    out += f"{Cursor.to(y, x)}{Symbol.left_up}{Cursor.to(y, x + width - 1)}{Symbol.right_up}{Cursor.to(y + height - 1, x)}{Symbol.left_down}{Cursor.to(y + height - 1, x + width - 1)}{Symbol.right_down}"
+    if height > 1:
+        out += f"{Cursor.to(y, x)}{Symbol.left_up}{Cursor.to(y, x + width - 1)}{Symbol.right_up}{Cursor.to(y + height - 1, x)}{Symbol.left_down}{Cursor.to(y + height - 1, x + width - 1)}{Symbol.right_down}"
 
     # * Renderer titles if enabled
     if title:

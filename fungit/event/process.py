@@ -29,6 +29,8 @@ def process_key():
             Manager.pull()
         elif key == "P":
             Manager.push()
+        elif key == "C":
+            Manager.commit()
         else:
             continue
     time.sleep(0.1)

@@ -1,6 +1,6 @@
 import logging
 
-from .exec import run_with_git
+from .exec import run_with_git, run_cmd
 
 
 LOG = logging.getLogger(__name__)
@@ -57,10 +57,20 @@ def push(force: bool = False, safe: bool = True):
     run_with_git(command)
 
 
+def commit(message: str = ""):
+    if message:
+        pass
+        return False
+    else:
+        run_cmd("git commit --verbose")
+        return True
+
+
 # ==========================================================
 # Branch option.
 # ==========================================================
 def checkout(path: str):
     command = f"checkout {path}"
     err, resp = run_with_git(command)
+    # LOG.debug(f"{err}|{resp}")
     return err, resp

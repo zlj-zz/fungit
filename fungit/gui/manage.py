@@ -13,6 +13,7 @@ LOG = logging.getLogger(__name__)
 
 
 class Manager:
+    # box event
     @staticmethod
     def switch_box_by_index(idx):
         NavBox.set_current(GIT_BOXES[int(idx) - 1].genre)
@@ -36,6 +37,7 @@ class Manager:
         NavBox.set_current(GIT_BOXES[new_index].genre)
         refresh_all(update_data=False)
 
+    # item event
     @staticmethod
     def prev_item():
         _current = NavBox.current
@@ -62,12 +64,20 @@ class Manager:
 
         if _current & GitType.STATUS:
             box.switch_status()
-        if _current & GitType.BRANCH:
+        elif _current & GitType.BRANCH:
             branch = box.raw[box.selected]
             err, _ = git.checkout(branch.name)
-            if err:
+            if err and "error" in err:
                 ConfirmBox.main("Error", err, ConfirmType.ERROR)
             refresh_all()
+        elif _current & GitType.COMMIT:
+            commit = box.raw[box.selected]
+            err, resp = git.checkout(commit.sha)
+            if err and "error" in err:
+                ConfirmBox.main("Error", err, ConfirmType.ERROR)
+            refresh_all()
+            LOG.debug(f"{err} | {resp}")
+            # TODO: checkout commit has bug and error
         else:
             # TODO:
             pass
@@ -108,6 +118,12 @@ class Manager:
 
         DynamicPromptBox.main("", "Pushing.. ")
         refresh_all()
+
+    @staticmethod
+    def commit():
+        is_open_editor = git.commit()
+        if is_open_editor:
+            refresh_all()
 
 
 def index_of(t, need_box: bool = True):

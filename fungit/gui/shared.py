@@ -1,10 +1,3 @@
-TREE = {}
-
-FUNC_BOX = {}
-
-TIP = "Pulling..."
-
-
 class GitType:
     STATE = 1
     STATUS = 1 << 1
