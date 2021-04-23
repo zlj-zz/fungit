@@ -422,12 +422,12 @@ GIT_OPTIONS = {
     },
     "pc": {
         "state": GitOptionState.STRING | GitOptionState.MULTI,
-        "command": 'git push --set-upstream origin "$(_git_current_branch 2> /dev/null)" ',
+        "command": 'git push --set-upstream origin "$(git symbolic-ref -q --short HEAD 2> /dev/null)" ',
         "help-msg": "pushes the current branch and adds origin as an upstream reference for it.",
     },
     "pp": {
         "state": GitOptionState.STRING | GitOptionState.MULTI,
-        "command": 'git pull origin "$(_git_current_branch 2> /dev/null)" && git push origin "$(_git_current_branch 2> /dev/null)" ',
+        "command": 'git pull origin "$(git symbolic-ref -q --short HEAD 2> /dev/null)" && git push origin "$(git symbolic-ref -q --short HEAD 2> /dev/null)" ',
         "help-msg": "pulls and pushes the current branch from origin to origin.",
     },
     # Remote(R)
