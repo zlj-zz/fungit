@@ -1,10 +1,23 @@
 import re
 from typing import List
 
-from .exec import run_with_git
+from . import run_with_git, Git
 from .module.file import File
 from .module.branch import Branch
 from .module.commit import Commit
+
+
+def current_head():
+    _, res = run_with_git("symbolic-ref -q --short HEAD")
+    return res.rstrip()
+
+
+def load_state() -> list:
+    """Get current project name and head branch."""
+
+    project_ = Git.REPOSITORY_PATH.split("/")[-1]
+    head_ = current_head()
+    return [project_, head_]
 
 
 def load_files(*args) -> List[File]:
@@ -158,3 +171,11 @@ def load_commits(branch_name: str):
         commits.append(commit_)
 
     return commits
+
+
+def load_stashes() -> str:
+    """Get stash list."""
+
+    arg = "stash list"
+    _, resp = run_with_git(arg)
+    return resp

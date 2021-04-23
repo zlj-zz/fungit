@@ -152,7 +152,7 @@ class ConfirmBox:
                 if key == "q":
                     cls.close = True
                     quit_app()
-                elif key in ["enter", "y", "Y"]:
+                elif key in ["enter", "y", "Y", " "]:
                     cls.close = True
                     is_confirm = True
                     break

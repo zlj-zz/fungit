@@ -1,3 +1,4 @@
+from fungit.gui.shared import BoxType
 import os
 import sys
 import termios
@@ -5,6 +6,7 @@ import threading
 from typing import List
 
 from .gui.renderer import Renderer
+from .commands import current_repository, Git
 
 
 class Term:
@@ -35,6 +37,14 @@ class Term:
 
     @classmethod
     def init(cls):
+        path_ = current_repository()
+        if path_:
+            Git.REPOSITORY_PATH = path_
+        else:
+            cls.clear()
+            print("Error: please run at git repository.")
+            raise SystemExit(0)
+
         Term.width = os.get_terminal_size().columns
         Term.height = os.get_terminal_size().lines
 

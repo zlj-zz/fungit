@@ -1,7 +1,7 @@
 import os
 import math
 
-from .shared import GitType
+from .shared import BoxType
 from .box.navigation_box import NavBox
 from .box.git_box import GIT_BOXES
 from .box.content_box import ContentBox
@@ -57,7 +57,7 @@ def update_git_box_w_h():
         temp_w = GIT_BOXES[0].w = limit_w
         temp_h = GIT_BOXES[0].h = 3
 
-        if _selected_type & GitType.STASH:
+        if _selected_type & BoxType.STASH:
             _split_h, _less = divmod(h - 4, 4)
         else:
             _split_h, _less = divmod(h - 7, 3)
@@ -73,7 +73,7 @@ def update_git_box_w_h():
         GIT_BOXES[-1].x = 1
         GIT_BOXES[-1].y = temp_y + temp_h
         GIT_BOXES[-1].w = limit_w
-        if _selected_type & GitType.STASH:
+        if _selected_type & BoxType.STASH:
             GIT_BOXES[-1].h = _split_h
         else:
             GIT_BOXES[-1].h = 3
@@ -96,7 +96,7 @@ def initial_git_box(update_data: bool = True, lazy_render: bool = False):
     for sub in GIT_BOXES:
         if update_data:
             sub.fetch_data()
-        sub.generate()
+            sub.generate()
         sub.create_profile()
         sub.update()
         if not lazy_render:

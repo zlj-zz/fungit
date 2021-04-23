@@ -1,12 +1,12 @@
 from typing import Any
 
-from ..shared import GitType
+from ..shared import BoxType
 from ..utils import create_profile
 from ..renderer import Renderer
 
 
 class Box:
-    current: GitType
+    current: BoxType
     name: str
     genre: int
     t_w: int

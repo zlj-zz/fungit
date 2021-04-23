@@ -1,6 +1,7 @@
+import os
 import logging
 
-from .exec import run_with_git, run_cmd
+from . import Git, run_with_git, run_cmd
 
 
 LOG = logging.getLogger(__name__)
@@ -64,6 +65,13 @@ def commit(message: str = ""):
     else:
         run_cmd("git commit --verbose")
         return True
+
+
+def del_(path: str, tracked: bool = True):
+    if tracked:
+        run_with_git(["checkout", path])
+    else:
+        os.remove(f"{Git.REPOSITORY_PATH}/{path}")
 
 
 # ==========================================================

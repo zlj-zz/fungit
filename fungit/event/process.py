@@ -31,6 +31,8 @@ def process_key():
             Manager.push()
         elif key == "C":
             Manager.commit()
+        elif key == "d":
+            Manager.del_()
         else:
             continue
     time.sleep(0.1)

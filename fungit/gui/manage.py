@@ -1,12 +1,13 @@
 import logging
+from math import fabs
 import threading
 
+from .shared import BoxType, ConfirmType
 from .box_option import initial_git_box as refresh_all
 from .box.navigation_box import NavBox
 from .box.git_box import GIT_BOXES
 from .box.func_box import DynamicPromptBox, ConfirmBox
-from .shared import GitType, ConfirmType
-import fungit.commands as git
+from fungit.commands import options
 
 
 LOG = logging.getLogger(__name__)
@@ -62,17 +63,17 @@ class Manager:
         LOG.debug(f"space event: {_current}")
         _, box = index_of(_current)
 
-        if _current & GitType.STATUS:
+        if _current & BoxType.STATUS:
             box.switch_status()
-        elif _current & GitType.BRANCH:
+        elif _current & BoxType.BRANCH:
             branch = box.raw[box.selected]
-            err, _ = git.checkout(branch.name)
+            err, _ = options.checkout(branch.name)
             if err and "error" in err:
                 ConfirmBox.main("Error", err, ConfirmType.ERROR)
             refresh_all()
-        elif _current & GitType.COMMIT:
+        elif _current & BoxType.COMMIT:
             commit = box.raw[box.selected]
-            err, resp = git.checkout(commit.sha)
+            err, resp = options.checkout(commit.sha)
             if err and "error" in err:
                 ConfirmBox.main("Error", err, ConfirmType.ERROR)
             refresh_all()
@@ -87,7 +88,7 @@ class Manager:
         _current = NavBox.current
         _, box = index_of(_current)
 
-        if _current & GitType.STATUS:
+        if _current & BoxType.STATUS:
             box.switch_all()
         else:
             # TODO:
@@ -96,7 +97,7 @@ class Manager:
     @staticmethod
     def pull():
         def _pull_option():
-            git.pull()
+            options.pull()
             DynamicPromptBox.close = True
 
         t = threading.Thread(target=_pull_option)
@@ -109,7 +110,7 @@ class Manager:
     @staticmethod
     def push():
         def _push_option():
-            git.push()
+            options.push()
             DynamicPromptBox.close = True
 
         t = threading.Thread(target=_push_option)
@@ -121,9 +122,23 @@ class Manager:
 
     @staticmethod
     def commit():
-        is_open_editor = git.commit()
+        is_open_editor = options.commit()
         if is_open_editor:
             refresh_all()
+
+    @staticmethod
+    def del_():
+        _current = NavBox.current
+        _, box = index_of(_current)
+
+        if _current & BoxType.STATUS:
+            is_confirm = ConfirmBox.main("", "Discard all changed?")
+            if is_confirm:
+                file = box.raw[box.selected]
+                options.del_(file.name, file.tracked)
+                refresh_all()
+            else:
+                refresh_all(update_data=False)
 
 
 def index_of(t, need_box: bool = True):

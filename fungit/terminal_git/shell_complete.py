@@ -4,7 +4,7 @@ import typing
 import logging
 
 from .. import __HOME__, __FUNGITDIR__
-from ..commands.exec import run_cmd, run_cmd_with_resp
+from ..commands import run_cmd, run_cmd_with_resp
 from .gitoptions import GIT_OPTIONS
 from .shared import okay, warn, echo, exit_
 

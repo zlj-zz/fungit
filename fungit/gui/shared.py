@@ -1,4 +1,4 @@
-class GitType:
+class BoxType:
     STATE = 1
     STATUS = 1 << 1
     COMMIT = 1 << 2

@@ -1,6 +1,6 @@
 import logging
 
-from fungit.commands.exec import run_cmd_with_resp
+from fungit.commands import run_cmd_with_resp
 from .gitoptions import GIT_OPTIONS, TYPES
 from .shared import echo, warn, err, exit_, CommandColor, Fx
 

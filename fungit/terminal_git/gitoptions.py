@@ -1,6 +1,6 @@
 import re
 
-from fungit.commands.exec import run_cmd
+from fungit.commands import run_cmd
 from .shared import warn
 
 

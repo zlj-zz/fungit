@@ -1,15 +1,16 @@
+import logging
 from typing import List, Any
 
-import fungit.commands as git
+from fungit.commands import loading, options
 from fungit.style import Fx, Cursor, Symbol
-from ..shared import GitType
+from ..shared import BoxType
 from ..theme import Theme
 from .navigation_box import NavBox
 
 
 class StateBox(NavBox):
     name: str = "state"
-    genre = GitType.STATE
+    genre = BoxType.STATE
     x: int = 0
     y: int = 0
     w: int = 0
@@ -22,7 +23,7 @@ class StateBox(NavBox):
 
     @classmethod
     def fetch_data(cls):
-        cls.raw = git.state()
+        cls.raw = loading.load_state()
 
     @classmethod
     def generate(cls):
@@ -32,7 +33,7 @@ class StateBox(NavBox):
 
 class StatusBox(NavBox):
     name: str = "status"
-    genre = GitType.STATUS
+    genre = BoxType.STATUS
     x: int = 0
     y: int = 0
     w: int = 0
@@ -45,7 +46,7 @@ class StatusBox(NavBox):
 
     @classmethod
     def fetch_data(cls):
-        cls.raw = git.load_files()
+        cls.raw = loading.load_files()
 
     @classmethod
     def generate(cls):
@@ -123,9 +124,9 @@ class StatusBox(NavBox):
     def switch_status(cls):
         file_ = cls.raw[cls.selected]
         if file_.has_unstaged_change:
-            git.stage(file_.name)
+            options.stage(file_.name)
         else:
-            git.unstage(file_.name)
+            options.unstage(file_.name)
 
         cls.notify(update_data=True)
 
@@ -133,17 +134,17 @@ class StatusBox(NavBox):
     def switch_all(cls):
         for file_ in cls.raw:
             if file_.has_unstaged_change:
-                git.stage_all()
+                options.stage_all()
                 break
         else:
-            git.unstage_all()
+            options.unstage_all()
 
         cls.notify(update_data=True)
 
 
 class BranchBox(NavBox):
     name: str = "branch"
-    genre = GitType.BRANCH
+    genre = BoxType.BRANCH
     x: int = 0
     y: int = 0
     w: int = 0
@@ -156,7 +157,7 @@ class BranchBox(NavBox):
 
     @classmethod
     def fetch_data(cls):
-        cls.raw = git.load_branches()
+        cls.raw = loading.load_branches()
 
     @classmethod
     def generate(cls):
@@ -207,7 +208,7 @@ class BranchBox(NavBox):
 
 class CommitBox(NavBox):
     name: str = "commit"
-    genre = GitType.COMMIT
+    genre = BoxType.COMMIT
     x: int = 0
     y: int = 0
     w: int = 0
@@ -221,7 +222,7 @@ class CommitBox(NavBox):
     @classmethod
     def fetch_data(cls):
         # get current head commit list
-        cls.raw = git.load_commits(git.current_head())
+        cls.raw = loading.load_commits(loading.current_head())
 
     @classmethod
     def generate(cls):
@@ -260,7 +261,7 @@ class CommitBox(NavBox):
 
 class StashBox(NavBox):
     name: str = "stash"
-    genre = GitType.STASH
+    genre = BoxType.STASH
     x: int = 0
     y: int = 0
     w: int = 0
@@ -273,7 +274,7 @@ class StashBox(NavBox):
 
     @classmethod
     def fetch_data(cls):
-        cls.raw = git.stashes()
+        cls.raw = loading.load_stashes()
 
     @classmethod
     def generate(cls):

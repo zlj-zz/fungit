@@ -1,9 +1,9 @@
 from typing import List, Any
 
-import fungit.commands as git
+from fungit.commands import info
 from fungit.gui.theme import Theme
 from fungit.style import Cursor, Fx
-from ..shared import GitType
+from ..shared import BoxType
 from . import Box
 
 ADDITION_FLAG = "+"
@@ -12,7 +12,7 @@ DELETION_FLAG = "-"
 
 class ContentBox(Box):
     name: str = ""
-    genre = GitType.CONTENT
+    genre = BoxType.CONTENT
     x: int = 0
     y: int = 0
     w: int = 0
@@ -96,12 +96,12 @@ class ContentBox(Box):
 # of content.
 class StateContentBox(ContentBox):
     name: str = "Information"
-    genre = GitType.CONTENT | GitType.STATE
+    genre = BoxType.CONTENT | BoxType.STATE
 
 
 class StatusContentBox(ContentBox):
     name: str = "File"
-    genre = GitType.CONTENT | GitType.STATUS
+    genre = BoxType.CONTENT | BoxType.STATUS
 
     @classmethod
     def generate(cls):
@@ -145,12 +145,12 @@ class StatusContentBox(ContentBox):
 
 class BranchContentBox(ContentBox):
     name: str = "Log"
-    genre = GitType.CONTENT | GitType.BRANCH
+    genre = BoxType.CONTENT | BoxType.BRANCH
 
 
 class CommitContentBox(ContentBox):
     name: str = "Patch"
-    genre = GitType.CONTENT | GitType.COMMIT
+    genre = BoxType.CONTENT | BoxType.COMMIT
 
     @classmethod
     def generate(cls):
@@ -186,13 +186,13 @@ class CommitContentBox(ContentBox):
 
 class StashContentBox(ContentBox):
     name: str = "Stash"
-    genre = GitType.CONTENT | GitType.STASH
+    genre = BoxType.CONTENT | BoxType.STASH
 
 
 def fetch_content(c):
     selected = c.current
 
-    if selected & GitType.STATUS:
+    if selected & BoxType.STATUS:
         _status_list = c.raw
         if not _status_list:
             return "No changed file"
@@ -200,30 +200,30 @@ def fetch_content(c):
             file_ = _status_list[c.selected]
 
             if not file_.tracked:  # is mean untrack
-                return git.diff(file_.name, tracked=False)
+                return info.diff(file_.name, tracked=False)
             elif file_.has_staged_change:
-                return git.diff(file_.name, cached=True)
+                return info.diff(file_.name, cached=True)
             else:
-                return git.diff(file_.name)
-    elif selected & GitType.COMMIT:
+                return info.diff(file_.name)
+    elif selected & BoxType.COMMIT:
         args = c.raw
         if not args:
             return ""
         else:
             _commit_id = args[c.selected].sha
-            return git.commit_info(_commit_id)
-    elif selected & GitType.BRANCH:
+            return info.commit_info(_commit_id)
+    elif selected & BoxType.BRANCH:
         args = c.raw
         if not args:
             return ""
         else:
             _branch = args[c.selected]
-            return git.branch_log(_branch)
-    elif selected & GitType.STASH:
+            return info.branch_log(_branch)
+    elif selected & BoxType.STASH:
         # TODO:
-        return "Dont support display."
-    elif selected & GitType.STATE:
-        return git.INTRODUCE
+        return "Don't support display."
+    elif selected & BoxType.STATE:
+        return info.INTRODUCE
 
 
 # _CACHED = re.compile(r'^[A-Z]\s$')

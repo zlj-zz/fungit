@@ -1,7 +1,7 @@
 from typing import List, Any
 
 from fungit.style import Fx, Cursor
-from ..shared import GitType
+from ..shared import BoxType
 from ..renderer import Renderer
 from ..theme import Theme
 from ..utils import create_profile
@@ -11,7 +11,7 @@ from .content_box import ContentBox
 
 class NavBox(Box):
     # only change in father class, sub class only read
-    current: int = GitType.STATUS
+    current: int = BoxType.STATUS
 
     t_w: int
     t_h: int

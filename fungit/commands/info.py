@@ -1,25 +1,4 @@
-import os
-
-from .exec import run_with_git
-
-
-def current_head():
-    _, res = run_with_git("symbolic-ref -q --short HEAD")
-    return res.rstrip()
-
-
-def state() -> list:
-    """Get current project name and head branch."""
-
-    _, path = run_with_git("rev-parse --git-dir")
-    path = path.strip()
-    if path == ".git":
-        project = os.getcwd().split("/")[-1]
-    else:
-        project = path.split("/")[-2]
-
-    _head = current_head()
-    return [project, _head]
+from . import run_with_git
 
 
 def branch_log(branch) -> str:
@@ -59,14 +38,6 @@ def commit_file_info(commit: str, file_name: str = "") -> str:
     arg = "show %s %s" % (commit, file_name)
     _, resp = run_with_git(arg)
     return resp.rstrip()
-
-
-def stashes() -> str:
-    """Get stash list."""
-
-    arg = "stash list"
-    _, resp = run_with_git(arg)
-    return resp
 
 
 def diff(file: str, tracked: bool = True, cached: bool = False) -> str:
