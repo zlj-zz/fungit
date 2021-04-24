@@ -152,6 +152,9 @@ class Manager:
     def commit():
         is_open_editor = options.commit()
         if is_open_editor:
+            _current = NavBox.current
+            _, box = index_of(_current)
+            box.selected = 0
             refresh_all()
 
     @staticmethod

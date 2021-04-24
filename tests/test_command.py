@@ -3,14 +3,13 @@ import re
 
 sys.path.insert(0, ".")
 
-from fungit.commands import (
+from fungit.commands.loading import (
     load_branches,
     current_head,
     load_commits,
     load_files,
-    checkout,
 )
-from fungit.commands.exec import run_with_git, run_cmd_with_resp
+from fungit.commands import run_with_git, run_cmd_with_resp
 
 
 def test_load_branches():
