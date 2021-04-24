@@ -90,12 +90,18 @@ class ConfirmBox:
     close: bool = False
 
     @classmethod
-    def main(cls, title: str, prompt: str, status=ConfirmType.NORMAL):
+    def main(
+        cls, title: str, prompt: str, status=ConfirmType.NORMAL, full: bool = False
+    ):
         f_w, f_h = os.get_terminal_size()
 
         # get box `x` and `(w)idth`
-        cls.x = round(f_w / 4)
-        cls.w = round(f_w / 2)
+        if full:
+            cls.x = 1
+            cls.w = f_w
+        else:
+            cls.x = round(f_w / 4)
+            cls.w = round(f_w / 2)
 
         line_len = cls.w - 2
         prompt = prompt.replace("\t", "")
@@ -115,8 +121,12 @@ class ConfirmBox:
             cls.content.append(line[idx:])
 
         # get box `y` and `(h)eigth`.
-        cls.h = len(cls.content) + 2
-        cls.y = round(f_h / 2) - round(cls.h / 2)
+        if full:
+            cls.h = f_h
+            cls.y = 1
+        else:
+            cls.h = len(cls.content) + 2
+            cls.y = round(f_h / 2) - round(cls.h / 2)
 
         # get color
         color = cls.status_color(status)

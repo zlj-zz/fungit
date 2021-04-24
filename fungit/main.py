@@ -1,6 +1,8 @@
 #!/usr/bin/python3
 import argparse
+import platform
 
+from . import __version__, __license__, __author__, __git_url__
 from .logutil import setup_logging
 from .term import Term
 from .gui.box_option import initial_git_box
@@ -13,7 +15,6 @@ def main(costom_commands: list = []):
     args.add_argument(
         "-v", "--version", action="store_true", help="show version info and exit"
     )
-    # TODO:finish show version
     args.add_argument(
         "--debug",
         action="store_true",
@@ -23,13 +24,19 @@ def main(costom_commands: list = []):
     if costom_commands:
         stdargs = args.parse_args(costom_commands)
 
+    if stdargs.version:
+        print(
+            f"[fungit]: {__version__}, license={__license__}, os={platform.system()}, arch={platform.machine()}"
+        )
+        print(f"author={__author__}, url={__git_url__}")
+        raise SystemExit(0)
+
     DEBUG: bool = stdargs.debug
 
-    Term.init()
     setup_logging(DEBUG)
-
-    initial_git_box()
+    Term.init()
     Key.start()
+    initial_git_box()
 
     def run():
         while not False:

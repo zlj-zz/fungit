@@ -1,10 +1,12 @@
 import os
 import math
 
-from .shared import BoxType
+from .shared import BoxType, ConfirmType
 from .box.navigation_box import NavBox
 from .box.git_box import GIT_BOXES
 from .box.content_box import ContentBox
+from .box.func_box import ConfirmBox
+from fungit.event.clean_quit import quit_app
 
 
 def update_git_box_w_h():
@@ -14,8 +16,9 @@ def update_git_box_w_h():
     limit_w = math.floor(w / 3)
 
     if w < 90 or h < 8:
-        # TODO: need create error box and show...
-        pass
+        tip = "Not enough space!\nTerminal must be higher than 8 and wider than 90.\nPlease press `q` to exit."
+        ConfirmBox.main("Error", tip, ConfirmType.ERROR, full=True)
+        quit_app()
 
     elif h <= 20:
         _old = None

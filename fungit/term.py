@@ -23,7 +23,7 @@ class Term:
     show_cursor = "\033[?25h"  # * Show terminal cursor
     alt_screen = "\033[?1049h"  # * Switch to alternate screen
     normal_screen = "\033[?1049l"  # * Switch to normal screen
-    clear = "\033[2J\033[0;0f"  # * Clear screen and set cursor to position 0,0
+    clear_ = "\033[2J\033[0;0f"  # * Clear screen and set cursor to position 0,0
     # * Enable reporting of mouse position on click and release
     mouse_on = "\033[?1002h\033[?1015h\033[?1006h"
     mouse_off = "\033[?1002l"  # * Disable mouse reporting
@@ -49,7 +49,7 @@ class Term:
 
         Renderer.now(
             Term.alt_screen,
-            Term.clear,
+            Term.clear_,
             Term.hide_cursor,
             Term.mouse_on,
             Term.title("fungit"),
@@ -59,7 +59,7 @@ class Term:
     @classmethod
     def clear(cls):
         Renderer.now(
-            Term.clear,
+            Term.clear_,
             Term.normal_screen,
             Term.show_cursor,
             Term.mouse_off,
