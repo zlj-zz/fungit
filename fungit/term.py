@@ -41,8 +41,7 @@ class Term:
         if path_:
             Git.REPOSITORY_PATH = path_
         else:
-            cls.clear()
-            print("Error: please run at git repository.")
+            print("Error: please run it in git repository.")
             raise SystemExit(0)
 
         Term.width = os.get_terminal_size().columns

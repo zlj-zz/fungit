@@ -1,5 +1,4 @@
 import logging
-from math import fabs
 import threading
 
 from .shared import BoxType, ConfirmType
@@ -64,7 +63,13 @@ class Manager:
         _, box = index_of(_current)
 
         if _current & BoxType.STATUS:
-            box.switch_status()
+            file_ = box.raw[box.selected]
+
+            if file_.has_unstaged_change:
+                options.stage(file_.name)
+            else:
+                options.unstage(file_.name)
+            box.notify(update_data=True)
         elif _current & BoxType.BRANCH:
             branch = box.raw[box.selected]
             err, _ = options.checkout(branch.name)
@@ -89,9 +94,32 @@ class Manager:
         _, box = index_of(_current)
 
         if _current & BoxType.STATUS:
-            box.switch_all()
+            for file_ in box.raw:
+                if file_.has_unstaged_change:
+                    options.stage_all()
+                    break
+            else:
+                options.unstage_all()
+
+            box.notify(update_data=True)
         else:
             # TODO:
+            pass
+
+    @staticmethod
+    def i_event():
+        _current = NavBox.current
+        _, box = index_of(_current)
+
+        if _current == BoxType.STATUS:
+            file = box.raw[box.selected]
+
+            try:
+                options.ignore(file.name)
+            except Exception as e:
+                ConfirmBox.main("Error", e, ConfirmType.ERROR)
+            box.notify(update_data=True)
+        else:
             pass
 
     @staticmethod

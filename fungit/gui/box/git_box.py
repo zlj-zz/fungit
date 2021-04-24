@@ -1,7 +1,7 @@
 import logging
 from typing import List, Any
 
-from fungit.commands import loading, options
+from fungit.commands import loading
 from fungit.style import Fx, Cursor, Symbol
 from ..shared import BoxType
 from ..theme import Theme
@@ -119,27 +119,6 @@ class StatusBox(NavBox):
         # every notify must update display string and render all.
         cls.update()
         cls.render()
-
-    @classmethod
-    def switch_status(cls):
-        file_ = cls.raw[cls.selected]
-        if file_.has_unstaged_change:
-            options.stage(file_.name)
-        else:
-            options.unstage(file_.name)
-
-        cls.notify(update_data=True)
-
-    @classmethod
-    def switch_all(cls):
-        for file_ in cls.raw:
-            if file_.has_unstaged_change:
-                options.stage_all()
-                break
-        else:
-            options.unstage_all()
-
-        cls.notify(update_data=True)
 
 
 class BranchBox(NavBox):

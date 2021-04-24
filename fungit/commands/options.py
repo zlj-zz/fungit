@@ -74,6 +74,11 @@ def del_(path: str, tracked: bool = True):
         os.remove(f"{Git.REPOSITORY_PATH}/{path}")
 
 
+def ignore(path: str):
+    with open(f"{Git.REPOSITORY_PATH}/.gitignore", "a") as f:
+        f.write(f"\n{path}")
+
+
 # ==========================================================
 # Branch option.
 # ==========================================================

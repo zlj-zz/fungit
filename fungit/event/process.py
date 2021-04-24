@@ -33,6 +33,8 @@ def process_key():
             Manager.commit()
         elif key == "d":
             Manager.del_()
+        elif key == "i":
+            Manager.i_event()
         else:
             continue
     time.sleep(0.1)
