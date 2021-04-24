@@ -2,6 +2,12 @@ from typing import Dict
 
 
 class Symbol:
+    """Style symbol class.
+
+    This class provides the symbols used in styles. Such as border outline,
+    dynamic display, arrow symbol.
+    """
+
     h_line: str = "─"
     v_line: str = "│"
     left_up: str = "┌"
@@ -10,6 +16,8 @@ class Symbol:
     right_down: str = "┘"
     title_left: str = "┤"
     title_right: str = "├"
+    title_l: str = "["
+    title_r: str = "]"
     div_up: str = "┬"
     div_down: str = "┴"
     graph_up: Dict[float, str] = {

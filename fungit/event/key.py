@@ -4,9 +4,13 @@ import termios
 import fcntl
 import os
 import sys
+import logging
 from time import sleep, time
 from select import select
 from typing import List, Dict, Tuple, Union
+
+
+LOG = logging.getLogger(__name__)
 
 
 class Timer:
@@ -210,7 +214,6 @@ class Key:
                         # * Set non blocking to prevent read stall
                         with Nonblocking(sys.stdin):
                             input_key += sys.stdin.read(20)
-                            print(input_key)
                             if input_key.startswith("\033[<"):
                                 _ = sys.stdin.read(1000)
                         cls.idle.set()  # * Report IO blocking done
@@ -282,8 +285,8 @@ class Key:
                         cls.new.set()  # * Set threading event to interrupt main thread sleep
                     input_key = ""
 
-        except Exception:
-            # errlog.exception(f'Input thread failed with exception: {e}')
+        except Exception as e:
+            LOG.error(f"Input thread failed with exception: {e}")
             cls.idle.set()
             cls.list.clear()
             # clean_quit(1, thread=True)

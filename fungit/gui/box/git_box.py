@@ -87,10 +87,10 @@ class StatusBox(NavBox):
     def line_color(cls, f):
         color = Theme.DEFAULT
         if f.tracked:
-            if f.has_staged_change:
-                color = Theme.FILE_CACHED
-            elif f.has_unstaged_change:
+            if f.has_unstaged_change:
                 color = Theme.FILE_CHANGE
+            elif f.has_staged_change:
+                color = Theme.FILE_CACHED
             elif f.deleted:
                 color = Theme.FILE_DEL
         else:  # untracked
@@ -99,10 +99,6 @@ class StatusBox(NavBox):
             else:
                 color = Theme.FILE_UNTRACK
 
-        # elif flag == 'D ':
-        #     color = Theme.FILE_DELED
-        # elif flag == 'R ':
-        #     color = Theme.FILE_RENAME
         return color
 
     @classmethod
