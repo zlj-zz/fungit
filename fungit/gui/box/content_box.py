@@ -108,8 +108,9 @@ class StatusContentBox(ContentBox):
         line_w = cls.w - 2
         _content = []
         lines_ = cls.raw.split("\n")
+        lines_len = len(lines_)
 
-        if len(lines_) < 4:
+        if lines_len < 4:
             super().generate()
             return
 
@@ -117,28 +118,30 @@ class StatusContentBox(ContentBox):
         for i in range(4):
             _content.append(f"{Fx.b}{lines_[i]}{Fx.ub}")
 
-        if lines_[4].endswith("@@"):
-            _content.append(f"{Theme.BOX_SELECTED_COLOR}{lines_[4]}{Theme.DEFAULT}")
-        else:
-            _content.append(lines_[4])
-
-        for line in lines_[5:]:
-            line_len = len(line)
-            if line_len <= line_w:
-                if line.startswith(ADDITION_FLAG):
-                    line = f"{Theme.ADDITION}{line}{Theme.DEFAULT}"
-                elif line.startswith(DELETION_FLAG):
-                    line = f"{Theme.DELETION}{line}{Theme.DEFAULT}"
-                _content.append(line)
+        if lines_len > 5:
+            if lines_[4].endswith("@@"):
+                _content.append(f"{Theme.BOX_SELECTED_COLOR}{lines_[4]}{Theme.DEFAULT}")
             else:
-                sub_lines = cls.split_out_of_str(line, line_w)
-                if line.startswith(ADDITION_FLAG):
-                    sub_lines[0] = Theme.ADDITION + sub_lines[0]
-                    sub_lines[-1] = sub_lines[-1] + Theme.DEFAULT
-                elif line.startswith(DELETION_FLAG):
-                    sub_lines[0] = Theme.DELETION + sub_lines[0]
-                    sub_lines[-1] = sub_lines[-1] + Theme.DEFAULT
-                _content.append(sub_lines)
+                _content.append(lines_[4])
+
+        if lines_len > 5:
+            for line in lines_[5:]:
+                line_len = len(line)
+                if line_len <= line_w:
+                    if line.startswith(ADDITION_FLAG):
+                        line = f"{Theme.ADDITION}{line}{Theme.DEFAULT}"
+                    elif line.startswith(DELETION_FLAG):
+                        line = f"{Theme.DELETION}{line}{Theme.DEFAULT}"
+                    _content.append(line)
+                else:
+                    sub_lines = cls.split_out_of_str(line, line_w)
+                    if line.startswith(ADDITION_FLAG):
+                        sub_lines[0] = Theme.ADDITION + sub_lines[0]
+                        sub_lines[-1] = sub_lines[-1] + Theme.DEFAULT
+                    elif line.startswith(DELETION_FLAG):
+                        sub_lines[0] = Theme.DELETION + sub_lines[0]
+                        sub_lines[-1] = sub_lines[-1] + Theme.DEFAULT
+                    _content.append(sub_lines)
 
         cls.content = _content
 
