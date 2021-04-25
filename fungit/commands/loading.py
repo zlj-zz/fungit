@@ -1,10 +1,14 @@
 import re
+import logging
 from typing import List
 
 from . import run_with_git, Git
 from .module.file import File
 from .module.branch import Branch
 from .module.commit import Commit
+
+
+LOG = logging.getLogger(__name__)
 
 
 def current_head():
@@ -66,7 +70,7 @@ def load_files(*args) -> List[File]:
 
 def load_branches() -> List[Branch]:
     command = 'for-each-ref --sort=-committerdate --format="%(HEAD)|%(refname:short)|%(upstream:short)|%(upstream:track)" refs/heads'
-    _, resp = run_with_git(command)
+    err, resp = run_with_git(command)
     resp = resp.strip()
 
     if not resp:
@@ -119,8 +123,8 @@ def get_log(branch_name: str, limit: bool = False, filter_path: str = ""):
     limit_flag = "-300" if limit else ""
     filter_flag = f"--follow -- {filter_path}" if filter_path else ""
     command = f'log {branch_name} --oneline --pretty=format:"%H|%at|%aN|%d|%p|%s" {limit_flag} --abbrev=20 --date=unix {filter_flag}'
-    _, resp = run_with_git(command)
-    return resp.strip()
+    err, resp = run_with_git(command)
+    return err, resp.strip()
 
 
 def load_commits(branch_name: str):
@@ -137,38 +141,40 @@ def load_commits(branch_name: str):
         passed_first_pushed_commit = True
 
     commits = []
-    lines = get_log(branch_name).split("\n")
-    for line in lines:
-        split_ = line.split("|")
+    err, resp = get_log(branch_name)
+    lines = resp.split("\n")
+    if not err:
+        for line in lines:
+            split_ = line.split("|")
 
-        sha = split_[0]
-        unix_timestamp = int(split_[1])
-        author = split_[2]
-        extra_info = (split_[3]).strip()
-        # parent_hashes = split_[4]
-        message = "|".join(split_[5:])
+            sha = split_[0]
+            unix_timestamp = int(split_[1])
+            author = split_[2]
+            extra_info = (split_[3]).strip()
+            # parent_hashes = split_[4]
+            message = "|".join(split_[5:])
 
-        tag = []
-        if extra_info:
-            _re = re.compile(r"tag: ([^,\\]+)")
-            match = _re.search(extra_info)
-            if match:
-                tag.append(match[1])
+            tag = []
+            if extra_info:
+                _re = re.compile(r"tag: ([^,\\]+)")
+                match = _re.search(extra_info)
+                if match:
+                    tag.append(match[1])
 
-        if sha == first_pushed_commit:
-            passed_first_pushed_commit = True
-        status = {True: "unpushed", False: "pushed"}[not passed_first_pushed_commit]
+            if sha == first_pushed_commit:
+                passed_first_pushed_commit = True
+            status = {True: "unpushed", False: "pushed"}[not passed_first_pushed_commit]
 
-        commit_ = Commit(
-            sha=sha,
-            msg=message,
-            author=author,
-            unix_timestamp=unix_timestamp,
-            status=status,
-            extra_info=extra_info,
-            tag=tag,
-        )
-        commits.append(commit_)
+            commit_ = Commit(
+                sha=sha,
+                msg=message,
+                author=author,
+                unix_timestamp=unix_timestamp,
+                status=status,
+                extra_info=extra_info,
+                tag=tag,
+            )
+            commits.append(commit_)
 
     return commits
 

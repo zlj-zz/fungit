@@ -157,29 +157,32 @@ class CommitContentBox(ContentBox):
         line_w = cls.w - 2
         _content = []
         lines_ = cls.raw.split("\n")
+        lines_len = len(lines_)
 
         _content.append(f"{Theme.PUSHED}{Fx.b}{lines_[0]}{Fx.ub}{Theme.DEFAULT}")
 
-        for i in range(1, 3):
-            _content.append(f"{Fx.b}{lines_[i]}{Fx.ub}")
+        if lines_len >= 3:
+            for i in range(1, 3):
+                _content.append(f"{Fx.b}{lines_[i]}{Fx.ub}")
 
-        for line in lines_[3:]:
-            line_len = len(line)
-            if line_len <= line_w:
-                if line.startswith(ADDITION_FLAG):
-                    line = f"{Theme.ADDITION}{line}{Theme.DEFAULT}"
-                elif line.startswith(DELETION_FLAG):
-                    line = f"{Theme.DELETION}{line}{Theme.DEFAULT}"
-                _content.append(line)
-            else:
-                sub_lines = cls.split_out_of_str(line, line_w)
-                if line.startswith(ADDITION_FLAG):
-                    sub_lines[0] = Theme.ADDITION + sub_lines[0]
-                    sub_lines[-1] = sub_lines[-1] + Theme.DEFAULT
-                elif line.startswith(DELETION_FLAG):
-                    sub_lines[0] = Theme.DELETION + sub_lines[0]
-                    sub_lines[-1] = sub_lines[-1] + Theme.DEFAULT
-                _content.append(sub_lines)
+        if lines_len > 3:
+            for line in lines_[3:]:
+                line_len = len(line)
+                if line_len <= line_w:
+                    if line.startswith(ADDITION_FLAG):
+                        line = f"{Theme.ADDITION}{line}{Theme.DEFAULT}"
+                    elif line.startswith(DELETION_FLAG):
+                        line = f"{Theme.DELETION}{line}{Theme.DEFAULT}"
+                    _content.append(line)
+                else:
+                    sub_lines = cls.split_out_of_str(line, line_w)
+                    if line.startswith(ADDITION_FLAG):
+                        sub_lines[0] = Theme.ADDITION + sub_lines[0]
+                        sub_lines[-1] = sub_lines[-1] + Theme.DEFAULT
+                    elif line.startswith(DELETION_FLAG):
+                        sub_lines[0] = Theme.DELETION + sub_lines[0]
+                        sub_lines[-1] = sub_lines[-1] + Theme.DEFAULT
+                    _content.append(sub_lines)
 
         cls.content = _content
 
@@ -195,7 +198,7 @@ def fetch_content(c):
     if selected & BoxType.STATUS:
         _status_list = c.raw
         if not _status_list:
-            return "No changed file"
+            return "No changed file."
         else:
             file_ = _status_list[c.selected]
 
@@ -208,14 +211,14 @@ def fetch_content(c):
     elif selected & BoxType.COMMIT:
         args = c.raw
         if not args:
-            return ""
+            return "No commits."
         else:
             _commit_id = args[c.selected].sha
             return info.commit_info(_commit_id)
     elif selected & BoxType.BRANCH:
         args = c.raw
         if not args:
-            return ""
+            return "No local branches."
         else:
             _branch = args[c.selected]
             return info.branch_log(_branch)
