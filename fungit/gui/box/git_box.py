@@ -8,6 +8,9 @@ from ..theme import Theme
 from .navigation_box import NavBox
 
 
+LOG = logging.getLogger(__name__)
+
+
 class StateBox(NavBox):
     name: str = "state"
     genre = BoxType.STATE
@@ -47,6 +50,10 @@ class StatusBox(NavBox):
     @classmethod
     def fetch_data(cls):
         cls.raw = loading.load_files()
+        try:
+            cls.raw[cls.selected]
+        except IndexError:  # out of range (rename, ignore)
+            cls.selected -= 1
 
     @classmethod
     def generate(cls):
@@ -94,27 +101,12 @@ class StatusBox(NavBox):
             elif f.deleted:
                 color = Theme.FILE_DEL
         else:  # untracked
-            if f.added:
-                color = Theme.FILE_NEW
-            else:
+            if f.has_unstaged_change:
                 color = Theme.FILE_UNTRACK
+            else:
+                color = Theme.FILE_NEW
 
         return color
-
-    @classmethod
-    def notify(cls, update_data: bool = False, re_profile: bool = True):
-        if update_data:
-            cls.fetch_data()
-            cls.generate()
-            try:
-                cls.raw[cls.selected]
-            except ValueError:
-                cls.selected -= 1
-        if re_profile:
-            cls.create_profile()
-        # every notify must update display string and render all.
-        cls.update()
-        cls.render()
 
 
 class BranchBox(NavBox):

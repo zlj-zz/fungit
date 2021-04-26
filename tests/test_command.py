@@ -56,6 +56,7 @@ def test_load_files():
             file.tracked,
             file.has_staged_change,
             file.has_unstaged_change,
+            file.added,
         )
 
 
