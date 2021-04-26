@@ -17,11 +17,10 @@ def command_g(custom_commands: list = None):
     except Exception:
         pass
 
-    args = argparse.ArgumentParser()
-    args.add_argument(
-        "command", nargs="?", default="|", type=str, help="Short git command"
+    args = argparse.ArgumentParser(
+        prog="g",
+        description="If you want to use some original git commands, please use -- to indicate.",
     )
-    args.add_argument("args", nargs="*", type=str, help="Command parameter list")
     args.add_argument(
         "-c", "--complete", action="store_true", help="Add shell prompt script and exit"
     )
@@ -45,10 +44,15 @@ def command_g(custom_commands: list = None):
         action="store_true",
         help="List all command type and exit",
     )
+    args.add_argument(
+        "command", nargs="?", default="|", type=str, help="Short git command"
+    )
+    args.add_argument("args", nargs="*", type=str, help="Command parameter list")
     stdargs = args.parse_args()
 
     if custom_commands is not None:
         stdargs = args.parse_args(custom_commands)
+    # print(stdargs)
 
     if stdargs.complete:
         add_completion()

@@ -43,6 +43,7 @@ def give_tip(t: str):
     Args:
         t: A command type.
     """
+    t = t[0].upper() + t[1:].lower() if len(t) > 2 else ""
     if t not in TYPES:
         err("There is no such type")
         raise SystemExit(0)
@@ -84,7 +85,6 @@ def echo_description():
         style=Fx.underline,
     )
 
-    echo("Usage: g <option> [<args>]", style=Fx.b)
     echo("You can use ", nl=False)
     echo("-h", color=CommandColor.GREEN, nl=False)
     echo(" and ", nl=False)
