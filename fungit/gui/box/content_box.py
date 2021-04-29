@@ -21,13 +21,14 @@ class ContentBox(Box):
     content: List = []
     box: str = ""
     box_content: str = ""
+    content_selected_line: int = 0
 
-    box_selected_idx: int = -1
+    box_selected_idx: int = -1  # record nav box selected item
     last_notifier: Box = None
 
     @classmethod
-    def fetch_data(cls, c):
-        cls.raw = fetch_content(c)
+    def fetch_data(cls, box):
+        cls.raw = fetch_content(box)
 
     @classmethod
     def generate(cls):
@@ -41,6 +42,7 @@ class ContentBox(Box):
                 _content.append(line[cls.w - 2 :])
 
         cls.content = _content
+        cls.content_len = len(_content)  # record content length
 
     @classmethod
     def update(self):
@@ -49,7 +51,7 @@ class ContentBox(Box):
 
         self.box_content = ""
         count_ = 0
-        for line in self.content:
+        for line in self.content[self.content_selected_line :]:
             if isinstance(line, list):
                 for sub_line in line:
                     if count_ < self.h - 2:
@@ -70,7 +72,8 @@ class ContentBox(Box):
             if notifier.genre & sub.genre:
                 if not sub.box:
                     sub.create_profile()
-                if sub.box_selected_idx or sub.box_selected_idx != notifier.selected:
+                if sub.box_selected_idx != notifier.selected:
+                    sub.content_selected_line = 0
                     sub.box_selected_idx = notifier.selected
                     sub.fetch_data(notifier)
                     sub.generate()
@@ -144,6 +147,7 @@ class StatusContentBox(ContentBox):
                     _content.append(sub_lines)
 
         cls.content = _content
+        cls.content_len = len(_content)  # record content length
 
 
 class BranchContentBox(ContentBox):
@@ -188,6 +192,7 @@ class CommitContentBox(ContentBox):
                     _content.append(sub_lines)
 
         cls.content = _content
+        cls.content_len = len(_content)  # record content length
 
 
 class StashContentBox(ContentBox):

@@ -9,7 +9,11 @@ def process_key():
     while Key.has_event():
         key = Key.get()
 
-        if key == "q":
+        if key in ["mouse_scroll_up", "mouse_scroll_down", "mouse_click"]:
+            mouse_pos = Key.get_mouse()
+            Manager.mouse_event(key, mouse_pos)
+
+        elif key == "q":
             quit_app()
         elif "1" <= key <= "5":
             Manager.switch_box_by_index(key)

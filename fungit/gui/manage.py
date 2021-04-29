@@ -6,6 +6,7 @@ from .box_option import initial_git_box as refresh_all
 from .box.navigation_box import NavBox
 from .box.git_box import GIT_BOXES
 from .box.func_box import DynamicPromptBox, ConfirmBox
+from .box.content_box import ContentBox
 from fungit.commands import options
 
 
@@ -171,6 +172,31 @@ class Manager:
             else:
                 refresh_all(update_data=False)
 
+    @staticmethod
+    def mouse_event(key, mouse_pos):
+        _current = NavBox.current
+        _, box = index_of(_current)
+        sub = get_sub_content_box(box)
+        mouse_x, mouse_y = mouse_pos
+        LOG.debug(f"{key} {box} {sub} {sub.content_selected_line}")
+        LOG.debug(f"{mouse_x} {mouse_y} {ContentBox.x} {ContentBox.y}")
+
+        if mouse_x > ContentBox.x and mouse_y > ContentBox.y:
+            LOG.debug(f"{ContentBox.h}")
+            fresh = False
+            if key == "mouse_scroll_down":
+                if sub.content_selected_line < sub.content_len:
+                    sub.content_selected_line += 1
+                    fresh = True
+            elif key == "mouse_scroll_up":
+                if sub.content_selected_line > 0:
+                    sub.content_selected_line -= 1
+                    fresh = True
+            if fresh:
+                box.notify(update_data=False, re_profile=False)
+        else:
+            pass
+
 
 def index_of(t, need_box: bool = True):
     for idx, sub in enumerate(GIT_BOXES):
@@ -178,3 +204,9 @@ def index_of(t, need_box: bool = True):
             if need_box:
                 return idx, sub
             return idx
+
+
+def get_sub_content_box(box):
+    for sub in ContentBox.__subclasses__():
+        if sub.genre & box.genre:
+            return sub
