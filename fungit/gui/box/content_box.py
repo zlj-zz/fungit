@@ -70,8 +70,11 @@ class ContentBox(Box):
     def notify(cls, notifier: Box):
         for sub in cls.__subclasses__():
             if notifier.genre & sub.genre:
-                if not sub.box:
+                """
+                if not sub.box:  # No box profile, create it.
                     sub.create_profile()
+                """
+                # Selected item has change.
                 if sub.box_selected_idx != notifier.selected:
                     sub.content_selected_line = 0
                     sub.box_selected_idx = notifier.selected

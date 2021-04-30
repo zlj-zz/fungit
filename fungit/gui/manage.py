@@ -2,7 +2,7 @@ import logging
 import threading
 
 from .shared import BoxType, ConfirmType
-from .box_option import initial_git_box as refresh_all
+from .box_option import generate_all_box as refresh_all
 from .box.navigation_box import NavBox
 from .box.git_box import GIT_BOXES
 from .box.func_box import DynamicPromptBox, ConfirmBox
@@ -18,7 +18,7 @@ class Manager:
     @staticmethod
     def switch_box_by_index(idx):
         NavBox.set_current(GIT_BOXES[int(idx) - 1].genre)
-        refresh_all(update_data=False)
+        refresh_all(recreate=True, update_data=False)
 
     @staticmethod
     def prev_box():
@@ -27,7 +27,7 @@ class Manager:
         _len = len(GIT_BOXES)
         new_index = _len - 1 - (_len - _index) % _len
         NavBox.set_current(GIT_BOXES[new_index].genre)
-        refresh_all(update_data=False)
+        refresh_all(recreate=True, update_data=False)
 
     @staticmethod
     def next_box():
@@ -36,7 +36,7 @@ class Manager:
         _len = len(GIT_BOXES)
         new_index = (_index + 1) % _len
         NavBox.set_current(GIT_BOXES[new_index].genre)
-        refresh_all(update_data=False)
+        refresh_all(recreate=True, update_data=False)
 
     # item event
     @staticmethod

@@ -1,6 +1,7 @@
 import os
 import math
 
+from .box import Box
 from .shared import BoxType, ConfirmType
 from .box.navigation_box import NavBox
 from .box.git_box import GIT_BOXES
@@ -9,8 +10,27 @@ from .box.func_box import ConfirmBox
 from fungit.event.clean_quit import quit_app
 
 
-def update_git_box_w_h():
-    w, h = os.get_terminal_size()
+def generate_all_box(
+    recreate: bool = False, update_data: bool = True, lazy_render: bool = False
+):
+    if recreate:
+        w, h = os.get_terminal_size()
+        Box.t_w, Box.t_h = w, h
+        generate_git_box_w_h()  # update all nav box (w)idth and (h)eigth.
+        create_content_box()
+
+    for sub in GIT_BOXES:
+        if update_data:  # Update raw data.
+            sub.fetch_data()
+            sub.generate()
+        sub.create_profile()
+        sub.update()
+        if not lazy_render:
+            sub.render()
+
+
+def generate_git_box_w_h():
+    w, h = Box.t_w, Box.t_h
 
     _selected_type = NavBox.current
     limit_w = math.floor(w / 3)
@@ -83,7 +103,7 @@ def update_git_box_w_h():
 
 
 def create_content_box():
-    w, h = os.get_terminal_size()
+    w, h = Box.t_w, Box.t_h
     limit_w = math.floor(w / 3)
 
     ContentBox.x = limit_w + 1
@@ -91,16 +111,5 @@ def create_content_box():
     ContentBox.w = w - limit_w
     ContentBox.h = h - 1
 
-
-def initial_git_box(update_data: bool = True, lazy_render: bool = False):
-    update_git_box_w_h()  # update all nav box (w)idth and (h)eigth.
-    create_content_box()
-
-    for sub in GIT_BOXES:
-        if update_data:
-            sub.fetch_data()
-            sub.generate()
-        sub.create_profile()
-        sub.update()
-        if not lazy_render:
-            sub.render()
+    for sub_con in ContentBox.__subclasses__():
+        sub_con.create_profile()

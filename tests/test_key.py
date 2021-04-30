@@ -1,11 +1,20 @@
+from re import S
 import sys
+import signal
 
 sys.path.insert(0, ".")
 
 from fungit.event.key import Key
 from fungit.term import Term
 
+
+def signal_test(signum, frame):
+    print(signum)
+    print(frame)
+
+
 if __name__ == "__main__":
+    signal.signal(signal.SIGINT, signal_test)
 
     Term.init()
     Key.start()

@@ -13,8 +13,6 @@ class NavBox(Box):
     # only change in father class, sub class only read
     current: int = BoxType.STATUS
 
-    t_w: int
-    t_h: int
     name: str
     genre: int
     x: int
