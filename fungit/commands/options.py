@@ -60,7 +60,6 @@ def push(force: bool = False, safe: bool = True):
 
 def commit(message: str = ""):
     if message:
-        pass
         return False
     else:
         run_cmd("git commit --verbose")
@@ -69,7 +68,7 @@ def commit(message: str = ""):
 
 def del_(path: str, tracked: bool = True):
     if tracked:
-        run_with_git(["checkout", path])
+        run_with_git("checkout", path)
     else:
         os.remove(f"{Git.REPOSITORY_PATH}/{path}")
 

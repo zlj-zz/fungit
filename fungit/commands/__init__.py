@@ -19,9 +19,8 @@ def run_with_git(*args) -> tuple:
     Returns:
         Execution result, string text
     """
-
     command = " ".join([Git.prefix, *args])
-    # LOG.debug(f"<run_with_git> {command}")
+    LOG.debug(f"<run_with_git> {command}")
     try:
         with subprocess.Popen(
             [command], stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True
