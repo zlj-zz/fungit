@@ -79,5 +79,5 @@ def test_commit_info():
 
 if __name__ == "__main__":
     # print(checkout("dev"))
-    test_load_files()
+    test_load_branches()
     pass

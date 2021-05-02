@@ -69,7 +69,7 @@ def load_files(*args) -> List[File]:
 
 
 def load_branches() -> List[Branch]:
-    command = 'for-each-ref --sort=-committerdate --format="%(HEAD)|%(refname:short)|%(upstream:short)|%(upstream:track)" refs/heads'
+    command = 'branch --sort=-committerdate --format="%(HEAD)|%(refname:short)|%(upstream:short)|%(upstream:track)" '
     err, resp = run_with_git(command)
     resp = resp.strip()
 

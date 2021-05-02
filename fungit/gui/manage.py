@@ -84,7 +84,6 @@ class Manager:
                 ConfirmBox.main("Error", err, ConfirmType.ERROR)
             refresh_all()
             LOG.debug(f"{err} | {resp}")
-            # TODO: checkout commit has bug and error
         else:
             # TODO:
             pass
