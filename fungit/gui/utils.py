@@ -1,6 +1,11 @@
+import re
+import logging
 from typing import Tuple
 
 from fungit.style import Symbol, Fx, Color, Cursor
+
+
+LOG = logging.getLogger(__name__)
 
 
 def create_profile(
@@ -81,3 +86,16 @@ def create_profile(
 
     # return f'{out}{Term.fg}{Cursor.to(y + 1, x + 1)}'
     return f"{out}{Fx.reset}{Cursor.to(y + 1, x + 1)}"
+
+
+def warp_color_str(line: str, line_width: int):
+    clear_ = re.sub(r"\x1b\[.*?m", "", line)  # ^[[...m
+    clear_len = len(clear_)
+    if clear_len <= line_width:
+        return line
+    flag_ = clear_[line_width - 1]
+    for idx, sub in enumerate(re.finditer(flag_, clear_), start=1):
+        if line_width - 1 == sub.start():
+            break
+    index_ = line.find(flag_, idx) + 1
+    return [line[:index_], line[index_:]]

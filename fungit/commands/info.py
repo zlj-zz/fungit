@@ -1,7 +1,7 @@
-from . import run_with_git
+from . import LOG, run_with_git
 
 
-def branch_log(branch) -> str:
+def branch_log(branch, color: bool = True) -> str:
     """Gets all logs of a given branch.
 
     Args:
@@ -11,36 +11,43 @@ def branch_log(branch) -> str:
     # if branch.startswith('* '):
     #     branch = branch[2:]
     branch_name = branch.name
+    color_str = "always" if color else "never"
 
-    arg = "log %s --graph --decorate" % branch_name
+    arg = "log %s --graph --abbrev-commit --decorate --date=relative --pretty=medium --color=%s" % (
+        branch_name,
+        color_str,
+    )
     _, resp = run_with_git(arg)
     return resp.rstrip()
 
 
-def commit_info(commit: str) -> str:
+def commit_info(commit: str, color: bool = True) -> str:
     """Gets the information for a given submission.
 
     Args:
         commit: commit id
     """
 
-    return commit_file_info(commit)
+    return commit_file_info(commit, color=color)
 
 
-def commit_file_info(commit: str, file_name: str = "") -> str:
+def commit_file_info(commit: str, file_name: str = "", color: bool = True) -> str:
     """Gets the change of a file in a given commit.
 
     Args:
         commit: commit id
         file_name: file name(include full path)
     """
+    color_str = "always" if color else "never"
 
-    arg = "show %s %s" % (commit, file_name)
+    arg = "show --color=%s %s %s" % (color_str, commit, file_name)
     _, resp = run_with_git(arg)
     return resp.rstrip()
 
 
-def diff(file: str, tracked: bool = True, cached: bool = False) -> str:
+def diff(
+    file: str, tracked: bool = True, cached: bool = False, color: bool = True
+) -> str:
     """Get the diff of given file.
 
     Args:
@@ -50,6 +57,12 @@ def diff(file: str, tracked: bool = True, cached: bool = False) -> str:
     """
 
     args = ["diff", "--submodule", "--no-ext-diff"]
+
+    if color:
+        args.append("--color=always")
+    else:
+        args.append("--color=never")
+
     if cached:
         args.append("--cached")
 
