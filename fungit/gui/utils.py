@@ -14,13 +14,26 @@ def create_profile(
     width: int = 0,
     height: int = 0,
     title: str = "",
-    title2: str = "",
+    page_end: str = "",
     line_color: Color = None,
     title_color: Color = None,
     fill: bool = True,
     box=None,
 ) -> str:
-    """Create a box from a box object or by given arguments"""
+    """Create a box from a box object or by given arguments
+
+    Args:
+        x: Start x.
+        y: Start y.
+        width: Box width.
+        height: Box height.
+        title: Box title.
+        page_end: The page end.
+        line_color: Box profile color.
+        title_color: The title color.
+        fill: If fill the box with space.
+        box: A box object.
+    """
     # out: str = f'{Term.fg}{Term.bg}'
     out: str = ""
     if not line_color:
@@ -80,15 +93,23 @@ def create_profile(
             line_color,
             Symbol.title_r,
         )
-    if title2:
+    if page_end:
         # out += f'{Cursor.to(hlines[1], width - 2 - len(title2))}{Symbol.title_left}{title_color}{Fx.b}{title2}{Fx.ub}{line_color}{Symbol.title_right}'
-        out += f"{Cursor.to(h_lines[1], width - 2 - len(title2))}{title_color}{Fx.b}{title2}{Fx.ub}{line_color}"
+        out += f"{Cursor.to(h_lines[1], width - 2 - len(page_end))}{title_color}{Fx.b}{page_end}{Fx.ub}{line_color}"
 
     # return f'{out}{Term.fg}{Cursor.to(y + 1, x + 1)}'
     return f"{out}{Fx.reset}{Cursor.to(y + 1, x + 1)}"
 
 
 def warp_color_str(line: str, line_width: int):
+    """Warp a colored line.
+
+    Wrap a colored string according to the width of the restriction.
+
+    Args:
+        line: A colored string.
+        line_width: Limit width.
+    """
     clear_ = re.sub(r"\x1b\[.*?m", "", line)  # ^[[...m
     clear_len = len(clear_)
     if clear_len <= line_width:

@@ -1,17 +1,19 @@
-from . import LOG, run_with_git
+import logging
+
+from . import run_with_git
 
 
-def branch_log(branch, color: bool = True) -> str:
+LOG = logging.getLogger(__name__)
+
+
+def branch_log_graph(branch, plain: bool = False) -> str:
     """Gets all logs of a given branch.
 
     Args:
         branch: branch name
     """
-
-    # if branch.startswith('* '):
-    #     branch = branch[2:]
     branch_name = branch.name
-    color_str = "always" if color else "never"
+    color_str = "never" if plain else "always"
 
     arg = "log %s --graph --abbrev-commit --decorate --date=relative --pretty=medium --color=%s" % (
         branch_name,
@@ -21,24 +23,25 @@ def branch_log(branch, color: bool = True) -> str:
     return resp.rstrip()
 
 
-def commit_info(commit: str, color: bool = True) -> str:
+def commit_info(commit: str, plain: bool = False) -> str:
     """Gets the information for a given submission.
 
     Args:
-        commit: commit id
+        commit: commit id.
+        color: If with color.
     """
+    return commit_file_info(commit, plain=plain)
 
-    return commit_file_info(commit, color=color)
 
-
-def commit_file_info(commit: str, file_name: str = "", color: bool = True) -> str:
+def commit_file_info(commit: str, file_name: str = "", plain: bool = False) -> str:
     """Gets the change of a file in a given commit.
 
     Args:
-        commit: commit id
-        file_name: file name(include full path)
+        commit: commit id.
+        file_name: file name(include full path).
+        color: If with color.
     """
-    color_str = "always" if color else "never"
+    color_str = "never" if plain else "always"
 
     arg = "show --color=%s %s %s" % (color_str, commit, file_name)
     _, resp = run_with_git(arg)
@@ -46,7 +49,7 @@ def commit_file_info(commit: str, file_name: str = "", color: bool = True) -> st
 
 
 def diff(
-    file: str, tracked: bool = True, cached: bool = False, color: bool = True
+    file: str, tracked: bool = True, cached: bool = False, plain: bool = False
 ) -> str:
     """Get the diff of given file.
 
@@ -55,13 +58,12 @@ def diff(
         tracked: Is the file tracked
         cached: Is the file staged
     """
-
     args = ["diff", "--submodule", "--no-ext-diff"]
 
-    if color:
-        args.append("--color=always")
-    else:
+    if plain:
         args.append("--color=never")
+    else:
+        args.append("--color=always")
 
     if cached:
         args.append("--cached")
@@ -82,7 +84,6 @@ def diff(
 
 def is_selected_branch(branch: str) -> bool:
     """Determine whether a branch is the current branch."""
-
     return branch.startswith("* ")
 
 
@@ -96,5 +97,6 @@ INTRODUCE = """\
                  |___/
 
 A terminal tool, help you use git more simple. Support Linux and MacOS.
+https://github.com/zlj-zz/fungit/
 
 """

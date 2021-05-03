@@ -204,15 +204,20 @@ class StashContentBox(ContentBox):
     genre = BoxType.CONTENT | BoxType.STASH
 
 
-def fetch_content(c):
-    selected = c.current
+def fetch_content(nav_box: Box):
+    """Get display content raw string.
+
+    Args:
+        nav_box: Nav box object.
+    """
+    selected = nav_box.current
 
     if selected & BoxType.STATUS:
-        _status_list = c.raw
+        _status_list = nav_box.raw
         if not _status_list:
             return "No changed file."
         else:
-            file_ = _status_list[c.selected]
+            file_ = _status_list[nav_box.selected]
 
             if not file_.tracked:  # is mean untrack
                 return info.diff(file_.name, tracked=False)
@@ -221,19 +226,19 @@ def fetch_content(c):
             else:
                 return info.diff(file_.name)
     elif selected & BoxType.COMMIT:
-        args = c.raw
+        args = nav_box.raw
         if not args:
             return "No commits."
         else:
-            _commit_id = args[c.selected].sha
+            _commit_id = args[nav_box.selected].sha
             return info.commit_info(_commit_id)
     elif selected & BoxType.BRANCH:
-        args = c.raw
+        args = nav_box.raw
         if not args:
             return "No local branches."
         else:
-            _branch = args[c.selected]
-            return info.branch_log(_branch)
+            _branch = args[nav_box.selected]
+            return info.branch_log_graph(_branch)
     elif selected & BoxType.STASH:
         # TODO:
         return "Don't support display."
