@@ -2,8 +2,7 @@ import logging
 from typing import List, Any
 
 from fungit.commands import info
-from fungit.gui.theme import Theme
-from fungit.style import Cursor, Fx
+from fungit.style import Cursor
 from ..shared import BoxType
 from ..utils import warp_color_str
 from . import Box
@@ -21,7 +20,7 @@ class ContentBox(Box):
     y: int = 0
     w: int = 0
     h: int = 0
-    raw: Any = None
+    raw: Any = None  # content string with color.
     content: List = []
     box: str = ""
     box_content: str = ""
