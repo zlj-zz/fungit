@@ -4,12 +4,11 @@ from fungit.style import Fx, Cursor
 from ..shared import BoxType
 from ..renderer import Renderer
 from ..theme import Theme
-from ..utils import create_profile
-from . import Box
+from ..core import Win
 from .content_box import ContentBox
 
 
-class NavBox(Box):
+class NavBox(Win):
     # only change in father class, sub class only read
     current: int = BoxType.STATUS
 
@@ -35,7 +34,7 @@ class NavBox(Box):
         _item_msg = (
             f"{cls.selected + 1} of {len(cls.content)}" if len(cls.content) > 1 else ""
         )
-        cls.box = create_profile(
+        cls.box = super().create_profile(
             cls.x, cls.y, cls.w, cls.h, cls.name, _item_msg, line_color=_line_color
         )
 

@@ -1,11 +1,11 @@
 import logging
-import threading
 
 from .shared import BoxType, ConfirmType
 from .box_option import generate_all_box as refresh_all
 from .box.navigation_box import NavBox
 from .box.git_box import GIT_BOXES
-from .box.func_box import DynamicPromptBox, ConfirmBox
+from .popup.wait_popup import DynamicPromptBox
+from .popup.confirm_popup import ConfirmBox
 from .box.content_box import ContentBox
 from fungit.commands import options
 
@@ -124,28 +124,12 @@ class Manager:
 
     @staticmethod
     def pull():
-        def _pull_option():
-            options.pull()
-            DynamicPromptBox.close = True
-
-        t = threading.Thread(target=_pull_option)
-        t.setDaemon(True)
-        t.start()
-
-        DynamicPromptBox.main("", "Pulling... ")
+        DynamicPromptBox.main("Pulling... ", options.pull)
         refresh_all()
 
     @staticmethod
     def push():
-        def _push_option():
-            options.push()
-            DynamicPromptBox.close = True
-
-        t = threading.Thread(target=_push_option)
-        t.setDaemon(True)
-        t.start()
-
-        DynamicPromptBox.main("", "Pushing.. ")
+        DynamicPromptBox.main("Pushing.. ", options.push)
         refresh_all()
 
     @staticmethod

@@ -2,7 +2,7 @@ import sys
 
 sys.path.insert(0, ".")
 
-from fungit.gui.box.func_box import ConfirmBox
+from fungit.gui.popup.confirm_popup import ConfirmBox
 from fungit.event.key import Key
 
 

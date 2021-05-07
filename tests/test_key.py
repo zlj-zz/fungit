@@ -26,5 +26,6 @@ if __name__ == "__main__":
                 mouse_pos = Key.get_mouse()
                 print(mouse_pos)
             if key == "q":
+                Key.stop()
                 Term.clear()
                 exit(0)

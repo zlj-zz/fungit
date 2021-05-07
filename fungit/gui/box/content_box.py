@@ -5,7 +5,7 @@ from fungit.commands import info
 from fungit.style import Cursor
 from ..shared import BoxType
 from ..utils import warp_color_str
-from . import Box
+from ..core import Win
 
 
 LOG = logging.getLogger(__name__)
@@ -13,7 +13,7 @@ ADDITION_FLAG = "+"
 DELETION_FLAG = "-"
 
 
-class ContentBox(Box):
+class ContentBox(Win):
     name: str = ""
     genre = BoxType.CONTENT
     x: int = 0
@@ -27,7 +27,15 @@ class ContentBox(Box):
     content_selected_line: int = 0
 
     box_selected_idx: int = -1  # record nav box selected item
-    last_notifier: Box = None
+    last_notifier: Win = None
+
+    @classmethod
+    def create_profile(cls):
+        # _line_color = BOX_SELECTED_COLOR if cls.genre & cls.current else ''
+        _line_color = ""
+        cls.box = super().create_profile(
+            cls.x, cls.y, cls.w, cls.h, cls.name, line_color=_line_color
+        )
 
     @classmethod
     def fetch_data(cls, box):
@@ -67,7 +75,7 @@ class ContentBox(Box):
                     count_ += 1
 
     @classmethod
-    def notify(cls, notifier: Box):
+    def notify(cls, notifier: Win):
         for sub in cls.__subclasses__():
             if notifier.genre & sub.genre:
                 """
@@ -203,7 +211,7 @@ class StashContentBox(ContentBox):
     genre = BoxType.CONTENT | BoxType.STASH
 
 
-def fetch_content(nav_box: Box):
+def fetch_content(nav_box: Win):
     """Get display content raw string.
 
     Args:

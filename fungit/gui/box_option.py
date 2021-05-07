@@ -1,12 +1,12 @@
 import os
 import math
 
-from .box import Box
+from .core import Win
 from .shared import BoxType, ConfirmType
 from .box.navigation_box import NavBox
 from .box.git_box import GIT_BOXES
 from .box.content_box import ContentBox
-from .box.func_box import ConfirmBox
+from .popup.confirm_popup import ConfirmBox
 from fungit.event.clean_quit import quit_app
 
 
@@ -15,7 +15,7 @@ def generate_all_box(
 ):
     if recreate:
         w, h = os.get_terminal_size()
-        Box.t_w, Box.t_h = w, h
+        Win.t_w, Win.t_h = w, h
         generate_git_box_w_h()  # update all nav box (w)idth and (h)eigth.
         create_content_box()
 
@@ -30,7 +30,7 @@ def generate_all_box(
 
 
 def generate_git_box_w_h():
-    w, h = Box.t_w, Box.t_h
+    w, h = Win.t_w, Win.t_h
 
     _selected_type = NavBox.current
     limit_w = math.floor(w / 3)
@@ -103,7 +103,7 @@ def generate_git_box_w_h():
 
 
 def create_content_box():
-    w, h = Box.t_w, Box.t_h
+    w, h = Win.t_w, Win.t_h
     limit_w = math.floor(w / 3)
 
     ContentBox.x = limit_w + 1

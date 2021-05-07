@@ -65,6 +65,8 @@ def main(costom_commands: list = []):
     try:
         run()
     except Exception as e:
+        if DEBUG:
+            raise e
         LOG.error(e)
         quit_app()
 
