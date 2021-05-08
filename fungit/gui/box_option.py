@@ -4,7 +4,7 @@ import math
 from .core import Win
 from .shared import BoxType, ConfirmType
 from .box.navigation_box import NavBox
-from .box.git_box import GIT_BOXES
+from .box.git_box import NAVBOXES
 from .box.content_box import ContentBox
 from .popup.confirm_popup import ConfirmBox
 from fungit.event.clean_quit import quit_app
@@ -19,7 +19,7 @@ def generate_all_box(
         generate_git_box_w_h()  # update all nav box (w)idth and (h)eigth.
         create_content_box()
 
-    for sub in GIT_BOXES:
+    for sub in NAVBOXES.values():
         if update_data:  # Update raw data.
             sub.fetch_data()
             sub.generate()
@@ -42,7 +42,7 @@ def generate_git_box_w_h():
 
     elif h <= 20:
         _old = None
-        for sub in GIT_BOXES:
+        for sub in NAVBOXES.values():
             sub.x = 1
             sub.w = limit_w
 
@@ -59,7 +59,7 @@ def generate_git_box_w_h():
 
     elif h <= 25:
         _old = None
-        for sub in GIT_BOXES:
+        for sub in NAVBOXES.values():
             sub.x = 1
             sub.w = limit_w
 
@@ -75,17 +75,18 @@ def generate_git_box_w_h():
                 sub.h = 3
 
     else:
-        temp_x = GIT_BOXES[0].x = 1
-        temp_y = GIT_BOXES[0].y = 1
-        temp_w = GIT_BOXES[0].w = limit_w
-        temp_h = GIT_BOXES[0].h = 3
+        boxes_ = list(NAVBOXES.values())
+        temp_x = boxes_[0].x = 1
+        temp_y = boxes_[0].y = 1
+        temp_w = boxes_[0].w = limit_w
+        temp_h = boxes_[0].h = 3
 
         if _selected_type & BoxType.STASH:
             _split_h, _less = divmod(h - 4, 4)
         else:
             _split_h, _less = divmod(h - 7, 3)
 
-        for idx, sub in enumerate(GIT_BOXES[1:-1]):
+        for idx, sub in enumerate(boxes_[1:-1]):
             sub.x = 1
             sub.y = temp_y + temp_h
             sub.w = limit_w
@@ -93,13 +94,13 @@ def generate_git_box_w_h():
 
             temp_x, temp_y, temp_w, temp_h = sub.x, sub.y, sub.w, sub.h
 
-        GIT_BOXES[-1].x = 1
-        GIT_BOXES[-1].y = temp_y + temp_h
-        GIT_BOXES[-1].w = limit_w
+        boxes_[-1].x = 1
+        boxes_[-1].y = temp_y + temp_h
+        boxes_[-1].w = limit_w
         if _selected_type & BoxType.STASH:
-            GIT_BOXES[-1].h = _split_h
+            boxes_[-1].h = _split_h
         else:
-            GIT_BOXES[-1].h = 3
+            boxes_[-1].h = 3
 
 
 def create_content_box():

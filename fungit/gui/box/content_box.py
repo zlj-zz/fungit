@@ -247,7 +247,7 @@ def fetch_content(nav_box: Win):
             _branch = args[nav_box.selected]
             return info.branch_log_graph(_branch)
     elif selected & BoxType.STASH:
-        # TODO:
+        # TODO: stash display
         return "Don't support display."
     elif selected & BoxType.STATE:
         return info.INTRODUCE

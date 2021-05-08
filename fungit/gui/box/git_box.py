@@ -252,4 +252,12 @@ class StashBox(NavBox):
             cls.content = []
 
 
-GIT_BOXES = [StateBox, StatusBox, BranchBox, CommitBox, StashBox]
+# GIT_BOXES = [StateBox, StatusBox, BranchBox, CommitBox, StashBox]
+
+NAVBOXES = {
+    StateBox.genre: StateBox,
+    StatusBox.genre: StatusBox,
+    BranchBox.genre: BranchBox,
+    CommitBox.genre: CommitBox,
+    StashBox.genre: StashBox,
+}

@@ -3,7 +3,7 @@ import logging
 from .shared import BoxType, ConfirmType
 from .box_option import generate_all_box as refresh_all
 from .box.navigation_box import NavBox
-from .box.git_box import GIT_BOXES
+from .box.git_box import NAVBOXES
 from .popup.wait_popup import DynamicPromptBox
 from .popup.confirm_popup import ConfirmBox
 from .box.content_box import ContentBox
@@ -17,32 +17,32 @@ class Manager:
     # box event
     @staticmethod
     def switch_box_by_index(idx):
-        NavBox.set_current(GIT_BOXES[int(idx) - 1].genre)
+        NavBox.set_current(1 << (int(idx) - 1))
         refresh_all(recreate=True, update_data=False)
 
     @staticmethod
     def prev_box():
         _current = NavBox.current
         _index = index_of(_current, need_box=False)
-        _len = len(GIT_BOXES)
+        _len = len(NAVBOXES)
         new_index = _len - 1 - (_len - _index) % _len
-        NavBox.set_current(GIT_BOXES[new_index].genre)
+        NavBox.set_current(1 << new_index)
         refresh_all(recreate=True, update_data=False)
 
     @staticmethod
     def next_box():
         _current = NavBox.current
         _index = index_of(_current, need_box=False)
-        _len = len(GIT_BOXES)
+        _len = len(NAVBOXES)
         new_index = (_index + 1) % _len
-        NavBox.set_current(GIT_BOXES[new_index].genre)
+        NavBox.set_current(1 << new_index)
         refresh_all(recreate=True, update_data=False)
 
     # item event
     @staticmethod
     def prev_item():
         _current = NavBox.current
-        _, box = index_of(_current)
+        box = NAVBOXES[_current]
 
         if box.selected > 0:
             box.set_selected(box.selected - 1)
@@ -50,7 +50,7 @@ class Manager:
     @staticmethod
     def next_item():
         _current = NavBox.current
-        _, box = index_of(_current)
+        box = NAVBOXES[_current]
 
         _max_len = len(box.raw) - 1
 
@@ -61,7 +61,7 @@ class Manager:
     def space_event():
         _current = NavBox.current
         LOG.debug(f"space event: {_current}")
-        _, box = index_of(_current)
+        box = NAVBOXES[_current]
 
         if _current & BoxType.STATUS:
             file_ = box.raw[box.selected]
@@ -85,13 +85,13 @@ class Manager:
             refresh_all()
             LOG.debug(f"{err} | {resp}")
         else:
-            # TODO:
+            # TODO: other space event.
             pass
 
     @staticmethod
     def a_event():
         _current = NavBox.current
-        _, box = index_of(_current)
+        box = NAVBOXES[_current]
 
         if _current & BoxType.STATUS:
             for file_ in box.raw:
@@ -103,13 +103,13 @@ class Manager:
 
             box.notify(update_data=True)
         else:
-            # TODO:
+            # TODO: may have other `a` event.
             pass
 
     @staticmethod
     def i_event():
         _current = NavBox.current
-        _, box = index_of(_current)
+        box = NAVBOXES[_current]
 
         if _current == BoxType.STATUS:
             file = box.raw[box.selected]
@@ -137,14 +137,14 @@ class Manager:
         is_open_editor = options.commit()
         if is_open_editor:
             _current = NavBox.current
-            _, box = index_of(_current)
+            box = NAVBOXES[_current]
             box.selected = 0
             refresh_all()
 
     @staticmethod
     def del_():
         _current = NavBox.current
-        _, box = index_of(_current)
+        box = NAVBOXES[_current]
 
         if _current & BoxType.STATUS:
             is_confirm = ConfirmBox.main("", "Discard all changed?")
@@ -158,7 +158,7 @@ class Manager:
     @staticmethod
     def mouse_event(key, mouse_pos):
         _current = NavBox.current
-        _, box = index_of(_current)
+        box = NAVBOXES[_current]
         sub = get_sub_content_box(box)
         mouse_x, mouse_y = mouse_pos
         LOG.debug(f"{key} {box} {sub} {sub.content_selected_line}")
@@ -181,12 +181,11 @@ class Manager:
             pass
 
 
-def index_of(t, need_box: bool = True):
-    for idx, sub in enumerate(GIT_BOXES):
-        if sub.genre & t:
-            if need_box:
-                return idx, sub
-            return idx
+def index_of(genre_code: int, need_box: bool = True):
+    idx = list(NAVBOXES.keys()).index(genre_code)
+    if need_box:
+        return idx, NAVBOXES[genre_code]
+    return idx
 
 
 def get_sub_content_box(box):

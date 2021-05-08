@@ -1,4 +1,3 @@
-import os
 import time
 import logging
 
@@ -18,7 +17,7 @@ class ConfirmBox(Win):
     def main(
         cls, title: str, prompt: str, status=ConfirmType.NORMAL, full: bool = False
     ):
-        f_w, f_h = os.get_terminal_size()
+        f_w, f_h = cls.t_w, cls.t_h
 
         # get box `x` and `(w)idth`
         if full:

@@ -7,6 +7,7 @@ log
 __pycache__/
 
 ./test.py
+ignore_files/
 
 test.py
 .DS_Store

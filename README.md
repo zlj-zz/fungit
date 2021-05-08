@@ -1,6 +1,6 @@
-A terminal tool, help you use git more simple.
+A terminal tool with GUI, help you use git more simple.
 
-Just support Linux, MacOs or other UNIX-like.
+Just support Linux, MacOs or other UNIX-like, and Python version is **3.7** or above.
 
 You can use Pipy install it.
 
@@ -8,14 +8,22 @@ You can use Pipy install it.
 pip3 install fungit --user
 ```
 
-Then you can use it with `g` , like this:
+It support gui and command ways.
 
-```shell
-[fungit]
+You can use `fungit` to open a gui in terminal, like:
 
-A terminal tool, help you use git more simple. Support Linux and MacOS.
+![](./screenshot-1.png)
 
-Usage: g <option> [<args>]
-You can use -h and --help to get how to use fungit.
+Also you can use it with `g` , like this:
 
 ```
+[fungit] version: 2.1.2
+git version 2.30.1 (Apple Git-130)
+
+Description:
+Fungit terminal tool, help you use git more simple. Support Linux and MacOS.
+
+You can use -h and --help to get how to use command fungit.
+```
+
+>The idea came from `lazygit`.

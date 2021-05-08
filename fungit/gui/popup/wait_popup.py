@@ -64,6 +64,7 @@ class DynamicPromptBox(Win):
 
         cls.display()
         cls.do(func, func_args, func_kwargs)
+        # TODO: need improve
 
         Key.clear()
         while not cls.close and not cls.finish:
