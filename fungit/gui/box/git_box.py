@@ -60,6 +60,8 @@ class StatusBox(NavBox):
                 cls.raw[cls.selected]
                 break
             except IndexError:  # out of range (rename, ignore, commit)
+                if cls.selected == 0:  # It means no data.
+                    break
                 cls.selected -= 1
                 continue
 
