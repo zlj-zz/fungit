@@ -2,12 +2,11 @@ import os
 import math
 
 from .core import Win
-from .shared import BoxType, ConfirmType
+from .shared import BoxType
 from .box.navigation_box import NavBox
 from .box.git_box import NAVBOXES
 from .box.content_box import ContentBox
-from .popup.confirm_popup import ConfirmBox
-from fungit.event.clean_quit import quit_app
+from fungit.gui.box.error_box import NoSpaceBox
 
 
 def generate_all_box(
@@ -16,17 +15,16 @@ def generate_all_box(
     if recreate:
         w, h = os.get_terminal_size()
         Win.t_w, Win.t_h = w, h
-        generate_git_box_w_h()  # update all nav box (w)idth and (h)eigth.
+
+        generate_git_box_w_h()  # update all sub nav box (w)idth and (h)eight.
         create_content_box()
 
-    for sub in NAVBOXES.values():
-        if update_data:  # Update raw data.
-            sub.fetch_data()
-            sub.generate()
-        sub.create_profile()
-        sub.update()
-        if not lazy_render:
-            sub.render()
+    # Render all boxes.
+    if not Win.no_space:
+        for sub in boxes_cache():
+            sub.notify(update_data=update_data, lazy_render=lazy_render)
+    else:
+        NoSpaceBox.notify()
 
 
 def generate_git_box_w_h():
@@ -35,14 +33,17 @@ def generate_git_box_w_h():
     _selected_type = NavBox.current
     limit_w = math.floor(w / 3)
 
+    if Win.no_space:
+        Win.no_space = False
+
     if w < 90 or h < 8:
-        tip = "Not enough space!\nTerminal must be higher than 8 and wider than 90.\nPlease press `q` to exit."
-        ConfirmBox.main("Error", tip, ConfirmType.ERROR, full=True)
-        quit_app()
+        Win.no_space = True
+        NoSpaceBox.x = NoSpaceBox.y = 1
+        NoSpaceBox.w, NoSpaceBox.h = w, h
 
     elif h <= 20:
         _old = None
-        for sub in NAVBOXES.values():
+        for sub in boxes_cache():
             sub.x = 1
             sub.w = limit_w
 
@@ -59,7 +60,7 @@ def generate_git_box_w_h():
 
     elif h <= 25:
         _old = None
-        for sub in NAVBOXES.values():
+        for sub in boxes_cache():
             sub.x = 1
             sub.w = limit_w
 
@@ -75,7 +76,7 @@ def generate_git_box_w_h():
                 sub.h = 3
 
     else:
-        boxes_ = list(NAVBOXES.values())
+        boxes_ = boxes_cache()
         temp_x = boxes_[0].x = 1
         temp_y = boxes_[0].y = 1
         temp_w = boxes_[0].w = limit_w
@@ -87,7 +88,7 @@ def generate_git_box_w_h():
             _split_h, _less = divmod(h - 7, 3)
 
         for idx, sub in enumerate(boxes_[1:-1]):
-            sub.x = 1
+            sub.x = temp_x
             sub.y = temp_y + temp_h
             sub.w = limit_w
             sub.h = _split_h + (1 if _less > idx else 0)
@@ -114,3 +115,21 @@ def create_content_box():
 
     for sub_con in ContentBox.__subclasses__():
         sub_con.create_profile()
+
+
+def _boxes_cache():
+    cache = None
+
+    def close_():
+        nonlocal cache
+        if cache:
+            return cache
+        else:
+            cache = list(NAVBOXES.values())
+            return cache
+
+    return close_
+
+
+# Closure function, cache `boxes.values()`
+boxes_cache = _boxes_cache()

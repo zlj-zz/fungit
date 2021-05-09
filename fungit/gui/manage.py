@@ -17,7 +17,7 @@ class Manager:
     # box event
     @staticmethod
     def switch_box_by_index(idx):
-        NavBox.set_current(1 << (int(idx) - 1))
+        NavBox.set_current(1 << (int(idx) - 1))  # Get right genre.
         refresh_all(recreate=True, update_data=False)
 
     @staticmethod

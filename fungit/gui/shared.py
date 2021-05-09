@@ -5,8 +5,9 @@ class BoxType:
     COMMIT = 1 << 3
     STASH = 1 << 4
     CONTENT = 1 << 5
-    Tip = 1 << 6
-    Input = 1 << 7
+    NO_SPACE = 1 << 6
+    Tip = 1 << 7
+    Input = 1 << 8
 
 
 class GitActionStatus:

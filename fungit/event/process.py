@@ -1,5 +1,6 @@
 import time
 
+from fungit.gui.core import Win
 from fungit.gui.manage import Manager
 from .key import Key
 from .clean_quit import quit_app
@@ -8,6 +9,9 @@ from .clean_quit import quit_app
 def process_key():
     while Key.has_event():
         key = Key.get()
+
+        if Win.no_space and key != "q":
+            return
 
         if key in ["mouse_scroll_up", "mouse_scroll_down", "mouse_click"]:
             mouse_pos = Key.get_mouse()

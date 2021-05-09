@@ -2,7 +2,7 @@ import logging
 from typing import List, Any
 
 from fungit.commands import loading
-from fungit.style import Fx, Cursor, Symbol
+from fungit.style import Symbol
 from ..shared import BoxType
 from ..theme import Theme
 from .navigation_box import NavBox
@@ -20,6 +20,7 @@ class StateBox(NavBox):
     h: int = 0
     raw: Any = None
     content: List = []
+    start_idx: int = 0
     selected: int = 0
     box: str = ""
     box_content: str = ""
@@ -30,8 +31,11 @@ class StateBox(NavBox):
 
     @classmethod
     def generate(cls):
+        cls.content.clear()
+        line_w = cls.w - 2
         _project, _head = cls.raw
-        cls.content = [f"{_project} {Symbol.right} {_head}"]
+        item = f"{_project} {Symbol.right} {_head}"
+        cls.content.append(item if len(item) <= line_w else item[:line_w])
 
 
 class StatusBox(NavBox):
@@ -43,6 +47,7 @@ class StatusBox(NavBox):
     h: int = 0
     raw: Any = None
     content: List = []
+    start_idx: int = 0
     selected: int = 0
     box: str = ""
     box_content: str = ""
@@ -50,10 +55,13 @@ class StatusBox(NavBox):
     @classmethod
     def fetch_data(cls):
         cls.raw = loading.load_files()
-        try:
-            cls.raw[cls.selected]
-        except IndexError:  # out of range (rename, ignore)
-            cls.selected -= 1
+        while True:
+            try:
+                cls.raw[cls.selected]
+                break
+            except IndexError:  # out of range (rename, ignore, commit)
+                cls.selected -= 1
+                continue
 
     @classmethod
     def generate(cls):
@@ -63,32 +71,13 @@ class StatusBox(NavBox):
         for file_ in cls.raw:
             str_len = len(file_.display_str)
             display_str = (
-                file_.display_str if str_len > line_w else file_.display_str[:line_w]
+                file_.display_str if str_len >= line_w else file_.display_str[:line_w]
             )
             color_ = cls.line_color(file_)
             line_ = f"{color_}{display_str}{Theme.DEFAULT}"
             _content.append(line_)
 
         cls.content = _content
-
-    @classmethod
-    def update(cls):
-        start_x = cls.x + 1
-        start_y = cls.y + 1
-
-        _current = cls.selected
-        _limit = 0
-        if _current + 1 >= cls.h - 2:  # current selected index big than height
-            _limit = _current + 1 - (cls.h - 2)
-
-        cls.box_content = ""
-        for idx, line in enumerate(cls.content):
-            if idx >= _limit and idx - _limit < cls.h - 2:
-                _line = f"{Cursor.to(start_y, start_x)}{line}"
-                if cls.genre & cls.current and idx == _current:
-                    _line = f"{Fx.b}{_line}{Fx.ub}"
-                cls.box_content += _line
-                start_y += 1
 
     @classmethod
     def line_color(cls, f):
@@ -118,6 +107,7 @@ class BranchBox(NavBox):
     h: int = 0
     raw: Any = None
     content: List = []
+    start_idx: int = 0
     selected: int = 0
     box: str = ""
     box_content: str = ""
@@ -153,25 +143,6 @@ class BranchBox(NavBox):
 
         cls.content = content_
 
-    @classmethod
-    def update(cls):
-        start_x = cls.x + 1
-        start_y = cls.y + 1
-
-        _current = cls.selected
-        _limit = 0
-        if _current + 1 >= cls.h - 2:  # current selected index big than heigth
-            _limit = _current + 1 - (cls.h - 2)
-
-        cls.box_content = ""
-        for idx, line in enumerate(cls.content):
-            if idx >= _limit and idx - _limit < cls.h - 2:
-                _line = f"{Cursor.to(start_y, start_x)}{line}"
-                if cls.genre & cls.current and idx == _current:
-                    _line = f"{Fx.b}{_line}{Fx.ub}"
-                cls.box_content += _line
-                start_y += 1
-
 
 class CommitBox(NavBox):
     name: str = "commit"
@@ -182,6 +153,7 @@ class CommitBox(NavBox):
     h: int = 0
     raw: Any = None
     content: List = []
+    start_idx: int = 0
     selected: int = 0
     box: str = ""
     box_content: str = ""
@@ -205,26 +177,6 @@ class CommitBox(NavBox):
 
         cls.content = content_
 
-    @classmethod
-    def update(cls):
-        start_x = cls.x + 1
-        start_y = cls.y + 1
-
-        _current = cls.selected
-        _limit = 0
-        if _current + 1 >= cls.h - 2:  # current selected index big than height
-            _limit = _current + 1 - (cls.h - 2)
-
-        cls.box_content = ""
-        for idx, line in enumerate(cls.content):
-
-            if idx >= _limit and idx - _limit < cls.h - 2:
-                _line = f"{Cursor.to(start_y, start_x)}{line}"
-                if cls.genre & cls.current and idx == _current:
-                    _line = f"{Fx.b}{_line}{Fx.ub}"
-                cls.box_content += _line
-                start_y += 1
-
 
 class StashBox(NavBox):
     name: str = "stash"
@@ -235,6 +187,7 @@ class StashBox(NavBox):
     h: int = 0
     raw: Any = None
     content: List = []
+    start_idx: int = 0
     selected: int = 0
     box: str = ""
     box_content: str = ""

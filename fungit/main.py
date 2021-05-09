@@ -54,9 +54,6 @@ def main(costom_commands: list = []):
 
     def run():
         while not False:
-            # Term.refresh()
-            # Timer.stamp()
-
             # while Timer.not_zero():
             #     if Key.input_wait(Timer.left()):
             #         process_key()

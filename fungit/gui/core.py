@@ -17,6 +17,7 @@ class Win:
     h: int
     content: Any
     box: str
+    no_space: bool = False
 
     @classmethod
     def create_profile(

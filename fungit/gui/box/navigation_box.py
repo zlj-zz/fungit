@@ -20,13 +20,19 @@ class NavBox(Win):
     h: int
     raw: Any
     content: List
-    selected: int
-    box: str
+    start_idx: int  # display start item index
+    selected: int  # selected item
+    box: str  # box profile string
     box_content: str
 
     @classmethod
     def set_current(cls, t: int):
         cls.current = t
+
+    @classmethod
+    def set_selected(cls, v):
+        cls.selected = v
+        cls.notify()
 
     @classmethod
     def create_profile(cls):
@@ -62,17 +68,30 @@ class NavBox(Win):
 
         According to the currently selected item to update the displayed
         content block (current item BOLD), generate a content string, and
-        assign it to `cla.box_content`.
+        assign it to `cls.box_content`.
         """
         start_x = cls.x + 1
         start_y = cls.y + 1
-        line_w = cls.w - 2
+        height_ = cls.h - 2
 
+        _current = cls.selected
+
+        if _current - cls.start_idx + 1 > height_:
+            cls.start_idx += 1
+        elif _current < cls.start_idx:
+            cls.start_idx -= 1
+        else:
+            # If range size > height, start index ++.
+            # If select index < first start index, start index --.
+            # Else do nothing.
+            pass
+
+        start_idx = cls.start_idx
         cls.box_content = ""
-        for idx, line in enumerate(cls.content):
-            if idx < cls.h - 2:
-                _line = f"{Cursor.to(start_y, start_x)}{line if len(line) < line_w else line[:line_w]}"
-                if cls.genre & cls.current:
+        for idx, line in enumerate(cls.content[cls.start_idx :]):
+            if idx < height_:
+                _line = f"{Cursor.to(start_y, start_x)}{line}"
+                if cls.genre & cls.current and idx + start_idx == _current:
                     _line = f"{Fx.b}{_line}{Fx.ub}"
                 cls.box_content += _line
                 start_y += 1
@@ -85,17 +104,18 @@ class NavBox(Win):
             ContentBox.notify(cls)
 
     @classmethod
-    def notify(cls, update_data: bool = False, re_profile: bool = True):
-        if update_data:
+    def notify(
+        cls,
+        update_data: bool = False,
+        re_profile: bool = True,
+        lazy_render: bool = False,
+    ):
+        if update_data or not cls.raw:
             cls.fetch_data()
             cls.generate()
-        if re_profile:
+        if re_profile or not cls.box:
             cls.create_profile()
         # every notify must update display string and render all.
         cls.update()
-        cls.render()
-
-    @classmethod
-    def set_selected(cls, v):
-        cls.selected = v
-        cls.notify()
+        if not lazy_render:
+            cls.render()
