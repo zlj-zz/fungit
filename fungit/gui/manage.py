@@ -14,6 +14,8 @@ LOG = logging.getLogger(__name__)
 
 
 class Manager:
+    """Receive keyboard events, make corresponding processing, and notify."""
+
     # box event
     @staticmethod
     def switch_box_by_index(idx):

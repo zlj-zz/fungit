@@ -6,6 +6,7 @@ from . import run_with_git, Git
 from .module.file import File
 from .module.branch import Branch
 from .module.commit import Commit
+from .module.stash import Stash
 
 
 LOG = logging.getLogger(__name__)
@@ -182,6 +183,11 @@ def load_commits(branch_name: str):
 def load_stashes() -> str:
     """Get stash list."""
 
-    arg = "stash list"
+    arg = "stash list --pretty='%gs'"
     _, resp = run_with_git(arg)
-    return resp
+
+    stashes = []
+    for idx, line in enumerate(resp.rstrip().split("\n")):
+        stashes.append(Stash(idx, line))
+
+    return stashes

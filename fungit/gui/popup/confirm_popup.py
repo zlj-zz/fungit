@@ -11,6 +11,12 @@ from ..theme import Theme
 
 
 class ConfirmBox(Win):
+    """Pop up class for confirmation.
+
+    `enter`, `space`, `y`, `Y` is confirm.
+    `escape` is cancel.
+    """
+
     close: bool = False
 
     @classmethod

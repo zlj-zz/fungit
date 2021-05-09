@@ -8,6 +8,7 @@ from fungit.commands.loading import (
     current_head,
     load_commits,
     load_files,
+    load_stashes,
 )
 from fungit.commands import run_with_git, run_cmd_with_resp
 
@@ -79,5 +80,5 @@ def test_commit_info():
 
 if __name__ == "__main__":
     # print(checkout("dev"))
-    test_load_branches()
+    load_stashes()
     pass

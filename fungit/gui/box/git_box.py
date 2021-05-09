@@ -200,11 +200,14 @@ class StashBox(NavBox):
 
     @classmethod
     def generate(cls):
+        line_w = cls.w - 2
+        content_ = []
 
-        if cls.raw:
-            cls.content = cls.raw.split("\n")
-        else:
-            cls.content = []
+        for stash in cls.raw:
+            name = stash.name
+            content_.append(name[:line_w] if len(name) > line_w else name)
+
+        cls.content = content_
 
 
 # GIT_BOXES = [StateBox, StatusBox, BranchBox, CommitBox, StashBox]

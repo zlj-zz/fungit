@@ -11,6 +11,7 @@ def branch_log_graph(branch, plain: bool = False) -> str:
 
     Args:
         branch: branch name
+        plain: wether has color.
     """
     branch_name = branch.name
     color_str = "never" if plain else "always"
@@ -28,7 +29,7 @@ def commit_info(commit: str, plain: bool = False) -> str:
 
     Args:
         commit: commit id.
-        color: If with color.
+        plain: wether has color.
     """
     return commit_file_info(commit, plain=plain)
 
@@ -40,6 +41,7 @@ def commit_file_info(commit: str, file_name: str = "", plain: bool = False) -> s
         commit: commit id.
         file_name: file name(include full path).
         color: If with color.
+        plain: wether has color.
     """
     color_str = "never" if plain else "always"
 
@@ -57,6 +59,7 @@ def diff(
         file: file path
         tracked: Is the file tracked
         cached: Is the file staged
+        plain: wether has color.
     """
     args = ["diff", "--submodule", "--no-ext-diff"]
 
@@ -79,6 +82,20 @@ def diff(
     args.append(file)
 
     _, res = run_with_git(*args)
+    return res.rstrip()
+
+
+def stash_info(index: int, plain: bool = False):
+    """Show stash content.
+
+    Args:
+        index: stash index.
+        plain: wether has color.
+    """
+    color = "never" if plain else "always"
+    command_str = "stash show -p --stat --color=%s stash@\{%d\}" % (color, index)
+
+    _, res = run_with_git(command_str)
     return res.rstrip()
 
 
