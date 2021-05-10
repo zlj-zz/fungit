@@ -1,3 +1,4 @@
+import logging
 from typing import List, Any
 
 from fungit.style import Fx, Cursor
@@ -6,6 +7,9 @@ from ..renderer import Renderer
 from ..theme import Theme
 from ..core import Win
 from .content_box import ContentBox
+
+
+LOG = logging.getLogger(__name__)
 
 
 class NavBox(Win):
@@ -76,7 +80,10 @@ class NavBox(Win):
 
         _current = cls.selected
 
-        if _current - cls.start_idx + 1 > height_:
+        if height_ < 0:
+            # Prevent miscalculation in mini mode.
+            pass
+        elif _current - cls.start_idx + 1 > height_:
             cls.start_idx += 1
         elif _current < cls.start_idx:
             cls.start_idx -= 1
@@ -95,6 +102,9 @@ class NavBox(Win):
                     _line = f"{Fx.b}{_line}{Fx.ub}"
                 cls.box_content += _line
                 start_y += 1
+            else:
+                # Prevent too many cycles.
+                break
 
     @classmethod
     def render(cls):
