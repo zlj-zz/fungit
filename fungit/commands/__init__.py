@@ -65,5 +65,5 @@ def current_repository():
     if path == ".git":
         repository_path = os.getcwd()
     else:
-        repository_path = path.split("/")[-2]
+        repository_path = "/".join(path.split("/")[:-1])
     return repository_path

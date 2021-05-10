@@ -34,7 +34,7 @@ def load_files(*args) -> List[File]:
         args: File tuple
     """
 
-    command = "status -s -u"
+    command = "status -s -u --porcelain"
     _, resp = run_with_git(" ".join([command, *args]))
     resp = resp.rstrip()
 

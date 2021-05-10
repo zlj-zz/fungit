@@ -1,6 +1,6 @@
 import logging
 
-from . import run_with_git
+from . import run_with_git, Git
 
 
 LOG = logging.getLogger(__name__)
@@ -79,7 +79,7 @@ def diff(
     if "->" in file:  # rename
         file = file.split("->")[-1].strip()
 
-    args.append(file)
+    args.append(f"{Git.REPOSITORY_PATH}/{file}")
 
     _, res = run_with_git(*args)
     return res.rstrip()

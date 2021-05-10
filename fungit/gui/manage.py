@@ -119,7 +119,7 @@ class Manager:
             try:
                 options.ignore(file.name)
             except Exception as e:
-                ConfirmBox.main("Error", e, ConfirmType.ERROR)
+                ConfirmBox.main("Error", str(e), ConfirmType.ERROR)
             box.notify(update_data=True)
         else:
             pass
