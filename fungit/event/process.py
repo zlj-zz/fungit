@@ -43,6 +43,8 @@ def process_key():
             Manager.del_()
         elif key == "i":
             Manager.i_event()
+        elif key == "?":
+            Manager.open_help_menu()
         else:
             continue
     time.sleep(0.1)

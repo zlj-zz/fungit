@@ -7,6 +7,7 @@ from .box.git_box import NAVBOXES
 from .popup.wait_popup import DynamicPromptBox
 from .popup.confirm_popup import ConfirmBox
 from .box.content_box import ContentBox
+from .popup.help_popup import HelperBox
 from fungit.commands import options
 
 
@@ -181,6 +182,11 @@ class Manager:
                 box.notify(update_data=False, re_profile=False)
         else:
             pass
+
+    @staticmethod
+    def open_help_menu():
+        HelperBox.help()
+        refresh_all()
 
 
 def index_of(genre_code: int, need_box: bool = True):

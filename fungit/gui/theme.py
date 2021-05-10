@@ -9,7 +9,7 @@ class Theme:
     _linen = Color.fg("#F0E68C")  # Linen
     _gold = Color.fg("#FFD700")
 
-    DEFAULT = Color.fg("#ee")
+    DEFAULT = Color.fg("#ff")
     BOX_SELECTED_COLOR = _skyblue
 
     FILE_NEW = _steel_blue

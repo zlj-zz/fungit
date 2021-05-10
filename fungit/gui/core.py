@@ -108,7 +108,7 @@ class Win:
             )
         if page_end:
             # out += f'{Cursor.to(hlines[1], width - 2 - len(title2))}{Symbol.title_left}{title_color}{Fx.b}{title2}{Fx.ub}{line_color}{Symbol.title_right}'
-            out += f"{Cursor.to(h_lines[1], width - 2 - len(page_end))}{title_color}{Fx.b}{page_end}{Fx.ub}{line_color}"
+            out += f"{Cursor.to(h_lines[1], x + width - 2 - len(page_end))}{title_color}{Fx.b}{page_end}{Fx.ub}{line_color}"
 
         # return f'{out}{Term.fg}{Cursor.to(y + 1, x + 1)}'
         return f"{out}{Fx.reset}{Cursor.to(y + 1, x + 1)}"

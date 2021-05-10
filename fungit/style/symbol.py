@@ -85,5 +85,9 @@ class Symbol:
     left: str = "←"
     right: str = "→"
     enter: str = "↲"
-    # ok: str = f'{Color.fg("#30ff50")}√{Color.fg("#cc")}'
-    # fail: str = f'{Color.fg("#ff3050")}!{Color.fg("#cc")}'
+    ok: str = "√"
+    fail: str = "!"
+
+
+"▲"
+"▼"

@@ -31,7 +31,9 @@ class BottomLine(NavBox):
 
     @classmethod
     def fetch_data(cls):
-        left_ = "1-5: jump to panel, q: quit, esc: cancel, ← → ↑ ↓: navigate"
+        left_ = (
+            "1-5: jump to panel, q: quit, esc: cancel, ← → ↑ ↓: navigate, ?: open help"
+        )
         right_ = "Zachary"
         cls.raw = "\n".join([left_, right_, __version__])
 
@@ -49,7 +51,7 @@ class BottomLine(NavBox):
 
         _content.append(f'{Cursor.to(y_, 1)}{" "*line_w}')
         _content.append(f"{Cursor.to(y_, 1)}{Theme._steel_blue}{lines[0]}")
-        x_ = line_w - len_
+        x_ = line_w - len_ + 1
         _content.append(
             f"{Cursor.to(y_, x_)}{Theme._gold}{lines[1]} {Theme._green}{lines[2]}{Theme.DEFAULT}"
         )
