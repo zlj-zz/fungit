@@ -2,26 +2,33 @@ from ..style.color import Color
 
 
 class Theme:
+    _skyblue = Color.fg("#87CEFA")  # skyblue
+    _steel_blue = Color.fg("#4682B4")  # SteelBlue
+    _light_coral = Color.fg("#F08080")  # LightCoral
+    _green = Color.fg("#A3BD8C")  # green
+    _linen = Color.fg("#F0E68C")  # Linen
+    _gold = Color.fg("#FFD700")
+
     DEFAULT = Color.fg("#ee")
-    BOX_SELECTED_COLOR = Color.fg("#87CEFA")  # skyblue
+    BOX_SELECTED_COLOR = _skyblue
 
-    FILE_NEW = Color.fg("#4682B4")  # SteelBlue
-    FILE_UNTRACK = Color.fg("#F08080")  # LightCoral
+    FILE_NEW = _steel_blue
+    FILE_UNTRACK = _light_coral
 
-    FILE_CACHED = Color.fg("#A3BD8C")  # green
-    FILE_RENAME = Color.fg("#A3BD8C")
-    FILE_DELED = Color.fg("#98FB98")
+    FILE_CACHED = _green
+    FILE_RENAME = _green
+    FILE_DELED = _green
 
-    FILE_DEL = Color.fg("#F08080")
-    FILE_CHANGE = Color.fg("#F08080")
+    FILE_DEL = _light_coral
+    FILE_CHANGE = _light_coral
 
-    BRANCH = Color.fg("#A3BD8C")
-    BRANCH_STATUS = Color.fg("#F0E68C")  # Linen
+    BRANCH = _green
+    BRANCH_STATUS = _linen
 
-    PUSHED = Color.fg("#F0E68C")
-    UNPUSHED = Color.fg("#F08080")
+    PUSHED = _linen
+    UNPUSHED = _light_coral
 
-    ADDITION = Color.fg("#A3BD8C")
-    DELETION = Color.fg("#F08080")
+    ADDITION = _green
+    DELETION = _light_coral
 
-    ERROR = Color.fg("#F08080")  # LightCoral
+    ERROR = _light_coral

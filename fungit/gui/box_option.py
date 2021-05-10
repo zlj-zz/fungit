@@ -7,6 +7,7 @@ from .box.navigation_box import NavBox
 from .box.git_box import NAVBOXES
 from .box.content_box import ContentBox
 from fungit.gui.box.error_box import NoSpaceBox
+from fungit.gui.box.bottom_line import BottomLine
 
 
 def generate_all_box(
@@ -23,6 +24,7 @@ def generate_all_box(
     if not Win.no_space:
         for sub in boxes_cache():
             sub.notify(update_data=update_data, lazy_render=lazy_render)
+        BottomLine.notify(update_data=True)
     else:
         NoSpaceBox.notify()
 
