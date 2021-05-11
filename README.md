@@ -2,6 +2,7 @@ A terminal tool with GUI, help you use git more simple.
 
 ![Python](https://img.shields.io/badge/Python-v3.7%5E-green?logo=python)
 [![pypi_version](https://img.shields.io/pypi/v/fungit?label=pypi)](https://pypi.org/project/fungit)
+[![Test Status](https://img.shields.io/github/workflow/status/zlj-zz/fungit/FungitTest?label=tests)](https://github.com/zlj-zz/fungit/actions/workflows/python-app.eml)
 
 Just support Linux, MacOs or other UNIX-like, and Python version is **3.7** or above.
 
@@ -15,7 +16,7 @@ It support gui and command ways.
 
 You can use `fungit` to open a gui in terminal, like:
 
-![](./screenshot-1.png)
+![screenshot-1](./screenshot-1.png)
 
 Also you can use it with `g` , like this:
 
