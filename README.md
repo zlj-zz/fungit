@@ -3,6 +3,8 @@ A terminal tool with GUI, help you use git more simple.
 ![Python](https://img.shields.io/badge/Python-v3.7%5E-green?logo=python)
 [![pypi_version](https://img.shields.io/pypi/v/fungit?label=pypi)](https://pypi.org/project/fungit)
 [![Test Status](https://img.shields.io/github/workflow/status/zlj-zz/fungit/FungitTest?label=tests)](https://github.com/zlj-zz/fungit/actions/workflows/python-app.eml)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+
 
 Just support Linux, MacOs or other UNIX-like, and Python version is **3.7** or above.
 

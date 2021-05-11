@@ -1,5 +1,5 @@
 {
-    "editor.minimap.maxColumn": 80,
+    "editor.minimap.maxColumn": 100,
     "editor.fontLigatures": true,
     "editor.formatOnSave": true,
     "editor.suggestSelection": "recentlyUsedByPrefix",
@@ -25,6 +25,7 @@
         "unstage",
         "unstaged",
         "untracked",
-        "xywh"
+        "xywh",
+        "yapf"
     ]
 }
