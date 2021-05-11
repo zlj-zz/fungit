@@ -11,6 +11,7 @@ from fungit.commands.loading import (
     load_stashes,
 )
 from fungit.commands import run_with_git, run_cmd_with_resp, run_cmd
+from fungit.commands.info import commit_info
 
 
 def test_load_branches():
@@ -61,18 +62,17 @@ def test_load_files():
         )
 
 
-def test_diff():
-    from fungit.commands import diff
+# def test_diff():
+#     from fungit.commands import diff
 
-    re_1 = re.compile(r"(@@).*?(@@)")
-    resp = diff("fungit/gui/box/navigation_box.py")
-    rrr = re_1.sub(">>>>", resp)
-    # print(resp)
-    print(rrr)
+#     re_1 = re.compile(r"(@@).*?(@@)")
+#     resp = diff("fungit/gui/box/navigation_box.py")
+#     rrr = re_1.sub(">>>>", resp)
+#     # print(resp)
+#     print(rrr)
 
 
 def test_commit_info():
-    from fungit.commands import commit_info
 
     resp = commit_info("HEAD")
     print(resp)

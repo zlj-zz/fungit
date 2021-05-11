@@ -1,5 +1,8 @@
 A terminal tool with GUI, help you use git more simple.
 
+![Python](https://img.shields.io/badge/Python-v3.7%5E-green?logo=python)
+[![pypi_version](https://img.shields.io/pypi/v/fungit?label=pypi)](https://pypi.org/project/fungit)
+
 Just support Linux, MacOs or other UNIX-like, and Python version is **3.7** or above.
 
 You can use Pipy install it.
