@@ -5,7 +5,7 @@ import logging
 LOG = logging.getLogger(__name__)
 
 
-def warp_color_str(line: str, line_width: int):
+def wrap_color_str(line: str, columns: int):
     """Warp a colored line.
 
     Wrap a colored string according to the width of the restriction.
@@ -14,16 +14,26 @@ def warp_color_str(line: str, line_width: int):
         line: A colored string.
         line_width: Limit width.
     """
-    clear_ = re.sub(r"\x1b\[.*?m", "", line)  # ^[[...m
-    clear_len = len(clear_)
-    if clear_len <= line_width:
-        return line
-    flag_ = clear_[line_width - 1]
-    # flag_ is a special char.
-    if flag_ in ["(", ")", "[", "]", "{", "}", "*", "."]:
-        flag_ = f"\{flag_}"
-    for idx, sub in enumerate(re.finditer(flag_, clear_), start=1):
-        if line_width - 1 == sub.start():
-            break
-    index_ = line.find(flag_, idx) + 1
-    return [line[:index_], line[index_:]]
+    line = re.sub(r"\x1b(?P<need>\[[\d+;*\d*]+[suABCDf])", "\g<need>", line)
+    # line = line.replace("\\", "\\\\")
+    line_len = len(line)
+    lines = []
+    start = 0
+    i = 0
+    count = 0
+    while i < line_len:
+        if line[i] == "\x1b":
+            i += 1
+            while not line[i] in ["m"]:
+                i += 1
+        i += 1
+        count += 1
+        if count >= columns - 1:
+            i += 1
+            lines.append(line[start:i])
+            start = i
+            count = 0
+    if start < line_len:
+        lines.append(line[start:])
+    # LOG.debug(f"{lines}")
+    return lines

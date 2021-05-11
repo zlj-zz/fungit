@@ -10,7 +10,7 @@ from fungit.commands.loading import (
     load_files,
     load_stashes,
 )
-from fungit.commands import run_with_git, run_cmd_with_resp
+from fungit.commands import run_with_git, run_cmd_with_resp, run_cmd
 
 
 def test_load_branches():
@@ -80,5 +80,9 @@ def test_commit_info():
 
 if __name__ == "__main__":
     # print(checkout("dev"))
-    load_stashes()
+    # load_stashes()
+    _, resp = run_cmd_with_resp(
+        "git diff --no-indent-heuristic --submodule --no-ext-diff -- /dev/null tests/test_wrap.py"
+    )
+    print(resp)
     pass

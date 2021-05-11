@@ -25,7 +25,7 @@ class HelperBox(Win):
             "(i)": "ignore current file",
         }
         help_len = len(help_dict)
-        w = 40
+        w = 60
         y = (cls.t_h) // 4
         x = (cls.t_w - w - 2) // 2
         h = (cls.t_h - y) // 2
@@ -53,7 +53,7 @@ class HelperBox(Win):
             for n, (key, desc) in enumerate(help_dict.items()):
                 if pages and n < (page - 1) * h:
                     continue
-                out += f'{Cursor.to(y+1+cy, x+1)}{("" if key.startswith("_") else key):^10.10}{desc:30.30}'
+                out += f'{Cursor.to(y+1+cy, x+1)}{("" if key.startswith("_") else key):^15.15}{desc:45.45}'
                 cy += 1
                 if cy == h:
                     break

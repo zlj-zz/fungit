@@ -4,7 +4,7 @@ from typing import List, Any
 from fungit.commands import info
 from fungit.style import Cursor
 from ..shared import BoxType
-from ..utils import warp_color_str
+from ..utils import wrap_color_str
 from ..core import Win
 
 
@@ -40,6 +40,7 @@ class ContentBox(Win):
     @classmethod
     def fetch_data(cls, box):
         cls.raw = fetch_content(box)
+        # LOG.debug(f"{cls.raw}")
 
     @classmethod
     def generate(cls):
@@ -48,29 +49,29 @@ class ContentBox(Win):
         line_width = cls.w - 2
         _content = []
         for line in cls.raw.split("\n"):
-            _content.append(warp_color_str(line, line_width))
+            _content.append(wrap_color_str(line, line_width))
         cls.content = _content
         cls.content_len = len(_content)  # record content length
 
     @classmethod
-    def update(self):
-        start_y = self.y + 1
-        start_x = self.x + 1
+    def update(cls):
+        start_y = cls.y + 1
+        start_x = cls.x + 1
 
-        self.box_content = ""
+        cls.box_content = ""
         count_ = 0
-        for line in self.content[self.content_selected_line :]:
+        for line in cls.content[cls.content_selected_line :]:
             if isinstance(line, list):
                 for sub_line in line:
-                    if count_ < self.h - 2:
-                        self.box_content += f"{Cursor.to(start_y, start_x)}{sub_line}"
+                    if count_ < cls.h - 2:
+                        cls.box_content += f"{Cursor.to(start_y, start_x)}{sub_line}"
                         start_y += 1
                         count_ += 1
                     else:
                         break
             else:
-                if count_ < self.h - 2:
-                    self.box_content += f"{Cursor.to(start_y, start_x)}{line}"
+                if count_ < cls.h - 2:
+                    cls.box_content += f"{Cursor.to(start_y, start_x)}{line}"
                     start_y += 1
                     count_ += 1
 
